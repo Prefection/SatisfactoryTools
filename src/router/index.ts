@@ -5,6 +5,7 @@ import StubView from '@src/views/StubView.vue';
 import ItemsView from '@src/views/ItemsView.vue';
 import BuildingsView from '@src/views/BuildingsView.vue';
 import SchematicsView from '@src/views/SchematicsView.vue';
+import ItemView from '@src/views/ItemView.vue';
 
 const routes: RouteRecordRaw[] = [
 	{
@@ -13,7 +14,7 @@ const routes: RouteRecordRaw[] = [
 		children: [
 			{path: '', name: 'home', component: HomeView},
 			{path: 'items', name: 'items', component: ItemsView},
-			{path: 'items/:item', name: 'item', component: StubView, props: true},
+			{path: 'items/:item', name: 'item', component: ItemView, props: true},
 			{path: 'buildings', name: 'buildings', component: BuildingsView},
 			{path: 'buildings/:item', name: 'building', component: StubView, props: true},
 			{path: 'schematics', name: 'schematics', component: SchematicsView},
