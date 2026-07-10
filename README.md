@@ -1,37 +1,53 @@
-# SatisfactoryTools
-Satisfactory Tools for planning and building the perfect base.
+# SatisfactoryTools (personal fork)
+
+Personal fork of [greeny/SatisfactoryTools](https://github.com/greeny/SatisfactoryTools) —
+tools for planning Satisfactory factories (production chains, factory graphs).
+
+> **Please read**
+> - This is a **personal project**, changed to suit my own requirements.
+> - **Not accepting contributions.** Issues and pull requests are not monitored or accepted.
+> - **No guarantees.** No support, no promised updates, no roadmap. It may change,
+>   break, or stop at any time.
+>
+> Want the maintained, official version? Use the upstream project linked above.
+
+## Stack
+
+Being modernized from the original AngularJS 1.7 + Webpack + Yarn + PHP stack to
+**Bun + Vite + Vue 3**, hosted static on Cloudflare Pages. The migration is in
+progress, so parts of the tree are new (Vite/Vue) and parts are the frozen legacy
+app awaiting port.
 
 ## Requirements
-- node.js version 16 (lower may work, 17+ doesn't work)
-- yarn
-- PHP 7.1+
 
-## Installation
-- `git clone git@github.com:greeny/SatisfactoryTools.git`
-- `yarn install`
-- `yarn build`
-- Set up a virtual host pointing to `/www` directory (using e.g. Apache or ngnix)
-
-## Contributing
-Any pull requests are welcome, though some rules must be followed:
-- try to follow current coding style (there's `tslint` and `.editorconfig`, those should help you with that)
-- one PR per feature
-- all PRs must target `dev` branch
+- [Bun](https://bun.sh) (runtime + package manager)
 
 ## Development
-Run `yarn start` to start the automated build process. It will watch over the code and rebuild it on change.
 
-## Updating data
-Get the latest Docs.json from your game installation and place it into `data` folder.
-Then run `yarn parseDocs`command and the `data.json` file would get updated automatically.
-It will also generate `diff.txt` file in the same folder, marking differences between the two files in a player-readable format (useful for generating changelogs), as well as `imageMapping.json`, which will be useful if you want to update icons as well (see below).
+- `bun install` — install dependencies
+- `bun run dev` — dev server with hot reload
+- `bun run build` — production build to `dist/`
+- `bun run preview` — serve the production build locally
+
+## Updating game data
+
+Get the latest `Docs.json` from your game installation, place it in the `data`
+folder, then run `bun run parseDocs` to regenerate `data.json` (plus `diff.txt` and
+`imageMapping.json`). _(The data-pipeline scripts still run via `ts-node`; they are
+being ported to Bun.)_
 
 ## Updating icons
-First you need to extract the images out of the game pack. You need `umodel` (UE Viewer) program. Run these commands (replacing paths where necessary):
 
-```shell script
-.\umodel.exe -path="C:\Program Files\Epic Games\SatisfactoryExperimental\FactoryGame\Content\Paks" -out=".\out256" -png -export *_256.uasset -game=ue4.22
-.\umodel.exe -path="C:\Program Files\Epic Games\SatisfactoryExperimental\FactoryGame\Content\Paks" -out=".\out256" -png -export *_256_New.uasset -game=ue4.22
+Extract the game images with `umodel` (UE Viewer):
+
+```shell
+.\umodel.exe -path="...\SatisfactoryExperimental\FactoryGame\Content\Paks" -out=".\out256" -png -export *_256.uasset -game=ue4.22
+.\umodel.exe -path="...\SatisfactoryExperimental\FactoryGame\Content\Paks" -out=".\out256" -png -export *_256_New.uasset -game=ue4.22
 ```
 
-After the export is done, copy the resulting `out256` folder to `data/icons`. Then run `yarn generateImages`, which will automatically generate the images in correct sizes and places. `yarn parseDocs` has to be run before this command, if it wasn't run in the previous step.
+Copy the resulting `out256` folder to `data/icons`, then run `bun run generateImages`
+(run `bun run parseDocs` first if you haven't).
+
+## License
+
+MIT — see [LICENSE](LICENSE). Original work by greeny.
