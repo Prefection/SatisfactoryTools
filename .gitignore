@@ -2,6 +2,10 @@
 .idea
 .vscode
 
+# AI-assisted dev (local only, keep out of upstream PRs)
+.claude
+CLAUDE.md
+
 # Satisfactory Data file for parsing
 data/Docs.json
 data/icons
