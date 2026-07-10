@@ -1,6 +1,9 @@
-import '@styles/bootstrap.scss'
-import '@styles/style.scss'
-import { createApp } from 'vue'
-import App from './App.vue'
+import {createApp} from 'vue';
+import App from './App.vue';
+import {router} from '@src/router';
+import {initGameData} from '@src/composables/useGameData';
+import '@styles/bootstrap.scss';
+import '@styles/style.scss';
 
-createApp(App).mount('#app')
+initGameData();
+createApp(App).use(router).mount('#app');

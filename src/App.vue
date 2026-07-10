@@ -1,8 +1,7 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import {RouterView} from 'vue-router';
+</script>
 
 <template>
-	<main>
-		<h1>Satisfactory Tools</h1>
-		<p>Rebuilding on Vue 3. Back online soon.</p>
-	</main>
+	<RouterView />
 </template>
