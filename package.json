@@ -8,6 +8,7 @@
 		"dev": "vite",
 		"build": "vite build",
 		"preview": "vite preview",
+		"check": "bun bin/checkProductionResult.ts",
 		"parseDocs": "ts-node -r tsconfig-paths/register bin/parseDocs.ts",
 		"parsePak": "ts-node -r tsconfig-paths/register bin/parsePak.ts",
 		"generateImages": "ts-node -r tsconfig-paths/register bin/generateImages.ts"
