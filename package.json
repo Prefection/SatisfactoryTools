@@ -5,9 +5,9 @@
 	"author": "greeny",
 	"private": true,
 	"scripts": {
-		"build": "webpack --mode production",
-		"buildCI": "webpack --mode production",
-		"start": "webpack --mode development --progress --color --watch",
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
 		"parseDocs": "ts-node -r tsconfig-paths/register bin/parseDocs.ts",
 		"parsePak": "ts-node -r tsconfig-paths/register bin/parsePak.ts",
 		"generateImages": "ts-node -r tsconfig-paths/register bin/generateImages.ts"
@@ -28,6 +28,7 @@
 		"@types/sharp": "^0.29.4",
 		"@typescript-eslint/eslint-plugin": "^8.57.1",
 		"@typescript-eslint/parser": "^8.57.1",
+		"@vitejs/plugin-vue": "^6.0.7",
 		"angular-templatecache-loader": "^0.2.0",
 		"css-loader": "^5.2.7",
 		"eslint": "^10.1.0",
@@ -43,6 +44,8 @@
 		"tsconfig-paths": "^3.9.0",
 		"tsconfig-paths-webpack-plugin": "^3.2.0",
 		"typescript": "^5",
+		"vite": "^8.1.4",
+		"vue-tsc": "^3.3.7",
 		"webpack": "^5",
 		"webpack-cli": "^5"
 	},
@@ -69,6 +72,7 @@
 		"ui-bootstrap4": "^3.0.7",
 		"ui-select": "^0.19.8",
 		"vis-data": "6.4.1",
-		"vis-network": "7.3.6"
+		"vis-network": "7.3.6",
+		"vue": "^3.5.39"
 	}
 }

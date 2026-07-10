@@ -1,23 +1,25 @@
 {
 	"compilerOptions": {
-		"baseUrl": ".",
-		"sourceMap": false,
-		"moduleResolution": "node",
-		"alwaysStrict": true,
-		"strictNullChecks": true,
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+		"jsx": "preserve",
+		"strict": true,
 		"noImplicitAny": true,
+		"strictNullChecks": true,
 		"resolveJsonModule": true,
 		"esModuleInterop": true,
-		"lib": [
-			"esnext",
-			"dom"
-		],
-		"target": "es5",
+		"isolatedModules": true,
+		"skipLibCheck": true,
+		"noEmit": true,
+		"types": ["vite/client"],
+		"baseUrl": ".",
 		"paths": {
 			"@src/*": ["./src/*"],
 			"@data/*": ["./data/*"],
-			"@bin/*": ["./bin/*"],
-			"@templates/*": ["./templates/*"]
+			"@bin/*": ["./bin/*"]
 		}
-	}
+	},
+	"include": ["src/**/*.ts", "src/**/*.vue", "vite.config.ts", "env.d.ts"]
 }
