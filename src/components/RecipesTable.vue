@@ -12,8 +12,13 @@ defineProps<{recipes: IRecipeSchema[]}>();
 // overclock is fixed at 100% here (no per-row overclock slider in the codex)
 const OVERCLOCK = 100;
 
-const workshop = data.getBuildingByClassName('Desc_Workshop_C');
-const workbench = data.getBuildingByClassName('Desc_WorkBench_C');
+function workshop() {
+	return data.getBuildingByClassName('Desc_Workshop_C');
+}
+
+function workbench() {
+	return data.getBuildingByClassName('Desc_WorkBench_C');
+}
 
 function machine(recipe: IRecipeSchema): IManufacturerSchema | null {
 	return data.getManufacturerByClassName(recipe.producedIn[0]);
@@ -107,14 +112,14 @@ function maxPower(recipe: IRecipeSchema): string {
 								<ItemIcon :item="machine(recipe)!" :size="32" />
 							</RouterLink>
 						</span>
-						<span class="item-amount" v-else-if="recipe.inWorkshop && workshop">
-							<RouterLink :to="{name: 'building', params: {item: workshop!.slug}}">
-								<ItemIcon :item="workshop!" :size="32" />
+						<span class="item-amount" v-if="recipe.inWorkshop && workshop()">
+							<RouterLink :to="{name: 'building', params: {item: workshop()!.slug}}">
+								<ItemIcon :item="workshop()!" :size="32" />
 							</RouterLink>
 						</span>
-						<span class="item-amount" v-else-if="recipe.inHand && workbench">
-							<RouterLink :to="{name: 'building', params: {item: workbench!.slug}}">
-								<ItemIcon :item="workbench!" :size="32" />
+						<span class="item-amount" v-if="!recipe.inWorkshop && recipe.inHand && workbench()">
+							<RouterLink :to="{name: 'building', params: {item: workbench()!.slug}}">
+								<ItemIcon :item="workbench()!" :size="32" />
 							</RouterLink>
 						</span>
 						<br>
