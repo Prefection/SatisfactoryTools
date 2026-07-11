@@ -3,6 +3,8 @@ import {onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {Network, type Edge, type Node} from 'vis-network';
 import {layoutGraph} from '@src/utils/networkLayout';
 import {ProductionResult} from '@src/Tools/Production/Result/ProductionResult';
+import data from '@src/Data/Data';
+import {Strings} from '@src/Utils/Strings';
 
 const props = defineProps<{result: ProductionResult}>();
 const container = ref<HTMLElement>();
@@ -19,7 +21,7 @@ async function draw(): Promise<void> {
 	});
 	const edges: Edge[] = graph.edges.map((e) => ({
 		id: e.id, from: e.from.id, to: e.to.id,
-		label: `${e.itemAmount.amount} / min`,
+		label: `${data.getItemByClassName(e.itemAmount.item)?.name ?? e.itemAmount.item}\n${Strings.formatNumber(e.itemAmount.amount)} / min`,
 		// curve apart when a reverse edge also exists (bidirectional pair)
 		smooth: e.to.hasOutputTo(e.from) ? {enabled: true, type: 'curvedCW', roundness: 0.2} : false,
 	} as unknown as Edge));
