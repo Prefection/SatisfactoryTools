@@ -72,3 +72,56 @@ export function buildProductionModel(request: IProductionDataApiRequest, data: I
 
 	return {direction: 'minimize', objective: 'cost', constraints, variables};
 }
+
+// production - consumption per item, recomputed from the solved variable values.
+function computeNet(solution: Solution, data: IJsonSchema): {[item: string]: number} {
+	const net: {[item: string]: number} = {};
+	const add = (item: string, amount: number) => { net[item] = (net[item] ?? 0) + amount; };
+	for (const [name, value] of solution.variables) {
+		if (value <= EPS) continue;
+		if (name.startsWith('recipe:')) {
+			const recipe = data.recipes[name.slice(7)];
+			for (const p of recipe.products) add(p.item, ratePerMachine(recipe, p.amount, data) * value);
+			for (const i of recipe.ingredients) add(i.item, -ratePerMachine(recipe, i.amount, data) * value);
+		} else if (name.startsWith('mine:')) {
+			add(name.slice(5), value);
+		} else if (name.startsWith('input:')) {
+			add(name.slice(6), value);
+		}
+	}
+	return net;
+}
+
+export async function solveProduction(request: IProductionDataApiRequest, data: IJsonSchema): Promise<IProductionDataApiResponse> {
+	const solution = solve(buildProductionModel(request, data));
+	const response: IProductionDataApiResponse = {};
+	if (solution.status !== 'optimal') return response; // infeasible/unbounded -> empty, like the old remote catch
+
+	for (const [name, value] of solution.variables) {
+		if (value <= EPS) continue;
+		if (name.startsWith('recipe:')) {
+			const cls = name.slice(7);
+			response[`${cls}@100#${data.recipes[cls].producedIn[0]}`] = value;
+		} else if (name.startsWith('mine:')) {
+			response[`${name.slice(5)}#Mine`] = value;
+		} else if (name.startsWith('input:')) {
+			response[`${name.slice(6)}#Input`] = value;
+		}
+	}
+
+	const targets = new Set<string>();
+	for (const p of request.production) {
+		if (p.item && p.type === PER_MINUTE && p.amount > 0) {
+			response[`${p.item}#Product`] = p.amount;
+			targets.add(p.item);
+		}
+	}
+
+	// ponytail: free-disposal excess -> Sink if sinkable else Byproduct. Refine only if a live spot-check diverges.
+	const net = computeNet(solution, data);
+	for (const [item, amount] of Object.entries(net)) {
+		if (targets.has(item) || amount <= EPS) continue;
+		response[`${item}#${request.sinkableResources.includes(item) ? 'Sink' : 'Byproduct'}`] = amount;
+	}
+	return response;
+}
