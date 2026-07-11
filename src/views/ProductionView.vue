@@ -8,10 +8,14 @@ import InputList from '@src/components/InputList.vue';
 import RecipeList from '@src/components/RecipeList.vue';
 import MachineToggles from '@src/components/MachineToggles.vue';
 import ResultOverview from '@src/components/ResultOverview.vue';
+import ResultItemsTable from '@src/components/ResultItemsTable.vue';
+import ResultBuildingsTable from '@src/components/ResultBuildingsTable.vue';
+import ResultPowerTable from '@src/components/ResultPowerTable.vue';
 
 const {resultStatus, resultNew} = useProductionSolve();
 
 const leftTab = ref<'production' | 'items' | 'recipes' | 'machines'>('production');
+const resultTab = ref<'overview' | 'visualization' | 'items' | 'buildings' | 'power'>('overview');
 </script>
 
 <template>
@@ -64,7 +68,30 @@ const leftTab = ref<'production' | 'items' | 'recipes' | 'machines'>('production
 			<p v-else-if="resultStatus === ResultStatus.NO_RESULT" class="text-secondary">Couldn't calculate a production line for this request.</p>
 			<div v-else-if="resultNew" :class="{calculating: resultStatus === ResultStatus.CALCULATING}">
 				<div v-if="resultStatus === ResultStatus.CALCULATING" class="alert alert-info">Calculating…</div>
-				<ResultOverview :result="resultNew" />
+
+				<ul class="nav nav-tabs mb-3">
+					<li class="nav-item">
+						<a href="javascript:void(0)" class="nav-link" :class="{active: resultTab === 'overview'}" @click="resultTab = 'overview'">Overview</a>
+					</li>
+					<li class="nav-item">
+						<a href="javascript:void(0)" class="nav-link" :class="{active: resultTab === 'visualization'}" @click="resultTab = 'visualization'">Visualization</a>
+					</li>
+					<li class="nav-item">
+						<a href="javascript:void(0)" class="nav-link" :class="{active: resultTab === 'items'}" @click="resultTab = 'items'">Items</a>
+					</li>
+					<li class="nav-item">
+						<a href="javascript:void(0)" class="nav-link" :class="{active: resultTab === 'buildings'}" @click="resultTab = 'buildings'">Buildings</a>
+					</li>
+					<li class="nav-item">
+						<a href="javascript:void(0)" class="nav-link" :class="{active: resultTab === 'power'}" @click="resultTab = 'power'">Power</a>
+					</li>
+				</ul>
+
+				<ResultOverview v-if="resultTab === 'overview'" :result="resultNew" />
+				<div v-else-if="resultTab === 'visualization'">Coming in a later task</div>
+				<ResultItemsTable v-else-if="resultTab === 'items'" :result="resultNew" />
+				<ResultBuildingsTable v-else-if="resultTab === 'buildings'" :result="resultNew" />
+				<ResultPowerTable v-else-if="resultTab === 'power'" :result="resultNew" />
 			</div>
 		</div>
 	</div>
