@@ -1,5 +1,5 @@
-import {reactive, watch} from 'vue';
-import {Data} from '@src/Data/Data';
+import {reactive, ref, watch, toRaw} from 'vue';
+import dataSingleton, {Data} from '@src/Data/Data';
 import {useGameData, type GameVersion} from '@src/composables/useGameData';
 import {IProductionData, IProductionDataRequestItem, IProductionDataRequestInput} from '@src/Tools/Production/IProductionData';
 
@@ -30,30 +30,63 @@ function emptyInput(): IProductionDataRequestInput {
 	return {item: null, amount: 10};
 }
 
-// single reactive tab. 3c-3 re-backs this seam with Pinia (multi-tab) — consumers unchanged.
+function clone(d: IProductionData): IProductionData {
+	return structuredClone(toRaw(d));
+}
+
+let idSeq = 1;
+function newId(): string {
+	return `t${idSeq++}`;
+}
+
 const {version} = useGameData();
+
+// tabs holds the persisted snapshots; `data` is the reactive working-copy of the active tab.
+const tabs = reactive<{id: string; data: IProductionData}[]>([]);
+const activeId = ref<string>('');
+const selectedIds = reactive(new Set<string>());
 const data = reactive<IProductionData>(defaultData());
+
+function activeTab() {
+	return tabs.find((t) => t.id === activeId.value);
+}
+
+// Push the working-copy back into its tab snapshot (so tab labels + persistence see current edits).
+function syncActiveToTab(): void {
+	const t = activeTab();
+	if (t) t.data = clone(data);
+}
+
+function loadIntoWorking(d: IProductionData): void {
+	Object.assign(data, clone(d));
+	if (data.request.production.length === 0) data.request.production.push(emptyProduct());
+}
+
+function persist(): void {
+	syncActiveToTab();
+	localStorage.setItem(storageKey(version.value), JSON.stringify(tabs.map((t) => t.data)));
+}
 
 function load(): void {
 	const raw = localStorage.getItem(storageKey(version.value));
-	let restored: IProductionData | null = null;
+	let restored: IProductionData[] = [];
 	if (raw) {
 		try {
-			const arr = JSON.parse(raw) as IProductionData[];
-			if (Array.isArray(arr) && arr[0]) restored = arr[0];
-		} catch { /* ignore corrupt storage, fall back to default */ }
+			const arr = JSON.parse(raw);
+			if (Array.isArray(arr)) restored = arr.filter(Boolean);
+		} catch { /* ignore corrupt storage */ }
 	}
-	Object.assign(data, restored ?? defaultData());
-	if (data.request.production.length === 0) data.request.production.push(emptyProduct());
+	if (restored.length === 0) restored = [defaultData()];
+	tabs.splice(0, tabs.length, ...restored.map((d) => ({id: newId(), data: d})));
+	selectedIds.clear();
+	activeId.value = tabs[0].id;
+	loadIntoWorking(tabs[0].data);
 }
 load();
 
-// Persist the full tab data (as a 1-element array, forward-compatible with 3c-3 multi-tab).
-watch(data, () => {
-	localStorage.setItem(storageKey(version.value), JSON.stringify([data]));
-}, {deep: true});
-
-// Reload when the game version changes (different storage key + different default resources).
+// Persist on any working-copy edit (syncs into the active tab first).
+watch(data, persist, {deep: true});
+// Reload on game-version change (different key + default resources).
 watch(version, () => load());
 
 export function useActiveTab() {
@@ -73,5 +106,71 @@ export function useActiveTab() {
 		},
 		clearInput: () => { data.request.input = []; },
 		clearProducts: () => { data.request.production = []; },
+	};
+}
+
+function setActive(id: string): void {
+	if (id === activeId.value) return;
+	syncActiveToTab();            // save current edits back to the outgoing tab
+	activeId.value = id;
+	const t = activeTab();
+	if (t) loadIntoWorking(t.data);  // load the incoming tab into the working-copy
+	persist();
+}
+
+function tabName(tab: {data: IProductionData}): string {
+	if (tab.data.metadata.name) return tab.data.metadata.name;
+	const first = tab.data.request.production.find((p) => p.item);
+	if (first?.item) return `${dataSingleton.getItemByClassName(first.item)?.name ?? first.item} Factory`;
+	return 'Unnamed Factory';
+}
+function tabIcon(tab: {data: IProductionData}): string | null {
+	if (tab.data.metadata.icon) return tab.data.metadata.icon;
+	return tab.data.request.production.find((p) => p.item)?.item ?? null;
+}
+
+function addTabFromData(d: IProductionData, select = true): string {
+	syncActiveToTab();
+	const t = {id: newId(), data: d};
+	tabs.push(t);
+	if (select) setActive(t.id); else persist();
+	return t.id;
+}
+
+export function useTabs() {
+	return {
+		tabs, activeId, selectedIds,
+		setActive,
+		toggleSelected: (id: string) => { selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id); },
+		addTab: () => addTabFromData(defaultData()),
+		addTabFromData,
+		cloneTab: (id: string) => {
+			const src = tabs.find((t) => t.id === id);
+			if (src) addTabFromData(clone(src.data));
+		},
+		removeTab: (id: string) => {
+			const idx = tabs.findIndex((t) => t.id === id);
+			if (idx === -1) return;
+			tabs.splice(idx, 1);
+			selectedIds.delete(id);
+			if (tabs.length === 0) tabs.push({id: newId(), data: defaultData()});
+			if (activeId.value === id) {
+				activeId.value = tabs[Math.min(idx, tabs.length - 1)].id;
+				loadIntoWorking(activeTab()!.data);
+			}
+			persist();
+		},
+		removeSelected: () => {
+			const ids = [...selectedIds];
+			for (const id of ids) {
+				const idx = tabs.findIndex((t) => t.id === id);
+				if (idx !== -1) tabs.splice(idx, 1);
+			}
+			selectedIds.clear();
+			if (tabs.length === 0) tabs.push({id: newId(), data: defaultData()});
+			if (!activeTab()) { activeId.value = tabs[0].id; loadIntoWorking(tabs[0].data); }
+			persist();
+		},
+		tabName, tabIcon,
 	};
 }
