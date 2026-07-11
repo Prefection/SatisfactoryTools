@@ -1,15 +1,51 @@
 <script setup lang="ts">
+import {ref} from 'vue';
 import {useProductionSolve} from '@src/composables/useProductionSolve';
 import {ResultStatus} from '@src/Tools/Production/ResultStatus';
 import ProductionForm from '@src/components/ProductionForm.vue';
+import ResourceLimits from '@src/components/ResourceLimits.vue';
+import InputList from '@src/components/InputList.vue';
 import ResultOverview from '@src/components/ResultOverview.vue';
 
 const {resultStatus, resultNew} = useProductionSolve();
+
+const leftTab = ref<'production' | 'items' | 'recipes' | 'machines'>('production');
 </script>
 
 <template>
 	<div class="row">
-		<div class="col-lg-5"><ProductionForm /></div>
+		<div class="col-lg-5">
+			<ul class="nav nav-tabs mb-3">
+				<li class="nav-item">
+					<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'production'}" @click="leftTab = 'production'">
+						<span class="fas fa-fw fa-chart-line mr-1"></span>Production
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'items'}" @click="leftTab = 'items'">
+						<span class="fas fa-fw fa-box-open mr-1"></span>Items, Input
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'recipes'}" @click="leftTab = 'recipes'">
+						<span class="fas fa-fw fa-scroll mr-1"></span>Recipes
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'machines'}" @click="leftTab = 'machines'">
+						<span class="fas fa-fw fa-industry mr-1"></span>Machines
+					</a>
+				</li>
+			</ul>
+
+			<ProductionForm v-if="leftTab === 'production'" />
+			<template v-else-if="leftTab === 'items'">
+				<ResourceLimits />
+				<InputList />
+			</template>
+			<div v-else-if="leftTab === 'recipes'">Coming in a later task</div>
+			<div v-else>Coming in a later task</div>
+		</div>
 		<div class="col-lg-7">
 			<p v-if="resultStatus === ResultStatus.NO_INPUT" class="text-secondary">Select an item to calculate.</p>
 			<p v-else-if="resultStatus === ResultStatus.NO_RESULT" class="text-secondary">Couldn't calculate a production line for this request.</p>
