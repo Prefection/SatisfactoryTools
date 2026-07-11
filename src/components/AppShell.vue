@@ -1,9 +1,30 @@
 <script setup lang="ts">
-import {ref, watchEffect, onMounted, onBeforeUnmount} from 'vue';
-import {RouterLink, RouterView} from 'vue-router';
+import {ref, computed, watchEffect, onMounted, onBeforeUnmount} from 'vue';
+import {RouterLink, RouterView, useRoute} from 'vue-router';
+import data from '@src/Data/Data';
 import {useGameData, GAME_VERSIONS, type GameVersion} from '@src/composables/useGameData';
 
 const {version, changeVersion} = useGameData();
+const route = useRoute();
+
+type Crumb = {label: string; to?: {name: string}};
+const HOME: Crumb = {label: 'Home', to: {name: 'home'}};
+
+// Route-driven breadcrumb trail, mirroring the original's section → detail hierarchy.
+const breadcrumbs = computed<Crumb[]>(() => {
+	void version.value; // re-resolve entity names on version switch
+	const slug = route.params.item as string | undefined;
+	switch (route.name) {
+		case 'items': return [HOME, {label: 'Items'}];
+		case 'item': return [HOME, {label: 'Items', to: {name: 'items'}}, {label: data.getItemBySlug(slug!)?.name ?? slug ?? 'Item'}];
+		case 'buildings': return [HOME, {label: 'Buildings'}];
+		case 'building': return [HOME, {label: 'Buildings', to: {name: 'buildings'}}, {label: data.getBuildingBySlug(slug!)?.name ?? slug ?? 'Building'}];
+		case 'schematics': return [HOME, {label: 'Schematics'}];
+		case 'schematic': return [HOME, {label: 'Schematics', to: {name: 'schematics'}}, {label: data.getSchematicBySlug(slug!)?.name ?? slug ?? 'Schematic'}];
+		case 'production': return [HOME, {label: 'Calculator'}];
+		default: return [HOME];
+	}
+});
 const menuOpen = ref(false);
 const openDropdown = ref<'codex' | 'version' | null>(null);
 
@@ -85,7 +106,13 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocumentClick));
 	</nav>
 
 	<div class="container-fluid px-xl-5 px-lg-4 px-md-3 px-sm-2 px-1" style="margin-top: 60px;">
-		<RouterView />
+		<ol class="breadcrumb">
+				<li v-for="(crumb, i) in breadcrumbs" :key="i" class="breadcrumb-item" :class="{active: i === breadcrumbs.length - 1}">
+					<RouterLink v-if="crumb.to && i !== breadcrumbs.length - 1" :to="crumb.to">{{ crumb.label }}</RouterLink>
+					<span v-else>{{ crumb.label }}</span>
+				</li>
+			</ol>
+			<RouterView />
 		<hr />
 		<footer>
 			<p class="text-secondary">

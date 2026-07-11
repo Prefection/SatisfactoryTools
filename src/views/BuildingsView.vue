@@ -16,7 +16,8 @@ const filtered = computed(() => {
 
 <template>
 	<div class="row">
-		<div class="col-md-9"><CodexList :filtered="filtered" route-name="building" /></div>
-		<div class="col-md-3"><BuildingFilters v-model="query" /></div>
+		<div class="col-sm-6"></div>
+		<div class="col-sm-6"><BuildingFilters v-model="query" /></div>
 	</div>
+	<CodexList :filtered="filtered" route-name="building" />
 </template>
