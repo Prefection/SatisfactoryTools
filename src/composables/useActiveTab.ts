@@ -2,6 +2,7 @@ import {reactive, ref, watch, toRaw} from 'vue';
 import dataSingleton, {Data} from '@src/Data/Data';
 import {useGameData, type GameVersion} from '@src/composables/useGameData';
 import {IProductionData, IProductionDataRequestItem, IProductionDataRequestInput} from '@src/Tools/Production/IProductionData';
+import {decodeTabs} from '@src/utils/tabsCodec';
 
 export const PER_MINUTE = 'perMinute'; // Constants.PRODUCTION_TYPE.PER_MINUTE
 
@@ -83,6 +84,25 @@ function load(): void {
 	loadIntoWorking(tabs[0].data);
 }
 load();
+
+// Load a shared factory from the URL (?f=<encoded>) if present, then strip the param.
+// URLSearchParams already percent-decodes, so the raw payload feeds decodeTabs directly.
+(function loadSharedFromUrl(): void {
+	const params = new URLSearchParams(window.location.search);
+	const f = params.get('f');
+	if (!f) return;
+	try {
+		const imported = decodeTabs(f);
+		if (imported.length) {
+			const t = {id: newId(), data: imported[0]};
+			tabs.push(t);
+			setActive(t.id);
+		}
+	} catch { /* ignore malformed share payload */ }
+	params.delete('f');
+	const qs = params.toString();
+	window.history.replaceState({}, '', window.location.pathname + (qs ? '?' + qs : ''));
+})();
 
 // Persist on any working-copy edit (syncs into the active tab first).
 watch(data, persist, {deep: true});

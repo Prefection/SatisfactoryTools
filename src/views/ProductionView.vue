@@ -42,6 +42,17 @@ function importTabs(e: Event): void {
 	reader.readAsText(file, 'utf-8');
 	(e.target as HTMLInputElement).value = '';
 }
+
+const copied = ref(false);
+function copyShareLink(): void {
+	const active = tabs.find((t) => t.id === activeId.value);
+	if (!active) return;
+	const url = `${window.location.origin}/production?f=${encodeURIComponent(encodeTabs([active.data]))}`;
+	navigator.clipboard.writeText(url).then(() => {
+		copied.value = true;
+		setTimeout(() => { copied.value = false; }, 2000);
+	});
+}
 </script>
 
 <template>
@@ -52,6 +63,9 @@ function importTabs(e: Event): void {
 		<label class="btn btn-sm btn-secondary mb-0 ml-1"><span class="fas fa-fw fa-upload"></span> Import
 			<input type="file" accept=".sft" hidden @change="importTabs" />
 		</label>
+		<button type="button" class="btn btn-sm btn-secondary ml-1" @click="copyShareLink">
+			<span class="fas fa-fw fa-share-alt"></span> {{ copied ? 'Copied!' : 'Share' }}
+		</button>
 	</div>
 
 	<!-- Editor: full-width card with a vertical sidebar nav -->
