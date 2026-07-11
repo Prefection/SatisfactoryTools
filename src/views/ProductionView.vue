@@ -8,6 +8,7 @@ import InputList from '@src/components/InputList.vue';
 import RecipeList from '@src/components/RecipeList.vue';
 import MachineToggles from '@src/components/MachineToggles.vue';
 import ResultOverview from '@src/components/ResultOverview.vue';
+import ResultGraph from '@src/components/ResultGraph.vue';
 import ResultItemsTable from '@src/components/ResultItemsTable.vue';
 import ResultBuildingsTable from '@src/components/ResultBuildingsTable.vue';
 import ResultPowerTable from '@src/components/ResultPowerTable.vue';
@@ -88,7 +89,7 @@ const resultTab = ref<'overview' | 'visualization' | 'items' | 'buildings' | 'po
 				</ul>
 
 				<ResultOverview v-if="resultTab === 'overview'" :result="resultNew" />
-				<div v-else-if="resultTab === 'visualization'">Coming in a later task</div>
+				<ResultGraph v-else-if="resultTab === 'visualization'" :result="resultNew" />
 				<ResultItemsTable v-else-if="resultTab === 'items'" :result="resultNew" />
 				<ResultBuildingsTable v-else-if="resultTab === 'buildings'" :result="resultNew" />
 				<ResultPowerTable v-else-if="resultTab === 'power'" :result="resultNew" />
