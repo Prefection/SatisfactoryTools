@@ -21,7 +21,7 @@ const filtered = computed(() => {
 	return list.slice(0, 50); // ponytail: cap the dropdown; typing narrows further. Raise if a real need shows.
 });
 
-function openList(): void { open.value = true; active.value = 0; }
+function openList(): void { open.value = true; active.value = 0; query.value = ''; }
 function pick(item: IItemSchema): void { model.value = item.className; query.value = ''; open.value = false; }
 function onKeydown(e: KeyboardEvent): void {
 	if (!open.value && (e.key === 'ArrowDown' || e.key === 'Enter')) { openList(); return; }
@@ -38,7 +38,7 @@ function onKeydown(e: KeyboardEvent): void {
 			<span class="input-group-prepend" v-if="model"><ItemIcon :item="model" :size="24" hide-tooltip /></span>
 			<input class="form-control" :placeholder="placeholder"
 			       :value="open ? query : selectedName"
-			       @focus="openList" @input="query = ($event.target as HTMLInputElement).value; open = true; active = 0"
+			       @focus="openList" @click="openList" @input="query = ($event.target as HTMLInputElement).value; open = true; active = 0"
 			       @keydown="onKeydown" />
 		</div>
 		<ul v-if="open && filtered.length" class="dropdown-menu show" style="max-height: 300px; overflow-y: auto; width: 100%">
