@@ -17,26 +17,29 @@ const craftableItems = computed(() => {
 </script>
 
 <template>
-	<div class="card">
-		<div class="card-header">Production</div>
-		<div class="card-body">
-			<table class="table">
-				<VueDraggable v-model="data.request.production" :animation="150" tag="tbody" handle=".drag-handle">
-					<tr v-for="(product, index) in data.request.production" :key="index">
-						<td class="drag-handle text-secondary align-middle" style="cursor: move; width: 24px"><span class="fas fa-grip-vertical"></span></td>
-						<td><ItemCombobox v-model="product.item" :items="craftableItems" /></td>
-						<td style="width: 140px">
-							<input class="form-control" type="number" min="0" v-model.number="product.amount" /> / min
-						</td>
-						<td style="width: 90px">
-							<button class="btn btn-secondary btn-sm" title="Clone" @click="cloneProduct(index)"><span class="fas fa-clone"></span></button>
-							<button class="btn btn-danger btn-sm" title="Remove" @click="removeProduct(index)"><span class="fas fa-trash"></span></button>
-						</td>
-					</tr>
-				</VueDraggable>
-			</table>
-			<button class="btn btn-primary" @click="addProduct"><span class="fas fa-plus"></span> Add product</button>
-			<button class="btn btn-secondary" @click="clearProducts"><span class="fas fa-times"></span> Clear products</button>
-		</div>
+	<p>
+		Select items that you want to produce. Enter the amount you want per minute; the tool produces it from
+		as few raw resources as possible.
+	</p>
+
+	<table class="production-input-table">
+		<VueDraggable v-model="data.request.production" :animation="150" tag="tbody" handle=".sortable-handler">
+			<tr v-for="(product, index) in data.request.production" :key="index">
+				<td class="sortable-handler"><span class="fas fa-arrows-alt-v cursor-drag"></span></td>
+				<td><ItemCombobox v-model="product.item" :items="craftableItems" /></td>
+				<td>
+					<input class="form-control" v-show="product.item" type="number" min="0" step="any" v-model.number="product.amount" /> / min
+				</td>
+				<td class="text-nowrap">
+					<span class="btn btn-success" title="Clone item" @click="cloneProduct(index)"><span class="far fa-fw fa-clone"></span></span>
+					<span class="btn btn-danger" title="Remove item" @click="removeProduct(index)"><span class="fas fa-fw fa-times"></span></span>
+				</td>
+			</tr>
+		</VueDraggable>
+	</table>
+
+	<div class="d-flex mt-2">
+		<span class="btn btn-outline-success flex-grow-1" @click="addProduct"><span class="fas fa-plus"></span> Add product</span>
+		<span class="btn btn-outline-danger ml-2" title="Clear production line" @click="clearProducts"><span class="fas fa-fw fa-trash-alt"></span></span>
 	</div>
 </template>

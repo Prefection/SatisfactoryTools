@@ -162,6 +162,15 @@ export function useTabs() {
 		tabs, activeId, selectedIds,
 		setActive,
 		toggleSelected: (id: string) => { selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id); },
+		selectAll: () => { for (const t of tabs) selectedIds.add(t.id); },
+		clearSelected: () => selectedIds.clear(),
+		resetTab: (id: string) => {
+			const t = tabs.find((x) => x.id === id);
+			if (!t) return;
+			t.data = defaultData();
+			if (id === activeId.value) loadIntoWorking(t.data);
+			persist();
+		},
 		addTab: () => addTabFromData(defaultData()),
 		addTabFromData,
 		cloneTab: (id: string) => {
