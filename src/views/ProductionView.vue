@@ -20,80 +20,84 @@ const resultTab = ref<'overview' | 'visualization' | 'items' | 'buildings' | 'po
 </script>
 
 <template>
-	<div class="row">
-		<div class="col-lg-5">
-			<ul class="nav nav-tabs mb-3">
-				<li class="nav-item">
-					<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'production'}" @click="leftTab = 'production'">
-						<span class="fas fa-fw fa-chart-line mr-1"></span>Production
-					</a>
-				</li>
-				<li class="nav-item">
-					<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'items'}" @click="leftTab = 'items'">
-						<span class="fas fa-fw fa-box-open mr-1"></span>Items, Input
-					</a>
-				</li>
-				<li class="nav-item">
-					<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'recipes'}" @click="leftTab = 'recipes'">
-						<span class="fas fa-fw fa-scroll mr-1"></span>Recipes
-					</a>
-				</li>
-				<li class="nav-item">
-					<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'machines'}" @click="leftTab = 'machines'">
-						<span class="fas fa-fw fa-industry mr-1"></span>Machines
-					</a>
-				</li>
-			</ul>
-
-			<ProductionForm v-if="leftTab === 'production'" />
-			<template v-else-if="leftTab === 'items'">
-				<ResourceLimits />
-				<InputList />
-			</template>
-			<template v-else-if="leftTab === 'recipes'">
-				<p>
-					Select which recipes you want to allow to be used. The tool will automatically pick best possible combination of recipes from the selected ones.
-				</p>
-				<div class="row">
-					<div class="col-md-6"><RecipeList mode="alternate" /></div>
-					<div class="col-md-6"><RecipeList mode="base" /></div>
+	<!-- Editor: full-width card with a vertical sidebar nav -->
+	<div class="card mb-4">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-2 border-right border-secondary">
+					<ul class="nav nav-tabs flex-column">
+						<li class="nav-item">
+							<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'production'}" @click="leftTab = 'production'">
+								<span class="fas fa-fw fa-chart-line mr-1"></span>Production
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'items'}" @click="leftTab = 'items'">
+								<span class="fas fa-fw fa-box-open mr-1"></span>Items, Input
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'recipes'}" @click="leftTab = 'recipes'">
+								<span class="fas fa-fw fa-scroll mr-1"></span>Recipes
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'machines'}" @click="leftTab = 'machines'">
+								<span class="fas fa-fw fa-industry mr-1"></span>Machines
+							</a>
+						</li>
+					</ul>
 				</div>
-			</template>
-			<template v-else>
-				<p>Select machines you have available. Disabling a machine will automatically disable all recipes in that machine.</p>
-				<MachineToggles />
-			</template>
-		</div>
-		<div class="col-lg-7">
-			<p v-if="resultStatus === ResultStatus.NO_INPUT" class="text-secondary">Select an item to calculate.</p>
-			<p v-else-if="resultStatus === ResultStatus.NO_RESULT" class="text-secondary">Couldn't calculate a production line for this request.</p>
-			<div v-else-if="resultNew" :class="{calculating: resultStatus === ResultStatus.CALCULATING}">
-				<div v-if="resultStatus === ResultStatus.CALCULATING" class="alert alert-info">Calculating…</div>
-
-				<ul class="nav nav-tabs mb-3">
-					<li class="nav-item">
-						<a href="javascript:void(0)" class="nav-link" :class="{active: resultTab === 'overview'}" @click="resultTab = 'overview'">Overview</a>
-					</li>
-					<li class="nav-item">
-						<a href="javascript:void(0)" class="nav-link" :class="{active: resultTab === 'visualization'}" @click="resultTab = 'visualization'">Visualization</a>
-					</li>
-					<li class="nav-item">
-						<a href="javascript:void(0)" class="nav-link" :class="{active: resultTab === 'items'}" @click="resultTab = 'items'">Items</a>
-					</li>
-					<li class="nav-item">
-						<a href="javascript:void(0)" class="nav-link" :class="{active: resultTab === 'buildings'}" @click="resultTab = 'buildings'">Buildings</a>
-					</li>
-					<li class="nav-item">
-						<a href="javascript:void(0)" class="nav-link" :class="{active: resultTab === 'power'}" @click="resultTab = 'power'">Power</a>
-					</li>
-				</ul>
-
-				<ResultOverview v-if="resultTab === 'overview'" :result="resultNew" />
-				<ResultGraph v-else-if="resultTab === 'visualization'" :result="resultNew" />
-				<ResultItemsTable v-else-if="resultTab === 'items'" :result="resultNew" />
-				<ResultBuildingsTable v-else-if="resultTab === 'buildings'" :result="resultNew" />
-				<ResultPowerTable v-else-if="resultTab === 'power'" :result="resultNew" />
+				<div class="col-md-10">
+					<ProductionForm v-if="leftTab === 'production'" />
+					<div v-else-if="leftTab === 'items'" class="row">
+						<div class="col-md-6"><ResourceLimits /></div>
+						<div class="col-md-6"><InputList /></div>
+					</div>
+					<template v-else-if="leftTab === 'recipes'">
+						<p>Select which recipes you want to allow to be used. The tool will automatically pick best possible combination of recipes from the selected ones.</p>
+						<div class="row">
+							<div class="col-md-6"><RecipeList mode="alternate" /></div>
+							<div class="col-md-6"><RecipeList mode="base" /></div>
+						</div>
+					</template>
+					<template v-else>
+						<p>Select machines you have available. Disabling a machine will automatically disable all recipes in that machine.</p>
+						<MachineToggles />
+					</template>
+				</div>
 			</div>
 		</div>
+	</div>
+
+	<!-- Result: full-width section below -->
+	<p v-if="resultStatus === ResultStatus.NO_INPUT" class="text-secondary">Select an item to calculate.</p>
+	<p v-else-if="resultStatus === ResultStatus.NO_RESULT" class="text-secondary">Couldn't calculate a production line for this request.</p>
+	<div v-else-if="resultNew" :class="{calculating: resultStatus === ResultStatus.CALCULATING}">
+		<div v-if="resultStatus === ResultStatus.CALCULATING" class="alert alert-info">Calculating…</div>
+
+		<ul class="nav nav-pills nav-justified mb-3">
+			<li class="nav-item">
+				<a href="javascript:void(0)" class="nav-link" :class="{active: resultTab === 'overview'}" @click="resultTab = 'overview'">Overview</a>
+			</li>
+			<li class="nav-item">
+				<a href="javascript:void(0)" class="nav-link" :class="{active: resultTab === 'visualization'}" @click="resultTab = 'visualization'">Visualization</a>
+			</li>
+			<li class="nav-item">
+				<a href="javascript:void(0)" class="nav-link" :class="{active: resultTab === 'power'}" @click="resultTab = 'power'">Power</a>
+			</li>
+			<li class="nav-item">
+				<a href="javascript:void(0)" class="nav-link" :class="{active: resultTab === 'items'}" @click="resultTab = 'items'">Items</a>
+			</li>
+			<li class="nav-item">
+				<a href="javascript:void(0)" class="nav-link" :class="{active: resultTab === 'buildings'}" @click="resultTab = 'buildings'">Buildings</a>
+			</li>
+		</ul>
+
+		<ResultOverview v-if="resultTab === 'overview'" :result="resultNew" />
+		<ResultGraph v-else-if="resultTab === 'visualization'" :result="resultNew" />
+		<ResultItemsTable v-else-if="resultTab === 'items'" :result="resultNew" />
+		<ResultBuildingsTable v-else-if="resultTab === 'buildings'" :result="resultNew" />
+		<ResultPowerTable v-else-if="resultTab === 'power'" :result="resultNew" />
 	</div>
 </template>
