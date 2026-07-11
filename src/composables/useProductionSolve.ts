@@ -1,4 +1,4 @@
-import {ref, watch} from 'vue';
+import {ref, toRaw, watch} from 'vue';
 import data from '@src/Data/Data';
 import {DataProvider} from '@src/Data/DataProvider';
 import {useActiveTab} from '@src/composables/useActiveTab';
@@ -27,7 +27,7 @@ export function useProductionSolve() {
 
 		resultStatus.value = ResultStatus.CALCULATING;
 
-		const apiRequest: IProductionDataApiRequest = {...structuredClone({...tab.request}), gameVersion: apiGameVersion(version.value)};
+		const apiRequest: IProductionDataApiRequest = {...structuredClone(toRaw(tab.request)), gameVersion: apiGameVersion(version.value)};
 
 		// Expand blockedMachines -> filter allowed alternates (ProductionTab.ts:109-125)
 		const blockedMachines = apiRequest.blockedMachines ?? [];
