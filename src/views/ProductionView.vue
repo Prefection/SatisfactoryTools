@@ -51,6 +51,9 @@ function copyShareLink(): void {
 	navigator.clipboard.writeText(url).then(() => {
 		copied.value = true;
 		setTimeout(() => { copied.value = false; }, 2000);
+	}).catch(() => {
+		// Clipboard API can reject (blocked permission, non-secure context) — let the user copy it manually.
+		window.prompt('Copy this share link:', url);
 	});
 }
 </script>
