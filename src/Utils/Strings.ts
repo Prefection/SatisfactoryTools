@@ -69,54 +69,6 @@ export class Strings
 		return base64.decode(str);
 	}
 
-	public static copyToClipboard(text: string, displayNotification: string = '', delay: number = 3000): boolean
-	{
-		const textArea = document.createElement('textarea');
-		textArea.style.position = 'fixed';
-		textArea.style.top = '0';
-		textArea.style.left = '0';
-		textArea.style.width = '2em';
-		textArea.style.height = '2em';
-		textArea.style.padding = '0';
-		textArea.style.border = 'none';
-		textArea.style.outline = 'none';
-		textArea.style.boxShadow = 'none';
-		textArea.style.background = 'transparent';
-		textArea.value = text;
-
-		document.body.appendChild(textArea);
-		textArea.focus();
-		textArea.select();
-
-		let result = false;
-		try {
-			result = document.execCommand('copy');
-		} catch (err) {
-			console.error(err);
-		}
-
-		document.body.removeChild(textArea);
-
-		if (displayNotification !== '') {
-			Strings.addNotification('Copied', displayNotification, delay);
-		}
-
-		return result;
-	}
-
-	public static addNotification(header: string, body: string, delay: number = 3000): void
-	{
-		const toast = document.createElement('div');
-		toast.className = 'toast';
-		toast.innerHTML = '<div class="toast-header"><span class="far fa-copy mr-2"></span><strong class="mr-auto">' + header + '</strong><button type="button" class="close" data-dismiss="toast"><span class="fas fa-times"></span></button></div>' +
-			'<div class="toast-body">' + body + '</div>';
-		document.getElementById('toasts')?.appendChild(toast);
-		$(toast).toast({
-			delay: delay,
-		});
-		$(toast).toast('show');
-	}
-
 	public static dateToIso(date: Date): string
 	{
 		return date.getFullYear() + '-' +
