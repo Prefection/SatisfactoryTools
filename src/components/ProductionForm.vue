@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {computed} from 'vue';
 import model from '@src/Data/Model';
+import {VueDraggable} from 'vue-draggable-plus';
 import {useActiveTab} from '@src/composables/useActiveTab';
 import {useGameData} from '@src/composables/useGameData';
 import ItemCombobox from '@src/components/ItemCombobox.vue';
@@ -20,8 +21,9 @@ const craftableItems = computed(() => {
 		<div class="card-header">Production</div>
 		<div class="card-body">
 			<table class="table">
-				<tbody>
+				<VueDraggable v-model="data.request.production" :animation="150" tag="tbody" handle=".drag-handle">
 					<tr v-for="(product, index) in data.request.production" :key="index">
+						<td class="drag-handle text-secondary align-middle" style="cursor: move; width: 24px"><span class="fas fa-grip-vertical"></span></td>
 						<td><ItemCombobox v-model="product.item" :items="craftableItems" /></td>
 						<td style="width: 140px">
 							<input class="form-control" type="number" min="0" v-model.number="product.amount" /> / min
@@ -31,7 +33,7 @@ const craftableItems = computed(() => {
 							<button class="btn btn-danger btn-sm" title="Remove" @click="removeProduct(index)"><span class="fas fa-trash"></span></button>
 						</td>
 					</tr>
-				</tbody>
+				</VueDraggable>
 			</table>
 			<button class="btn btn-primary" @click="addProduct"><span class="fas fa-plus"></span> Add product</button>
 			<button class="btn btn-secondary" @click="clearProducts"><span class="fas fa-times"></span> Clear products</button>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {computed} from 'vue';
 import model from '@src/Data/Model';
+import {VueDraggable} from 'vue-draggable-plus';
 import {useActiveTab} from '@src/composables/useActiveTab';
 import {useGameData} from '@src/composables/useGameData';
 import ItemCombobox from '@src/components/ItemCombobox.vue';
@@ -22,8 +23,9 @@ const inputableItems = computed(() => {
 		<div class="card-body">
 			<p>Select items that you already have at your disposal and therefore don't need to be produced by this factory.</p>
 			<table class="table">
-				<tbody>
+				<VueDraggable v-model="data.request.input" :animation="150" tag="tbody" handle=".drag-handle">
 					<tr v-for="(input, index) in data.request.input" :key="index">
+						<td class="drag-handle text-secondary align-middle" style="cursor: move; width: 24px"><span class="fas fa-grip-vertical"></span></td>
 						<td><ItemCombobox v-model="input.item" :items="inputableItems" /></td>
 						<td style="width: 140px">
 							<input class="form-control" type="number" v-model.number="input.amount" /> / min
@@ -33,7 +35,7 @@ const inputableItems = computed(() => {
 							<button class="btn btn-danger btn-sm" title="Remove" @click="removeInput(index)"><span class="fas fa-trash"></span></button>
 						</td>
 					</tr>
-				</tbody>
+				</VueDraggable>
 			</table>
 			<button class="btn btn-primary" @click="addInput"><span class="fas fa-plus"></span> Add input</button>
 			<button class="btn btn-secondary" @click="clearInput"><span class="fas fa-times"></span> Clear</button>
