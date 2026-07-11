@@ -1,14 +1,33 @@
 <script setup lang="ts">
-import {ref} from 'vue';
+import {ref, onMounted, onBeforeUnmount} from 'vue';
 import {RouterLink, RouterView} from 'vue-router';
 import {useGameData, GAME_VERSIONS, type GameVersion} from '@src/composables/useGameData';
 
 const {version, changeVersion} = useGameData();
 const menuOpen = ref(false);
+const openDropdown = ref<'codex' | 'version' | null>(null);
+
+function toggle(which: 'codex' | 'version'): void {
+	openDropdown.value = openDropdown.value === which ? null : which;
+}
+
+function closeDropdowns(): void {
+	openDropdown.value = null;
+}
 
 function pick(v: GameVersion): void {
 	changeVersion(v);
+	closeDropdowns();
 }
+
+// Bootstrap's dropdown JS is no longer bundled; replicate its click-outside dismiss.
+function onDocumentClick(e: MouseEvent): void {
+	if (!(e.target as HTMLElement).closest('.nav-item.dropdown')) {
+		closeDropdowns();
+	}
+}
+onMounted(() => document.addEventListener('click', onDocumentClick));
+onBeforeUnmount(() => document.removeEventListener('click', onDocumentClick));
 </script>
 
 <template>
@@ -27,29 +46,27 @@ function pick(v: GameVersion): void {
 					<li class="nav-item">
 						<RouterLink class="nav-link" :to="{name: 'home'}"><span class="fas fa-fw fa-home"></span> Home</RouterLink>
 					</li>
-					<li class="nav-item">
-						<details class="nav-dropdown">
-							<summary class="nav-link"><i class="fas fa-fw fa-th-large"></i> Codex</summary>
-							<div class="dropdown-menu show">
-								<RouterLink class="dropdown-item" :to="{name: 'items'}"><i class="fas fa-fw fa-box-open"></i> Items</RouterLink>
-								<RouterLink class="dropdown-item" :to="{name: 'buildings'}"><i class="fas fa-fw fa-industry"></i> Buildings</RouterLink>
-								<RouterLink class="dropdown-item" :to="{name: 'schematics'}"><i class="fas fa-fw fa-flask"></i> Schematics</RouterLink>
-							</div>
-						</details>
+					<li class="nav-item dropdown" :class="{show: openDropdown === 'codex'}">
+						<a class="nav-link dropdown-toggle" @click.stop="toggle('codex')">
+							<i class="fas fa-fw fa-th-large"></i> Codex
+						</a>
+						<div class="dropdown-menu" :class="{show: openDropdown === 'codex'}">
+							<RouterLink class="dropdown-item" :to="{name: 'items'}" @click="closeDropdowns"><i class="fas fa-fw fa-box-open"></i> Items</RouterLink>
+							<RouterLink class="dropdown-item" :to="{name: 'buildings'}" @click="closeDropdowns"><i class="fas fa-fw fa-industry"></i> Buildings</RouterLink>
+							<RouterLink class="dropdown-item" :to="{name: 'schematics'}" @click="closeDropdowns"><i class="fas fa-fw fa-flask"></i> Schematics</RouterLink>
+						</div>
 					</li>
 					<li class="nav-item">
 						<RouterLink class="nav-link" :to="{name: 'production'}"><span class="fas fa-fw fa-chart-line"></span> Calculator</RouterLink>
 					</li>
 				</ul>
 				<ul class="navbar-nav">
-					<li class="nav-item">
-						<details class="nav-dropdown">
-							<summary class="nav-link"><b>Version: {{ version }}</b></summary>
-							<div class="dropdown-menu dropdown-menu-right show">
-								<a v-for="v in GAME_VERSIONS" :key="v" class="dropdown-item"
-								   :class="{active: version === v}" @click="pick(v)">{{ v }}</a>
-							</div>
-						</details>
+					<li class="nav-item dropdown" :class="{show: openDropdown === 'version'}">
+						<a class="nav-link dropdown-toggle" @click.stop="toggle('version')"><b>Version: {{ version }}</b></a>
+						<div class="dropdown-menu dropdown-menu-right" :class="{show: openDropdown === 'version'}">
+							<a v-for="v in GAME_VERSIONS" :key="v" class="dropdown-item"
+							   :class="{active: version === v}" @click="pick(v)">{{ v }}</a>
+						</div>
 					</li>
 				</ul>
 			</div>
@@ -67,9 +84,3 @@ function pick(v: GameVersion): void {
 		</footer>
 	</div>
 </template>
-
-<style scoped>
-.nav-dropdown > summary { list-style: none; cursor: pointer; }
-.nav-dropdown > summary::-webkit-details-marker { display: none; }
-.nav-dropdown[open] > .dropdown-menu { display: block; position: absolute; }
-</style>

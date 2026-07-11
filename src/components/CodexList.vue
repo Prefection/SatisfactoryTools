@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import ItemIcon from '@src/components/ItemIcon.vue';
+import {RouterLink} from 'vue-router';
+import {Strings} from '@src/Utils/Strings';
 
-defineProps<{filtered: {slug: string; name: string}[]; routeName: string}>();
+// Loosely typed like the original codex component — serves items, buildings, and schematics.
+defineProps<{filtered: any[]; routeName: string}>();
 </script>
 
 <template>
-	<div class="list-group">
-		<RouterLink v-for="e in filtered" :key="e.slug" class="list-group-item d-flex align-items-center"
-		            :to="{name: routeName, params: {item: e.slug}}">
-			<ItemIcon :item="(e as any)" :size="32" hide-tooltip />
-			<span class="ml-2">{{ e.name }}</span>
-		</RouterLink>
+	<div class="recipe-list">
+		<div v-for="e in filtered" :key="e.slug" class="card text-center item-card">
+			<RouterLink class="recipe-name stretched-link" :class="{'pt-2': e.requiredSchematics}"
+			            :to="{name: routeName, params: {item: e.slug}}">
+				<img class="recipe-image" :src="`/assets/images/items/${e.icon || e.slug}_64.png`" loading="lazy" alt="" />
+				{{ e.name }}
+				<small v-if="e.requiredSchematics" class="text-muted d-block">{{ Strings.convertSchematicType(e.type) }}</small>
+			</RouterLink>
+		</div>
 	</div>
 </template>
