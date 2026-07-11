@@ -24,7 +24,11 @@ export async function layoutGraph(nodes: GraphNode[], edges: GraphEdge[]): Promi
 	const elk = new ELK({workerUrl: await workerUrl()});
 	const graph = {
 		id: 'root',
-		layoutOptions: {'elk.algorithm': 'org.eclipse.elk.layered', 'org.eclipse.elk.spacing.nodeNode': '40'},
+		layoutOptions: {
+			'elk.algorithm': 'org.eclipse.elk.layered',
+			'org.eclipse.elk.spacing.nodeNode': '40',
+			'org.eclipse.elk.layered.nodePlacement.favorStraightEdges': 'true',
+		},
 		children: nodes.map((n) => ({id: String(n.id), width: NODE_W, height: NODE_H})),
 		edges: edges.map((e, i) => ({id: `e${i}`, sources: [String(e.from)], targets: [String(e.to)]})),
 	};

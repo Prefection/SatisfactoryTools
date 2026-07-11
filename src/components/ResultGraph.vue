@@ -13,7 +13,10 @@ let network: Network | undefined;
 async function draw(): Promise<void> {
 	const graph = props.result.graph;
 	// elk layout on a flat {id,label} view; getVisNode() supplies the real styling.
-	const laid = await layoutGraph(graph.nodes.map((n) => ({id: n.id, label: n.getTitle()})), []);
+	const laid = await layoutGraph(
+		graph.nodes.map((n) => ({id: n.id, label: n.getTitle()})),
+		graph.edges.map((e) => ({from: e.from.id, to: e.to.id})),
+	);
 	const pos = new Map(laid.map((n) => [n.id, {x: n.x, y: n.y}]));
 	const nodes: Node[] = graph.nodes.map((n) => {
 		const v = n.getVisNode();
@@ -29,7 +32,7 @@ async function draw(): Promise<void> {
 	network?.destroy();
 	if (!container.value) return;
 	network = new Network(container.value, {nodes, edges}, {
-		edges: {arrows: 'to', color: '#697d91', font: {size: 14, multi: 'html', color: '#eeeeee'}},
+		edges: {arrows: 'to', color: '#697d91', font: {size: 14, multi: 'html', color: '#eeeeee', strokeColor: 'rgba(0, 0, 0, 0.2)'}},
 		nodes: {shape: 'box', font: {size: 14, multi: 'html', color: '#eeeeee'}, margin: {top: 10, left: 10, right: 10, bottom: 10}},
 		physics: false,
 		layout: {hierarchical: false},
