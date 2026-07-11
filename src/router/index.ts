@@ -6,6 +6,7 @@ import ItemsView from '@src/views/ItemsView.vue';
 import BuildingsView from '@src/views/BuildingsView.vue';
 import SchematicsView from '@src/views/SchematicsView.vue';
 import ItemView from '@src/views/ItemView.vue';
+import SchematicView from '@src/views/SchematicView.vue';
 
 const routes: RouteRecordRaw[] = [
 	{
@@ -18,7 +19,7 @@ const routes: RouteRecordRaw[] = [
 			{path: 'buildings', name: 'buildings', component: BuildingsView},
 			{path: 'buildings/:item', name: 'building', component: StubView, props: true},
 			{path: 'schematics', name: 'schematics', component: SchematicsView},
-			{path: 'schematics/:item', name: 'schematic', component: StubView, props: true},
+			{path: 'schematics/:item', name: 'schematic', component: SchematicView, props: true},
 			{path: 'production', name: 'production', component: StubView, props: {title: 'Production'}},
 		],
 	},
