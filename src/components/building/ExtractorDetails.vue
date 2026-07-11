@@ -19,7 +19,7 @@ const isWaterExtractor = computed(() => props.building.className === Constants.W
 const powerConsumption = computed(() => Strings.formatNumber(Numbers.round(Formula.calculateBuildingPowerConsumption(props.building, overclock.value))));
 
 // Formula.calculateExtractorExtractionValue is overclock-agnostic (base rate at 100%); scale it here to match the source getter.
-const extractionRate = computed(() => Strings.formatNumber(Numbers.round(Formula.calculateExtractorExtractionValue(extractor.value, purity.value) * (overclock.value / 100))));
+const extractionRate = computed(() => Strings.formatNumber(Numbers.round(Formula.calculateExtractorExtractionValue(props.building, extractor.value, purity.value) * (overclock.value / 100))));
 
 // ponytail: the source template's "manufacturing speed" row calls a controller method that doesn't
 // exist on the extractor controller (Angular silently no-ops it), so it never renders. Omitted here too.

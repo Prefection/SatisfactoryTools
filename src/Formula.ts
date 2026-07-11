@@ -21,16 +21,17 @@ export class Formula
 		return Math.pow(overclock / 100, building.metadata.powerConsumptionExponent || Formula.defaultPowerProductionExponent) * (building.metadata.powerConsumption || 0);
 	}
 
-	public static calculateExtractorExtractionValue(extractor: IMinerSchema, purity: RESOURCE_PURITY): number
+	public static calculateExtractorExtractionValue(building: IBuildingSchema, extractor: IMinerSchema, purity: RESOURCE_PURITY): number
 	{
-		const itemsInMinute = (extractor.itemsPerCycle / extractor.extractCycleTime) * 60;
+		const extractorMultiplier = Constants.WATER_EXTRACTOR_CLASSNAME === building.className ? 0 : 1;
+		const extractedValue = (60 / extractor.extractCycleTime) * (extractor.itemsPerCycle / (extractor.allowLiquids ? 1000 : 1));
 		switch (purity) {
 			case 'impure':
-				return itemsInMinute * Constants.RESOURCE_MULTIPLIER_IMPURE;
+				return extractedValue * Constants.RESOURCE_MULTIPLIER_IMPURE * extractorMultiplier;
 			case 'normal':
-				return itemsInMinute * Constants.RESOURCE_MULTIPLIER_NORMAL;
+				return extractedValue * Constants.RESOURCE_MULTIPLIER_NORMAL;
 			case 'pure':
-				return itemsInMinute * Constants.RESOURCE_MULTIPLIER_PURE;
+				return extractedValue * Constants.RESOURCE_MULTIPLIER_PURE * extractorMultiplier;
 		}
 	}
 
