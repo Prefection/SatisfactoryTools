@@ -1,4 +1,4 @@
-import {ref, toRaw, watch} from 'vue';
+import {ref, shallowRef, toRaw, watch} from 'vue';
 import data from '@src/Data/Data';
 import {DataProvider} from '@src/Data/DataProvider';
 import {useActiveTab} from '@src/composables/useActiveTab';
@@ -19,7 +19,10 @@ export function useProductionSolve() {
 	const {data: tab} = useActiveTab();
 	const {version} = useGameData();
 	const resultStatus = ref<ResultStatus>(ResultStatus.NO_INPUT);
-	const resultNew = ref<ProductionResult | undefined>(undefined);
+	// ponytail: shallowRef, not ref — ProductionResult is replaced wholesale each solve (never
+	// mutated in place), and ref's UnwrapRef strips the class's private methods when the value
+	// flows through a template, breaking assignability to components typed on ProductionResult.
+	const resultNew = shallowRef<ProductionResult | undefined>(undefined);
 
 	async function calculate(): Promise<void> {
 		const hasInput = tab.request.production.some((p) => p.item && p.amount > 0);
