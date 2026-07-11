@@ -1,13 +1,13 @@
 import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router';
 import AppShell from '@src/components/AppShell.vue';
 import HomeView from '@src/views/HomeView.vue';
-import StubView from '@src/views/StubView.vue';
 import ItemsView from '@src/views/ItemsView.vue';
 import BuildingsView from '@src/views/BuildingsView.vue';
 import SchematicsView from '@src/views/SchematicsView.vue';
 import ItemView from '@src/views/ItemView.vue';
 import SchematicView from '@src/views/SchematicView.vue';
 import BuildingView from '@src/views/BuildingView.vue';
+import ProductionView from '@src/views/ProductionView.vue';
 
 const routes: RouteRecordRaw[] = [
 	{
@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
 			{path: 'buildings/:item', name: 'building', component: BuildingView, props: true},
 			{path: 'schematics', name: 'schematics', component: SchematicsView},
 			{path: 'schematics/:item', name: 'schematic', component: SchematicView, props: true},
-			{path: 'production', name: 'production', component: StubView, props: {title: 'Production'}},
+			{path: 'production', name: 'production', component: ProductionView},
 		],
 	},
 	{path: '/:pathMatch(.*)*', redirect: '/'},
