@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import {ref} from 'vue';
 import {useProductionSolve} from '@src/composables/useProductionSolve';
-import {useActiveTab} from '@src/composables/useActiveTab';
+import {useActiveTab, useTabs} from '@src/composables/useActiveTab';
 import {ResultStatus} from '@src/Tools/Production/ResultStatus';
+import {encodeTabs, decodeTabs, patchImportedTab} from '@src/utils/tabsCodec';
+import {Strings} from '@src/Utils/Strings';
 import TabBar from '@src/components/TabBar.vue';
 import ProductionForm from '@src/components/ProductionForm.vue';
 import ResourceLimits from '@src/components/ResourceLimits.vue';
@@ -17,14 +19,40 @@ import ResultPowerTable from '@src/components/ResultPowerTable.vue';
 
 const {resultStatus, resultNew} = useProductionSolve();
 const {data} = useActiveTab();
+const {tabs, selectedIds, activeId, addTabFromData} = useTabs();
 
 const leftTab = ref<'production' | 'items' | 'recipes' | 'machines'>('production');
 const resultTab = ref<'overview' | 'visualization' | 'items' | 'buildings' | 'power'>('overview');
+
+function exportTabs(): void {
+	const chosen = selectedIds.size > 0 ? tabs.filter((t) => selectedIds.has(t.id)) : tabs.filter((t) => t.id === activeId.value);
+	Strings.downloadFile('satisfactory-tools-export', 'sft', encodeTabs(chosen.map((t) => t.data), true));
+}
+function importTabs(e: Event): void {
+	const file = (e.target as HTMLInputElement).files?.[0];
+	if (!file) return;
+	const reader = new FileReader();
+	reader.onload = () => {
+		try {
+			for (const t of decodeTabs(reader.result as string)) addTabFromData(patchImportedTab(t), false);
+		} catch (err) {
+			alert('Couldn\'t import file: ' + (err as Error).message);
+		}
+	};
+	reader.readAsText(file, 'utf-8');
+	(e.target as HTMLInputElement).value = '';
+}
 </script>
 
 <template>
 	<TabBar />
 	<input class="form-control mb-3" placeholder="Factory name" v-model="data.metadata.name" style="max-width: 300px" />
+	<div class="d-flex align-items-center mb-3">
+		<button type="button" class="btn btn-sm btn-secondary" @click="exportTabs"><span class="fas fa-fw fa-download"></span> Export</button>
+		<label class="btn btn-sm btn-secondary mb-0 ml-1"><span class="fas fa-fw fa-upload"></span> Import
+			<input type="file" accept=".sft" hidden @change="importTabs" />
+		</label>
+	</div>
 
 	<!-- Editor: full-width card with a vertical sidebar nav -->
 	<div class="card mb-4">
