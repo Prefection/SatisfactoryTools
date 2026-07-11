@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import {ref} from 'vue';
 import {useProductionSolve} from '@src/composables/useProductionSolve';
+import {useActiveTab} from '@src/composables/useActiveTab';
 import {ResultStatus} from '@src/Tools/Production/ResultStatus';
+import TabBar from '@src/components/TabBar.vue';
 import ProductionForm from '@src/components/ProductionForm.vue';
 import ResourceLimits from '@src/components/ResourceLimits.vue';
 import InputList from '@src/components/InputList.vue';
@@ -14,12 +16,16 @@ import ResultBuildingsTable from '@src/components/ResultBuildingsTable.vue';
 import ResultPowerTable from '@src/components/ResultPowerTable.vue';
 
 const {resultStatus, resultNew} = useProductionSolve();
+const {data} = useActiveTab();
 
 const leftTab = ref<'production' | 'items' | 'recipes' | 'machines'>('production');
 const resultTab = ref<'overview' | 'visualization' | 'items' | 'buildings' | 'power'>('overview');
 </script>
 
 <template>
+	<TabBar />
+	<input class="form-control mb-3" placeholder="Factory name" v-model="data.metadata.name" style="max-width: 300px" />
+
 	<!-- Editor: full-width card with a vertical sidebar nav -->
 	<div class="card mb-4">
 		<div class="card-body">

@@ -172,5 +172,6 @@ export function useTabs() {
 			persist();
 		},
 		tabName, tabIcon,
+		persist,
 	};
 }
