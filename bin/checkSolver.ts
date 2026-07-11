@@ -1,8 +1,7 @@
 import assert from 'node:assert';
 import fs from 'fs';
 import path from 'path';
-import {solve} from 'yalps';
-import {buildProductionModel, ratePerMachine, solveProduction} from '@src/Solver/ProductionSolver';
+import {ratePerMachine, solveProduction} from '@src/Solver/ProductionSolver';
 import {IJsonSchema} from '@src/Schema/IJsonSchema';
 import {IProductionDataApiRequest} from '@src/Tools/Production/IProductionData';
 
@@ -46,7 +45,7 @@ function assertFeasible(req: IProductionDataApiRequest, resp: {[k: string]: numb
 		}
 	}
 	for (const [item, balance] of Object.entries(net)) {
-		assert.ok(balance > -1e-4, `${label}: item ${item} unbalanced (${balance})`);
+		assert.ok(Math.abs(balance) < 1e-4, `${label}: item ${item} unbalanced (${balance})`);
 	}
 	for (const p of req.production) {
 		if (p.item && p.type === 'perMinute' && p.amount > 0) {
@@ -84,4 +83,23 @@ assert.ok(!('Recipe_IngotIron_C@100#Desc_SmelterMk1_C' in blockedResp), 'blocked
 const infeasible = request({production: [{item: 'Desc_IronIngot_C', type: 'perMinute', amount: 30, ratio: 100}], blockedRecipes: ['Recipe_IngotIron_C']});
 assert.deepStrictEqual(await solveProduction(infeasible, data), {}, 'no path -> empty response');
 
-console.log('OK: solveProduction worked example + feasibility set pass.');
+// 5. Co-product byproduct: Recipe_Plastic_C makes plastic:2 + heavy-oil-residue:1 per cycle (fixed 2:1),
+// so 20 plastic/min forces 10 residue/min out. Block every non-alternate path that could reconsume the
+// residue (alternates are excluded by default anyway) so the LP can't quietly route it away instead of
+// emitting it, exercising computeNet's excess branch and the Byproduct side of the Sink/Byproduct routing.
+const plasticBlockedRecipes = ['Recipe_ResidualPlastic_C', 'Recipe_PetroleumCoke_C', 'Recipe_ResidualFuel_C', 'Recipe_PackagedOilResidue_C', 'Recipe_GunpowderMK2_C'];
+const byproduct = request({production: [{item: 'Desc_Plastic_C', type: 'perMinute', amount: 20, ratio: 100}], blockedRecipes: plasticBlockedRecipes});
+const byproductResp = await solveProduction(byproduct, data);
+assertFeasible(byproduct, byproductResp, 'plastic-byproduct');
+assert.ok(Math.abs((byproductResp['Desc_HeavyOilResidue_C#Byproduct'] ?? 0) - 10) < 1e-4, `expected 10 heavy oil residue byproduct, got ${JSON.stringify(byproductResp)}`);
+assert.ok(!('Desc_HeavyOilResidue_C#Sink' in byproductResp), 'residue must not be sinked when unsinkable');
+
+// 6. Same request, but the residue is declared sinkable: excess must route to Sink instead of Byproduct,
+// proving the Sink-vs-Byproduct routing branch works both ways.
+const routed = request({...byproduct, sinkableResources: ['Desc_HeavyOilResidue_C']});
+const routedResp = await solveProduction(routed, data);
+assertFeasible(routed, routedResp, 'plastic-sink-routing');
+assert.ok(Math.abs((routedResp['Desc_HeavyOilResidue_C#Sink'] ?? 0) - 10) < 1e-4, `expected 10 heavy oil residue sink, got ${JSON.stringify(routedResp)}`);
+assert.ok(!('Desc_HeavyOilResidue_C#Byproduct' in routedResp), 'residue must not be a byproduct when sinkable');
+
+console.log('OK: solveProduction worked example + feasibility set + co-product byproduct/sink routing pass.');

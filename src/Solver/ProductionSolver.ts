@@ -109,12 +109,17 @@ export async function solveProduction(request: IProductionDataApiRequest, data: 
 		}
 	}
 
-	const targets = new Set<string>();
+	// Aggregate demand per item (mirrors buildProductionModel's demand map) so duplicate target
+	// rows for the same item report their summed amount instead of the last row overwriting the rest.
+	const targetDemand: {[item: string]: number} = {};
 	for (const p of request.production) {
 		if (p.item && p.type === PER_MINUTE && p.amount > 0) {
-			response[`${p.item}#Product`] = p.amount;
-			targets.add(p.item);
+			targetDemand[p.item] = (targetDemand[p.item] ?? 0) + p.amount;
 		}
+	}
+	const targets = new Set(Object.keys(targetDemand));
+	for (const [item, amount] of Object.entries(targetDemand)) {
+		response[`${item}#Product`] = amount;
 	}
 
 	// ponytail: free-disposal excess -> Sink if sinkable else Byproduct. Refine only if a live spot-check diverges.
