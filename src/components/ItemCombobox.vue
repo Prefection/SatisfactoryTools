@@ -18,7 +18,7 @@ const selectedName = computed(() => {
 const filtered = computed(() => {
 	const q = query.value.trim().toLowerCase();
 	const list = q ? props.items.filter((i) => i.name.toLowerCase().includes(q)) : props.items;
-	return list.slice(0, 50); // ponytail: cap the dropdown; typing narrows further. Raise if a real need shows.
+	return list.slice(0, 50); // cap the dropdown; typing narrows further. Raise if a real need shows.
 });
 
 function openList(): void { open.value = true; active.value = 0; query.value = ''; }

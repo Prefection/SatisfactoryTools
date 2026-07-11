@@ -15,7 +15,7 @@ const machines = computed(() => {
 	return data.getManufacturers();
 });
 
-// ponytail: field is optional in the type only for legacy persisted data pre-dating it; self-heal in place like ProductionTab did.
+// field is optional in the type only for legacy persisted data pre-dating it; self-heal in place like ProductionTab did.
 function blockedMachines(): string[] {
 	return tabData.request.blockedMachines ??= [];
 }

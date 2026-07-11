@@ -12,7 +12,7 @@ import type {IItemSchema} from '@src/Schema/IItemSchema';
 const props = defineProps<{building: IBuildingSchema}>();
 const {version} = useGameData();
 
-// ponytail: no overclock slider on this related panel in the source template — the details panel's
+// no overclock slider on this related panel in the source template — the details panel's
 // slider drove a shared service; here it's a local, non-interactive 100% (see task ambiguity resolution).
 const overclock = ref(100);
 

@@ -3,7 +3,7 @@ import {IJsonSchema} from '@src/Schema/IJsonSchema';
 import {IRecipeSchema} from '@src/Schema/IRecipeSchema';
 import {IProductionDataApiRequest, IProductionDataApiResponse} from '@src/Tools/Production/IProductionData';
 
-// ponytail: 'perMinute' mirrors Constants.PRODUCTION_TYPE.PER_MINUTE (frozen game constant); inline to avoid the import.
+// 'perMinute' mirrors Constants.PRODUCTION_TYPE.PER_MINUTE (frozen game constant); inline to avoid the import.
 const PER_MINUTE = 'perMinute';
 const EPS = 1e-7;
 
@@ -122,7 +122,7 @@ export async function solveProduction(request: IProductionDataApiRequest, data: 
 		response[`${item}#Product`] = amount;
 	}
 
-	// ponytail: free-disposal excess -> Sink if sinkable else Byproduct. Refine only if a live spot-check diverges.
+	// free-disposal excess -> Sink if sinkable else Byproduct. Refine only if a live spot-check diverges.
 	const net = computeNet(solution, data);
 	for (const [item, amount] of Object.entries(net)) {
 		if (targets.has(item) || amount <= EPS) continue;

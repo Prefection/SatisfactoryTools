@@ -15,7 +15,7 @@ async function workerUrl(): Promise<string> {
 	if (typeof window !== 'undefined') {
 		return (await import('elkjs/lib/elk-worker.min.js?url')).default;
 	}
-	// ponytail: cast around `@types/node`'s (optional, Promise-returning) ImportMeta.resolve
+	// cast around `@types/node`'s (optional, Promise-returning) ImportMeta.resolve
 	// augmentation clobbering DOM's synchronous one in this program's merged global types.
 	return (import.meta as unknown as {resolve(specifier: string): string}).resolve('elkjs/lib/elk-worker.min.js');
 }
@@ -29,7 +29,7 @@ export async function layoutGraph(nodes: GraphNode[], edges: GraphEdge[]): Promi
 		edges: edges.map((e, i) => ({id: `e${i}`, sources: [String(e.from)], targets: [String(e.to)]})),
 	};
 	const laid = await elk.layout(graph as any);
-	// ponytail: real Worker means a real OS thread per call; terminateWorker() exists on the
+	// real Worker means a real OS thread per call; terminateWorker() exists on the
 	// runtime instance but isn't in elkjs's ELK type, hence the cast.
 	(elk as unknown as {terminateWorker(): void}).terminateWorker();
 	const pos = new Map((laid.children ?? []).map((c: any) => [c.id, {x: c.x, y: c.y}]));

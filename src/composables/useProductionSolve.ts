@@ -19,7 +19,7 @@ export function useProductionSolve() {
 	const {data: tab} = useActiveTab();
 	const {version} = useGameData();
 	const resultStatus = ref<ResultStatus>(ResultStatus.NO_INPUT);
-	// ponytail: shallowRef, not ref — ProductionResult is replaced wholesale each solve (never
+	// shallowRef, not ref — ProductionResult is replaced wholesale each solve (never
 	// mutated in place), and ref's UnwrapRef strips the class's private methods when the value
 	// flows through a template, breaking assignability to components typed on ProductionResult.
 	const resultNew = shallowRef<ProductionResult | undefined>(undefined);
@@ -53,7 +53,7 @@ export function useProductionSolve() {
 		resultStatus.value = ResultStatus.RESULT;
 	}
 
-	// ponytail: inline 400ms debounce (matches the original) — no lodash/VueUse for one timer.
+	// inline 400ms debounce (matches the original) — no lodash/VueUse for one timer.
 	// Uses window.setTimeout/clearTimeout (not the bare globals): @types/node leaks into this
 	// program via vite.config.ts's `node:url` import, and its older NodeJS.Timeout typings for
 	// clearTimeout don't accept `undefined`. Qualifying with `window.` pins the DOM lib overload.

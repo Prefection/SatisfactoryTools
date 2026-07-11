@@ -30,7 +30,7 @@ function emptyInput(): IProductionDataRequestInput {
 	return {item: null, amount: 10};
 }
 
-// ponytail: single reactive tab. 3c-3 re-backs this seam with Pinia (multi-tab) — consumers unchanged.
+// single reactive tab. 3c-3 re-backs this seam with Pinia (multi-tab) — consumers unchanged.
 const {version} = useGameData();
 const data = reactive<IProductionData>(defaultData());
 

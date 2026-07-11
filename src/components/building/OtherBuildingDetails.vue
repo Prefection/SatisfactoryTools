@@ -6,7 +6,7 @@ import type {IBuildingSchema} from '@src/Schema/IBuildingSchema';
 
 const props = defineProps<{building: IBuildingSchema}>();
 
-// ponytail: no overclock slider in the source template for this building kind — fixed at 100%.
+// no overclock slider in the source template for this building kind — fixed at 100%.
 const OVERCLOCK = 100;
 
 const powerConsumption = computed(() => Strings.formatNumber(Formula.calculateBuildingPowerConsumption(props.building, OVERCLOCK)));

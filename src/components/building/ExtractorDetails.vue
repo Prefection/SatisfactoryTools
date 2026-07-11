@@ -21,7 +21,7 @@ const powerConsumption = computed(() => Strings.formatNumber(Numbers.round(Formu
 // Formula.calculateExtractorExtractionValue is overclock-agnostic (base rate at 100%); scale it here to match the source getter.
 const extractionRate = computed(() => Strings.formatNumber(Numbers.round(Formula.calculateExtractorExtractionValue(props.building, extractor.value, purity.value) * (overclock.value / 100))));
 
-// ponytail: the source template's "manufacturing speed" row calls a controller method that doesn't
+// the source template's "manufacturing speed" row calls a controller method that doesn't
 // exist on the extractor controller (Angular silently no-ops it), so it never renders. Omitted here too.
 </script>
 
