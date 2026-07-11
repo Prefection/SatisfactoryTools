@@ -5,6 +5,8 @@ import {ResultStatus} from '@src/Tools/Production/ResultStatus';
 import ProductionForm from '@src/components/ProductionForm.vue';
 import ResourceLimits from '@src/components/ResourceLimits.vue';
 import InputList from '@src/components/InputList.vue';
+import RecipeList from '@src/components/RecipeList.vue';
+import MachineToggles from '@src/components/MachineToggles.vue';
 import ResultOverview from '@src/components/ResultOverview.vue';
 
 const {resultStatus, resultNew} = useProductionSolve();
@@ -43,8 +45,19 @@ const leftTab = ref<'production' | 'items' | 'recipes' | 'machines'>('production
 				<ResourceLimits />
 				<InputList />
 			</template>
-			<div v-else-if="leftTab === 'recipes'">Coming in a later task</div>
-			<div v-else>Coming in a later task</div>
+			<template v-else-if="leftTab === 'recipes'">
+				<p>
+					Select which recipes you want to allow to be used. The tool will automatically pick best possible combination of recipes from the selected ones.
+				</p>
+				<div class="row">
+					<div class="col-md-6"><RecipeList mode="alternate" /></div>
+					<div class="col-md-6"><RecipeList mode="base" /></div>
+				</div>
+			</template>
+			<template v-else>
+				<p>Select machines you have available. Disabling a machine will automatically disable all recipes in that machine.</p>
+				<MachineToggles />
+			</template>
 		</div>
 		<div class="col-lg-7">
 			<p v-if="resultStatus === ResultStatus.NO_INPUT" class="text-secondary">Select an item to calculate.</p>
