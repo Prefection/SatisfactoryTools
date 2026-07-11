@@ -13,10 +13,11 @@ tools for planning Satisfactory factories (production chains, factory graphs).
 
 ## Stack
 
-Being modernized from the original AngularJS 1.7 + Webpack + Yarn + PHP stack to
-**Bun + Vite + Vue 3**, hosted static on Cloudflare Pages. The migration is in
-progress, so parts of the tree are new (Vite/Vue) and parts are the frozen legacy
-app awaiting port.
+Rebuilt from the original AngularJS 1.7 + Webpack + Yarn + PHP stack to
+**Bun + Vite + Vue 3** (TypeScript), hosted static on Cloudflare Pages. It is fully
+client-side: the production solver (linear programming) and factory graph run in the
+browser, with no backend and no external API. Game data lives in `data/`; the domain
+logic under `src/` is shared framework-free code.
 
 ## Requirements
 
