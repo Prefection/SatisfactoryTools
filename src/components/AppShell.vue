@@ -1,11 +1,22 @@
 <script setup lang="ts">
-import {ref, onMounted, onBeforeUnmount} from 'vue';
+import {ref, watchEffect, onMounted, onBeforeUnmount} from 'vue';
 import {RouterLink, RouterView} from 'vue-router';
 import {useGameData, GAME_VERSIONS, type GameVersion} from '@src/composables/useGameData';
 
 const {version, changeVersion} = useGameData();
 const menuOpen = ref(false);
 const openDropdown = ref<'codex' | 'version' | null>(null);
+
+const VERSION_LABELS: Record<GameVersion, string> = {
+	'0.8': '0.8',
+	'1.0': '1.0',
+	'1.0-ficsmas': '1.0 (Ficsmas)',
+};
+
+// Reactive tab title, matching the original ([U8] for 0.8, [1.0] otherwise).
+watchEffect(() => {
+	document.title = `[${version.value === '0.8' ? 'U8' : '1.0'}] Satisfactory Tools`;
+});
 
 function toggle(which: 'codex' | 'version'): void {
 	openDropdown.value = openDropdown.value === which ? null : which;
@@ -65,7 +76,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocumentClick));
 						<a class="nav-link dropdown-toggle" @click.stop="toggle('version')"><b>Version: {{ version }}</b></a>
 						<div class="dropdown-menu dropdown-menu-right" :class="{show: openDropdown === 'version'}">
 							<a v-for="v in GAME_VERSIONS" :key="v" class="dropdown-item"
-							   :class="{active: version === v}" @click="pick(v)">{{ v }}</a>
+							   :class="{active: version === v}" @click="pick(v)">{{ VERSION_LABELS[v] }}</a>
 						</div>
 					</li>
 				</ul>

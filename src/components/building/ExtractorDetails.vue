@@ -32,7 +32,7 @@ const extractionRate = computed(() => Strings.formatNumber(Numbers.round(Formula
 				<td>Overclock</td>
 				<td>
 					{{ overclock }}%
-					<input class="w-100" type="range" min="100" max="250" v-model.number="overclock">
+					<input class="w-100" type="range" min="1" max="250" v-model.number="overclock">
 				</td>
 			</tr>
 			<tr>
