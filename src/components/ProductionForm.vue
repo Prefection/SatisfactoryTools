@@ -3,9 +3,9 @@ import {computed} from 'vue';
 import model from '@src/Data/Model';
 import {useActiveTab} from '@src/composables/useActiveTab';
 import {useGameData} from '@src/composables/useGameData';
-import ItemIcon from '@src/components/ItemIcon.vue';
+import ItemCombobox from '@src/components/ItemCombobox.vue';
 
-const {data, addProduct, removeProduct, cloneProduct} = useActiveTab();
+const {data, addProduct, removeProduct, cloneProduct, clearProducts} = useActiveTab();
 const {version} = useGameData();
 
 // Craftable items, name-sorted; re-resolve on version switch (same pattern as the codex views).
@@ -22,15 +22,7 @@ const craftableItems = computed(() => {
 			<table class="table">
 				<tbody>
 					<tr v-for="(product, index) in data.request.production" :key="index">
-						<td>
-							<select class="form-control" v-model="product.item">
-								<option :value="null" disabled>Select an item…</option>
-								<option v-for="item in craftableItems" :key="item.className" :value="item.className">{{ item.name }}</option>
-							</select>
-						</td>
-						<td style="width: 40px">
-							<ItemIcon v-if="product.item" :item="product.item" :size="32" />
-						</td>
+						<td><ItemCombobox v-model="product.item" :items="craftableItems" /></td>
 						<td style="width: 140px">
 							<input class="form-control" type="number" min="0" v-model.number="product.amount" /> / min
 						</td>
@@ -42,6 +34,7 @@ const craftableItems = computed(() => {
 				</tbody>
 			</table>
 			<button class="btn btn-primary" @click="addProduct"><span class="fas fa-plus"></span> Add product</button>
+			<button class="btn btn-secondary" @click="clearProducts"><span class="fas fa-times"></span> Clear products</button>
 		</div>
 	</div>
 </template>

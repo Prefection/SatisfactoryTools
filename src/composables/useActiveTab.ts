@@ -1,7 +1,7 @@
 import {reactive, watch} from 'vue';
 import {Data} from '@src/Data/Data';
 import {useGameData, type GameVersion} from '@src/composables/useGameData';
-import {IProductionData, IProductionDataRequestItem} from '@src/Tools/Production/IProductionData';
+import {IProductionData, IProductionDataRequestItem, IProductionDataRequestInput} from '@src/Tools/Production/IProductionData';
 
 export const PER_MINUTE = 'perMinute'; // Constants.PRODUCTION_TYPE.PER_MINUTE
 
@@ -24,6 +24,10 @@ function defaultData(): IProductionData {
 
 function emptyProduct(): IProductionDataRequestItem {
 	return {item: null, type: PER_MINUTE, amount: 10, ratio: 100};
+}
+
+function emptyInput(): IProductionDataRequestInput {
+	return {item: null, amount: 10};
 }
 
 // ponytail: single reactive tab. 3c-3 re-backs this seam with Pinia (multi-tab) — consumers unchanged.
@@ -61,5 +65,13 @@ export function useActiveTab() {
 			const p = data.request.production[index];
 			data.request.production.push({item: p.item, type: p.type, amount: p.amount, ratio: p.ratio});
 		},
+		addInput: () => data.request.input.push(emptyInput()),
+		removeInput: (index: number) => data.request.input.splice(index, 1),
+		cloneInput: (index: number) => {
+			const i = data.request.input[index];
+			data.request.input.push({item: i.item, amount: i.amount});
+		},
+		clearInput: () => { data.request.input = []; },
+		clearProducts: () => { data.request.production = []; },
 	};
 }
