@@ -34,11 +34,12 @@ function onKeydown(e: KeyboardEvent): void {
 
 <template>
 	<div class="item-combobox" style="position: relative" @focusout="open = false">
-		<div class="input-group">
-			<span class="input-group-prepend" v-if="model"><ItemIcon :item="model" :size="24" hide-tooltip /></span>
-			<input class="form-control" :placeholder="placeholder"
+		<div class="form-control combobox-control d-flex align-items-center">
+			<ItemIcon v-if="model" :item="model" :size="24" hide-tooltip class="mr-2 flex-shrink-0" />
+			<input class="combobox-input flex-grow-1" :placeholder="placeholder"
 			       :value="open ? query : selectedName"
-			       @focus="openList" @click="openList" @input="query = ($event.target as HTMLInputElement).value; open = true; active = 0"
+			       @focus="openList" @click="openList"
+			       @input="query = ($event.target as HTMLInputElement).value; open = true; active = 0"
 			       @keydown="onKeydown" />
 		</div>
 		<ul v-if="open && filtered.length" class="dropdown-menu show" style="max-height: 300px; overflow-y: auto; width: 100%">
@@ -51,3 +52,19 @@ function onKeydown(e: KeyboardEvent): void {
 		</ul>
 	</div>
 </template>
+
+<style scoped>
+.combobox-control {
+	height: auto;
+	min-height: calc(1.5em + 0.75rem + 2px); /* Bootstrap .form-control height */
+	cursor: text;
+}
+.combobox-input {
+	border: 0;
+	padding: 0;
+	background: transparent;
+	color: inherit;
+	outline: none;
+	min-width: 0; /* let flex-grow shrink it instead of overflowing */
+}
+</style>
