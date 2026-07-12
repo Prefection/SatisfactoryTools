@@ -5,5 +5,7 @@ import {initGameData} from '@src/composables/useGameData';
 import '@styles/bootstrap.scss';
 import '@styles/style.scss';
 
-initGameData();
-createApp(App).use(router).mount('#app');
+// Load the active version's game data (its own chunk) before mounting.
+initGameData().then(() => {
+	createApp(App).use(router).mount('#app');
+});

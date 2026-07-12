@@ -14,15 +14,15 @@ function isVersion(v: string | null): v is GameVersion {
 	return v !== null && (GAME_VERSIONS as readonly string[]).includes(v);
 }
 
-export function changeVersion(v: GameVersion): void {
-	DataProvider.change(v);
+export async function changeVersion(v: GameVersion): Promise<void> {
+	await DataProvider.change(v);
 	version.value = v;
 	localStorage.setItem(STORAGE_KEY, v);
 }
 
-export function initGameData(): void {
+export function initGameData(): Promise<void> {
 	const stored = localStorage.getItem(STORAGE_KEY);
-	changeVersion(isVersion(stored) ? stored : DEFAULT_VERSION);
+	return changeVersion(isVersion(stored) ? stored : DEFAULT_VERSION);
 }
 
 export function useGameData() {

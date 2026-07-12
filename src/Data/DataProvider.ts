@@ -1,5 +1,3 @@
-import rawData12 from '@data/data1.2.json';
-import rawData10 from '@data/data1.0.json';
 import {IJsonSchema} from '@src/Schema/IJsonSchema';
 import model from '@src/Data/Model';
 
@@ -14,17 +12,15 @@ export class DataProvider
 		return DataProvider.data;
 	}
 
-	public static change(version: string)
+	public static async change(version: string): Promise<void>
 	{
+		// Load the version's data lazily so only the active version's ~1.5MB JSON ships in the
+		// initial download; the other version is fetched as its own chunk only when selected.
+		const mod = version === '1.0'
+			? await import('@data/data1.0.json')
+			: await import('@data/data1.2.json');
 		DataProvider.version = version;
-		// The JSON is generated to match IJsonSchema, but TS widens the large literal's
-		// discriminated-union fields (e.g. isVariablePower) to their base types, so assert it.
-		if (version === '1.0') {
-			DataProvider.data = rawData10 as unknown as IJsonSchema;
-		} else {
-			DataProvider.data = rawData12 as unknown as IJsonSchema;
-		}
-
+		DataProvider.data = mod.default as unknown as IJsonSchema;
 		model.change(DataProvider.data);
 	}
 

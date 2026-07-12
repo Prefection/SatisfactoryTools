@@ -5,7 +5,7 @@ import {IProductionDataApiRequest, IProductionDataApiResponse} from '@src/Tools/
 
 // Load game data headlessly. This alone proves the JSON-module imports and
 // Model.change() run outside a browser / AngularJS.
-DataProvider.change('1.2');
+await DataProvider.change('1.2');
 const data = DataProvider.get();
 
 assert.ok(Object.keys(data.items).length > 0, 'data.items should be populated');
