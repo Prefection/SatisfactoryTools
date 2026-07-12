@@ -15,7 +15,7 @@ const filtered = computed(() => {
 </script>
 
 <template>
-	<div class="row">
+	<div class="row mb-3">
 		<div class="col-sm-6"></div>
 		<div class="col-sm-6"><SchematicFilters v-model="query" /></div>
 	</div>
