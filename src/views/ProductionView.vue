@@ -17,7 +17,6 @@ import ResultGraph from '@src/components/ResultGraph.vue';
 import ResultItemsTable from '@src/components/ResultItemsTable.vue';
 import ResultBuildingsTable from '@src/components/ResultBuildingsTable.vue';
 import ResultPowerTable from '@src/components/ResultPowerTable.vue';
-import ResultSummary from '@src/components/ResultSummary.vue';
 
 const {resultStatus, resultNew} = useProductionSolve();
 const {data} = useActiveTab();
@@ -183,13 +182,6 @@ function copyShareLink(): void {
 		</div>
 
 		<div class="hud-stack">
-			<!-- Always-visible summary — full-width band -->
-			<ResultSummary v-if="resultNew" :result="resultNew" />
-			<aside v-else class="hud-panel hud-panel--cyan">
-				<span class="hud-label">At a glance</span>
-				<p class="hud-lead">Pick an item below and the factory summary appears here.</p>
-			</aside>
-
 			<!-- Inputs — full width -->
 			<section class="hud-panel hud-inputs">
 				<div class="hud-section-header">
