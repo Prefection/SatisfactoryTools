@@ -158,6 +158,16 @@ async function draw(): Promise<void> {
 		edgeEnds.set(String(e.id), {source: e.from.id, target: e.to.id});
 	}
 
+	// Order ports up-front by the connected node's centre y from the elk layout — deterministic
+	// (no dependency on when Vue Flow applies positions). A higher target -> higher output port.
+	const centreY = (id: number) => (pos.get(id)?.y ?? 0) + nodeHeight(id) / 2;
+	for (const list of outPorts.values()) {
+		list.sort((a, b) => centreY(edgeEnds.get(a.id)!.target) - centreY(edgeEnds.get(b.id)!.target));
+	}
+	for (const list of inPorts.values()) {
+		list.sort((a, b) => centreY(edgeEnds.get(a.id)!.source) - centreY(edgeEnds.get(b.id)!.source));
+	}
+
 	nodes.value = graph.nodes.map((n) => ({
 		id: String(n.id),
 		type: 'factory',
