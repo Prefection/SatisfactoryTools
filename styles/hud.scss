@@ -299,6 +299,118 @@
 	background-color: var(--hud-orange) !important;
 }
 
+// -----------------------------------------------------------------------------
+// Result detail: data tables, the collapsible overview cards, and the graph frame.
+// Near-black rows, orange eyebrow headers, monospace tabular numerals. Bulk
+// numerals stay in the calm primary text; cyan (.hud-value) is spent only on the
+// headline totals so hierarchy survives a dense table.
+// -----------------------------------------------------------------------------
+
+.hud-table {
+	width: 100%;
+	margin: 0;
+	border-collapse: collapse;
+	color: var(--hud-text);
+	font-size: 13px;
+
+	thead th {
+		padding: 8px 10px;
+		font-size: 10px;
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--hud-orange);
+		border-bottom: 1px solid rgba(249, 149, 73, 0.35);
+		white-space: nowrap;
+	}
+
+	tbody td {
+		padding: 7px 10px;
+		border-top: 1px solid rgba(255, 255, 255, 0.05);
+		vertical-align: middle;
+	}
+
+	tbody tr:hover > td {
+		background: rgba(255, 255, 255, 0.035);
+	}
+
+	tfoot td {
+		padding: 8px 10px;
+		border-top: 1px solid rgba(249, 149, 73, 0.35);
+		color: var(--hud-text);
+	}
+
+	.text-muted {
+		color: var(--hud-text-dim) !important;
+	}
+
+	// Bootstrap's secondary-row tint fights the near-black surface; neutralize it.
+	.table-secondary,
+	.table-secondary > td {
+		background: transparent;
+		color: var(--hud-text);
+	}
+
+	// Nested breakdown table (expanded rows) sits on an inset panel.
+	&--nested {
+		margin-top: 10px;
+		background: var(--hud-surface-2);
+		border: 1px solid var(--hud-border);
+		border-radius: 6px;
+
+		td {
+			border-top-color: rgba(255, 255, 255, 0.04);
+		}
+	}
+}
+
+// Collapsible overview sections — lighter than a bracketed .hud-panel.
+.hud-card {
+	background: var(--hud-surface);
+	border: 1px solid var(--hud-border);
+	border-radius: 6px;
+	overflow: hidden;
+
+	&__header {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin: 0;
+		padding: 10px 12px;
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--hud-orange);
+		background: var(--hud-surface-2);
+		border-bottom: 1px solid var(--hud-border);
+		cursor: pointer;
+
+		&:hover {
+			color: var(--hud-text);
+		}
+	}
+
+	&__body {
+		padding: 0;
+
+		&--pad {
+			padding: 12px;
+		}
+	}
+}
+
+// Network graph frame: near-black canvas, HUD hairline, content-driven height
+// (set inline by ResultGraph) with this as the definite pre-draw fallback.
+.visualization {
+	display: block;
+	width: 100%;
+	height: 460px;
+	background: var(--hud-surface-2);
+	border: 1px solid var(--hud-border);
+	border-radius: 6px;
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.hud *,
 	.hud *::before,

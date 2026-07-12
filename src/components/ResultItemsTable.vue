@@ -15,7 +15,7 @@ const recipeProducts = (cls: string) => data.getRecipeByClassName(cls)?.products
 </script>
 
 <template>
-	<table class="table table-hover">
+	<table class="hud-table">
 		<thead>
 			<tr>
 				<th class="table-cell-micro"></th>
@@ -33,24 +33,24 @@ const recipeProducts = (cls: string) => data.getRecipeByClassName(cls)?.products
 					<td class="text-right table-cell-adjust-size">
 						<ItemIcon :item="String(item)" :size="24" /> {{ itemName(String(item)) }}
 					</td>
-					<td class="text-right table-cell-adjust-size">
+					<td class="text-right table-cell-adjust-size hud-mono">
 						{{ itemData.produced }} / min
 					</td>
 					<td class="text-left">
 						<small class="text-muted">
-							<span title="Total production" class="mx-3"><span class="fas fa-plus mr-1"></span>{{ itemData.produced }} / min</span>
-							<span title="Total consumption" class="mx-3"><span class="fas fa-minus mr-1"></span>{{ itemData.consumed }} / min</span>
-							<span title="Net amount" class="mx-3"><span class="fas fa-chart-line mr-1"></span>{{ itemData.diff }} / min</span>
+							<span title="Total production" class="mx-3"><span class="fas fa-plus mr-1"></span><span class="hud-mono">{{ itemData.produced }} / min</span></span>
+							<span title="Total consumption" class="mx-3"><span class="fas fa-minus mr-1"></span><span class="hud-mono">{{ itemData.consumed }} / min</span></span>
+							<span title="Net amount" class="mx-3"><span class="fas fa-chart-line mr-1"></span><span class="hud-mono">{{ itemData.diff }} / min</span></span>
 						</small>
 
-						<table v-if="expanded.has(String(item))" class="table table-hover mt-3">
+						<table v-if="expanded.has(String(item))" class="hud-table hud-table--nested mt-3">
 							<tbody>
 								<tr v-for="(producerData, producer) in itemData.producers" :key="'p-' + producer">
 									<td v-if="producerData.type === 'recipe'" class="table-cell-micro text-right"><span class="fas fa-plus" title="Production"></span></td>
 									<td v-else-if="producerData.type === 'miner'" class="table-cell-micro text-right"><span class="fas fa-external-link-alt" title="Extracting/mining"></span></td>
 									<td v-else-if="producerData.type === 'input'" class="table-cell-micro text-right"><span class="fas fa-sign-in-alt" title="Input"></span></td>
-									<td class="table-cell-adjust-size text-right">{{ producerData.itemAmount }} / min</td>
-									<td class="table-cell-adjust-size text-right text-muted">
+									<td class="table-cell-adjust-size text-right hud-mono">{{ producerData.itemAmount }} / min</td>
+									<td class="table-cell-adjust-size text-right text-muted hud-mono">
 										<span v-if="producerData.type !== 'input'">({{ producerData.itemPercentage }}% of production)</span>
 									</td>
 									<td class="table-cell-adjust-size text-right pl-2">
@@ -65,8 +65,8 @@ const recipeProducts = (cls: string) => data.getRecipeByClassName(cls)?.products
 								</tr>
 								<tr v-for="(consumerData, consumer) in itemData.consumers" :key="'c-' + consumer">
 									<td class="table-cell-micro text-right"><span class="fas fa-minus" title="Consumption"></span></td>
-									<td class="table-cell-adjust-size text-right">{{ consumerData.itemAmount }} / min</td>
-									<td class="table-cell-adjust-size text-right text-muted">({{ consumerData.itemPercentage }}% of consumption)</td>
+									<td class="table-cell-adjust-size text-right hud-mono">{{ consumerData.itemAmount }} / min</td>
+									<td class="table-cell-adjust-size text-right text-muted hud-mono">({{ consumerData.itemPercentage }}% of consumption)</td>
 									<td class="table-cell-adjust-size text-right">
 										<span v-for="product in recipeProducts(String(consumer))" :key="product.item"><ItemIcon :item="product.item" :size="24" /></span>
 									</td>

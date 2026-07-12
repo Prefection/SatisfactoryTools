@@ -15,7 +15,7 @@ const recipeProducts = (cls: string) => data.getRecipeByClassName(cls)?.products
 </script>
 
 <template>
-	<table class="table table-hover">
+	<table class="hud-table">
 		<thead>
 			<tr>
 				<th class="table-cell-micro"></th>
@@ -30,27 +30,27 @@ const recipeProducts = (cls: string) => data.getRecipeByClassName(cls)?.products
 						<span :class="expanded.has(String(building)) ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></span>
 					</td>
 					<td class="text-right table-cell-adjust-size">
-						<span class="mr-1">{{ buildingData.amount }}x</span>
+						<span class="mr-1 hud-mono">{{ buildingData.amount }}x</span>
 						<ItemIcon :item="String(building)" :size="24" /> {{ buildingName(String(building)) }}
 					</td>
 					<td class="text-left">
 						<span v-for="(amount, item) in buildingData.resources" :key="item" class="mx-2">
-							<span class="mr-1">{{ amount }}x</span>
+							<span class="mr-1 hud-mono">{{ amount }}x</span>
 							<ItemIcon :item="String(item)" :size="24" />
 						</span>
 
-						<table v-if="expanded.has(String(building))" class="table table-hover mt-2">
+						<table v-if="expanded.has(String(building))" class="hud-table hud-table--nested mt-2">
 							<tbody>
 								<tr v-for="(recipeData, recipe) in buildingData.recipes" :key="recipe">
 									<td class="text-right table-cell-adjust-size">
-										<span class="mr-1">{{ recipeData.amount }}x</span> <ItemIcon :item="String(building)" :size="24" />
+										<span class="mr-1 hud-mono">{{ recipeData.amount }}x</span> <ItemIcon :item="String(building)" :size="24" />
 									</td>
 									<td class="text-right table-cell-adjust-size">
 										<span v-for="product in recipeProducts(String(recipe))" :key="product.item"><ItemIcon :item="product.item" :size="24" /></span>
 									</td>
 									<td class="text-left table-cell-adjust-size">{{ recipeName(String(recipe)) }}</td>
 									<td v-for="(amount, item) in recipeData.resources" :key="item" class="text-right table-cell-adjust-size">
-										<span class="mr-1">{{ amount }}x</span>
+										<span class="mr-1 hud-mono">{{ amount }}x</span>
 										<ItemIcon :item="String(item)" :size="24" />
 									</td>
 									<td></td>
@@ -67,7 +67,7 @@ const recipeProducts = (cls: string) => data.getRecipeByClassName(cls)?.products
 				<td class="text-right"><b>Total cost:</b></td>
 				<td class="text-left">
 					<span v-for="(amount, item) in result.details.buildings.resources" :key="item" class="mx-2">
-						<span class="mr-1">{{ amount }}x</span>&nbsp;<ItemIcon :item="String(item)" :size="24" />
+						<span class="mr-1 hud-mono">{{ amount }}x</span>&nbsp;<ItemIcon :item="String(item)" :size="24" />
 					</span>
 				</td>
 			</tr>
