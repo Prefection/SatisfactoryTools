@@ -1,0 +1,309 @@
+// FICSIT HUD design layer
+// -----------------------------------------------------------------------------
+// A small, self-contained presentation layer for the production calculator.
+// Near-black panels, FICSIT orange as the single bold accent, cyan reserved for
+// data/result values, monospace tabular numerals. The signature is the
+// bracketed-corner panel. No external fonts or assets — system stacks only.
+//
+// CSS custom properties (defined on `.hud`):
+//   --hud-base        page/shell background (near-black)
+//   --hud-surface     panel background
+//   --hud-surface-2   inset background (stat tiles)
+//   --hud-orange      accent: labels, headers, primary edges
+//   --hud-cyan        data/result values only
+//   --hud-text        primary text
+//   --hud-text-dim    secondary text
+//   --hud-border      neutral hairline
+//   --hud-focus       focus ring (cyan)
+//   --hud-font-sans   geometric system sans (labels/prose)
+//   --hud-font-mono   system monospace (numerals/data)
+//
+// Component classes (documented for later tasks):
+//   .hud                       scope wrapper — sets palette, fonts, focus rings
+//   .hud-panel                 bordered near-black panel with bracketed corners
+//   .hud-panel--cyan           cyan-edged variant (data/summary panels)
+//   .hud-label                 small uppercase orange eyebrow
+//   .hud-section-header        title + one-line help + right-aligned actions
+//     .hud-section-header__title / __help / __actions
+//   .hud-lead                  plain-language lead sentence (b/strong -> orange)
+//   .hud-product-line          produced-item row (icon + name + __rate)
+//   .hud-stat                  responsive grid of stat cards
+//   .hud-stat-card             tile — __value (big mono) + __label (uppercase)
+//     .hud-stat-card--orange / --cyan   colors the value
+//   .hud-mono                  tabular monospace numerals helper
+//   .hud-value                 inline cyan mono data value
+//   .hud-split                 responsive 2-col layout (inputs | summary)
+//   .hud-result-tabs           result tab bar; .hud-result-tab + .is-active
+//   .hud-detail                full-width detail region wrapper
+// -----------------------------------------------------------------------------
+
+.hud {
+	--hud-base: #14171c;
+	--hud-surface: #191d24;
+	--hud-surface-2: #10131a;
+	--hud-orange: #f99549;
+	--hud-cyan: #37c6d0;
+	--hud-text: #e8eaed;
+	--hud-text-dim: #8f99a6;
+	--hud-border: rgba(255, 255, 255, 0.1);
+	--hud-focus: #37c6d0;
+	--hud-font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	--hud-font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
+
+	background: var(--hud-base);
+	color: var(--hud-text);
+	font-family: var(--hud-font-sans);
+	padding: 18px;
+	border-radius: 8px;
+
+	// Restore a visible focus ring (the global reset removes it).
+	:focus-visible {
+		outline: 2px solid var(--hud-focus);
+		outline-offset: 2px;
+	}
+}
+
+.hud-mono {
+	font-family: var(--hud-font-mono);
+	font-variant-numeric: tabular-nums;
+}
+
+.hud-value {
+	font-family: var(--hud-font-mono);
+	font-variant-numeric: tabular-nums;
+	color: var(--hud-cyan);
+}
+
+// Panel with the bracketed-corner signature + a faint top edge glow.
+.hud-panel {
+	position: relative;
+	background:
+		linear-gradient(180deg, rgba(249, 149, 73, 0.06), rgba(0, 0, 0, 0.18)),
+		var(--hud-surface);
+	border: 1px solid rgba(249, 149, 73, 0.3);
+	border-radius: 6px;
+	padding: 16px;
+
+	&::before,
+	&::after {
+		content: "";
+		position: absolute;
+		width: 11px;
+		height: 11px;
+		border: 2px solid var(--hud-orange);
+		pointer-events: none;
+	}
+
+	&::before {
+		top: -1px;
+		left: -1px;
+		border-right: 0;
+		border-bottom: 0;
+	}
+
+	&::after {
+		right: -1px;
+		bottom: -1px;
+		border-left: 0;
+		border-top: 0;
+	}
+
+	&--cyan {
+		background:
+			linear-gradient(180deg, rgba(55, 198, 208, 0.06), rgba(0, 0, 0, 0.18)),
+			var(--hud-surface);
+		border-color: rgba(55, 198, 208, 0.35);
+
+		&::before,
+		&::after {
+			border-color: var(--hud-cyan);
+		}
+	}
+}
+
+.hud-label {
+	display: block;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--hud-orange);
+
+	.hud-panel--cyan & {
+		color: var(--hud-cyan);
+	}
+}
+
+.hud-section-header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 6px 12px;
+	margin-bottom: 12px;
+
+	&__title {
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--hud-orange);
+	}
+
+	&__help {
+		flex: 1 1 200px;
+		font-size: 12px;
+		color: var(--hud-text-dim);
+	}
+
+	&__actions {
+		margin-left: auto;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+}
+
+.hud-lead {
+	font-size: 14px;
+	line-height: 1.5;
+	margin-bottom: 12px;
+	color: var(--hud-text);
+
+	b,
+	strong {
+		color: var(--hud-orange);
+	}
+}
+
+.hud-product-line {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 0;
+	border-bottom: 1px dashed var(--hud-border);
+
+	&:last-of-type {
+		border-bottom: 0;
+	}
+
+	&__name {
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	&__rate {
+		margin-left: auto;
+		font-family: var(--hud-font-mono);
+		font-variant-numeric: tabular-nums;
+		color: var(--hud-orange);
+		white-space: nowrap;
+	}
+}
+
+.hud-stat {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 8px;
+}
+
+.hud-stat-card {
+	background: var(--hud-surface-2);
+	border: 1px solid var(--hud-border);
+	border-radius: 6px;
+	padding: 10px 12px;
+
+	&__value {
+		display: block;
+		font-family: var(--hud-font-mono);
+		font-variant-numeric: tabular-nums;
+		font-size: 24px;
+		font-weight: 600;
+		line-height: 1.1;
+		color: var(--hud-text);
+	}
+
+	&__unit {
+		font-size: 12px;
+		font-weight: 400;
+		color: var(--hud-text-dim);
+	}
+
+	&__label {
+		display: block;
+		margin-top: 4px;
+		font-size: 10px;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--hud-text-dim);
+	}
+
+	&--orange &__value {
+		color: var(--hud-orange);
+	}
+
+	&--cyan &__value {
+		color: var(--hud-cyan);
+	}
+}
+
+// Split layout: inputs (wider) beside the always-visible summary.
+.hud-split {
+	display: grid;
+	grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+	gap: 14px;
+	align-items: start;
+	margin-top: 14px;
+
+	@media (max-width: 991px) {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+.hud-detail {
+	margin-top: 14px;
+}
+
+.hud-result-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-bottom: 12px;
+}
+
+.hud-result-tab {
+	cursor: pointer;
+	font-size: 13px;
+	padding: 6px 14px;
+	border-radius: 5px;
+	border: 1px solid var(--hud-border);
+	background: rgba(255, 255, 255, 0.05);
+	color: var(--hud-text);
+	transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+	&:hover {
+		border-color: rgba(249, 149, 73, 0.5);
+	}
+
+	&.is-active {
+		background: var(--hud-orange);
+		border-color: var(--hud-orange);
+		color: var(--hud-base);
+		font-weight: 600;
+	}
+}
+
+// Active production tab reads FICSIT orange within the HUD shell.
+.hud .production-nav-tabs .nav-item .nav-link.active {
+	background-color: var(--hud-orange) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.hud *,
+	.hud *::before,
+	.hud *::after {
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+	}
+}

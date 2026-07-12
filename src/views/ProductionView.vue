@@ -17,6 +17,7 @@ import ResultGraph from '@src/components/ResultGraph.vue';
 import ResultItemsTable from '@src/components/ResultItemsTable.vue';
 import ResultBuildingsTable from '@src/components/ResultBuildingsTable.vue';
 import ResultPowerTable from '@src/components/ResultPowerTable.vue';
+import ResultSummary from '@src/components/ResultSummary.vue';
 
 const {resultStatus, resultNew} = useProductionSolve();
 const {data} = useActiveTab();
@@ -89,8 +90,9 @@ function copyShareLink(): void {
 </script>
 
 <template>
+	<div class="hud">
 	<h2>Production</h2>
-	<p>
+	<p class="hud-intro-text">
 		Each tab is a separate production line. You can have multiple tabs, and they are automatically saved in
 		your browser. Share a line with the share button, or reorder tabs by dragging them.
 	</p>
@@ -155,117 +157,206 @@ function copyShareLink(): void {
 
 	<!-- Edit the active tab -->
 	<template v-else-if="active">
-		<div class="card production-input">
-			<div class="card-header d-flex">
-				<div class="production-image d-flex">
-					<span class="image-picker">
-						<ItemIcon v-if="tabIcon(active)" :item="tabIcon(active)!" :size="32" hide-tooltip />
-						<span v-else class="fas fa-fw fa-question"></span>
-					</span>
+		<div class="hud-panel hud-topbar">
+			<span class="hud-topbar__image">
+				<ItemIcon v-if="tabIcon(active)" :item="tabIcon(active)!" :size="32" hide-tooltip />
+				<span v-else class="fas fa-fw fa-question"></span>
+			</span>
+			<span class="hud-topbar__name">
+				<span v-if="!renaming" class="hud-topbar__title">{{ tabName(active) }}</span>
+				<form v-else class="flex-grow-1" @submit.prevent="renaming = false">
+					<input class="form-control" placeholder="Factory name" v-model="data.metadata.name" />
+				</form>
+				<span v-if="!renaming" class="btn btn-outline-light" title="Rename tab" @click="renaming = true"><span class="fas fa-pencil-alt"></span></span>
+				<span v-else class="btn btn-outline-success" @click="renaming = false"><span class="fas fa-check"></span></span>
+			</span>
+
+			<span class="btn-group hud-topbar__actions">
+				<a class="btn btn-info" title="Share tab" @click="copyShareLink"><span class="fas fa-fw" :class="copied ? 'fa-check' : 'fa-share-alt'"></span></a>
+				<a class="btn btn-success" title="Clone tab" @click="cloneTab(activeId)"><span class="far fa-fw fa-clone"></span></a>
+				<a class="btn btn-warning" title="Reset tab to default" @click="confirmResetTab"><span class="fas fa-fw fa-eraser"></span></a>
+				<a class="btn btn-danger" title="Remove tab" @click="confirmRemoveTab"><span class="fas fa-fw fa-trash-alt"></span></a>
+				<a class="btn btn-secondary" :title="expanded ? 'Collapse inputs' : 'Expand inputs'" @click="expanded = !expanded">
+					<span class="fas fa-fw" :class="expanded ? 'fa-chevron-up' : 'fa-chevron-down'"></span>
+				</a>
+			</span>
+		</div>
+
+		<div class="hud-split">
+			<!-- Inputs -->
+			<section class="hud-panel hud-inputs">
+				<div class="hud-section-header">
+					<span class="hud-section-header__title">Configure</span>
+					<span class="hud-section-header__help">Every control lives here — safe defaults, tweak freely.</span>
 				</div>
-				<span class="production-line-name flex-grow-1">
-					<span v-if="!renaming" class="production-line-name-title mr-2"><span>{{ tabName(active) }}</span></span>
-					<form v-else class="mr-2 flex-grow-1" @submit.prevent="renaming = false">
-						<input class="form-control" placeholder="Factory name" v-model="data.metadata.name" />
-					</form>
-					<span v-if="!renaming" class="btn btn-outline-light" title="Rename tab" @click="renaming = true"><span class="fas fa-pencil-alt"></span></span>
-					<span v-else class="btn btn-outline-success" @click="renaming = false"><span class="fas fa-check"></span></span>
-				</span>
 
-				<span class="btn-group">
-					<a class="btn btn-info" title="Share tab" @click="copyShareLink"><span class="fas fa-fw" :class="copied ? 'fa-check' : 'fa-share-alt'"></span></a>
-					<a class="btn btn-success" title="Clone tab" @click="cloneTab(activeId)"><span class="far fa-fw fa-clone"></span></a>
-					<a class="btn btn-warning" title="Reset tab to default" @click="confirmResetTab"><span class="fas fa-fw fa-eraser"></span></a>
-					<a class="btn btn-danger" title="Remove tab" @click="confirmRemoveTab"><span class="fas fa-fw fa-trash-alt"></span></a>
-					<a class="btn btn-secondary" :title="expanded ? 'Collapse' : 'Expand'" @click="expanded = !expanded">
-						<span class="fas fa-fw" :class="expanded ? 'fa-chevron-up' : 'fa-chevron-down'"></span>
-					</a>
-				</span>
-			</div>
+				<ul class="nav nav-pills hud-subtabs">
+					<li class="nav-item">
+						<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'production'}" @click="leftTab = 'production'">
+							<span class="fas fa-fw fa-chart-line mr-1"></span>Production
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'items'}" @click="leftTab = 'items'">
+							<span class="fas fa-fw fa-box-open mr-1"></span>Items, Input
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'recipes'}" @click="leftTab = 'recipes'">
+							<span class="fas fa-fw fa-scroll mr-1"></span>Recipes
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'machines'}" @click="leftTab = 'machines'">
+							<span class="fas fa-fw fa-industry mr-1"></span>Machines
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'options'}" @click="leftTab = 'options'">
+							<span class="fas fa-fw fa-sliders-h mr-1"></span>Options
+						</a>
+					</li>
+				</ul>
 
-			<div v-show="expanded" class="card-body">
-				<div class="row">
-					<div class="col-md-2 border-right border-light">
-						<ul class="nav nav-tabs flex-column">
-							<li class="nav-item">
-								<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'production'}" @click="leftTab = 'production'">
-									<span class="fas fa-fw fa-chart-line mr-1"></span>Production
-								</a>
-							</li>
-							<li class="nav-item">
-								<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'items'}" @click="leftTab = 'items'">
-									<span class="fas fa-fw fa-box-open mr-1"></span>Items, Input
-								</a>
-							</li>
-							<li class="nav-item">
-								<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'recipes'}" @click="leftTab = 'recipes'">
-									<span class="fas fa-fw fa-scroll mr-1"></span>Recipes
-								</a>
-							</li>
-							<li class="nav-item">
-								<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'machines'}" @click="leftTab = 'machines'">
-									<span class="fas fa-fw fa-industry mr-1"></span>Machines
-								</a>
-							</li>
-							<li class="nav-item">
-								<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'options'}" @click="leftTab = 'options'">
-									<span class="fas fa-fw fa-sliders-h mr-1"></span>Options
-								</a>
-							</li>
-						</ul>
+				<div v-show="expanded" class="hud-inputs__body">
+					<ProductionForm v-if="leftTab === 'production'" />
+					<div v-else-if="leftTab === 'items'" class="row">
+						<div class="col-md-6"><ResourceLimits /></div>
+						<div class="col-md-6"><InputList /></div>
 					</div>
-
-					<div class="col-md-10">
-						<ProductionForm v-if="leftTab === 'production'" />
-						<div v-else-if="leftTab === 'items'" class="row">
-							<div class="col-md-6"><ResourceLimits /></div>
-							<div class="col-md-6"><InputList /></div>
+					<template v-else-if="leftTab === 'recipes'">
+						<p>Select which recipes you want to allow to be used. The tool will automatically pick best possible combination of recipes from the selected ones.</p>
+						<div class="row">
+							<div class="col-md-6"><RecipeList mode="alternate" /></div>
+							<div class="col-md-6"><RecipeList mode="base" /></div>
 						</div>
-						<template v-else-if="leftTab === 'recipes'">
-							<p>Select which recipes you want to allow to be used. The tool will automatically pick best possible combination of recipes from the selected ones.</p>
-							<div class="row">
-								<div class="col-md-6"><RecipeList mode="alternate" /></div>
-								<div class="col-md-6"><RecipeList mode="base" /></div>
-							</div>
-						</template>
-						<template v-else-if="leftTab === 'machines'">
-							<p>Select machines you have available. Disabling a machine will automatically disable all recipes in that machine.</p>
-							<MachineToggles />
-						</template>
-						<template v-else>
-							<h4>Options</h4>
-							<div class="custom-control custom-checkbox">
-								<input type="checkbox" class="custom-control-input" id="opt-integer" v-model="data.request.integerMachines" />
-								<label class="custom-control-label" for="opt-integer">Whole machines (maximize mode) — round machine counts to whole numbers</label>
-							</div>
-						</template>
-					</div>
+					</template>
+					<template v-else-if="leftTab === 'machines'">
+						<p>Select machines you have available. Disabling a machine will automatically disable all recipes in that machine.</p>
+						<MachineToggles />
+					</template>
+					<template v-else>
+						<h4>Options</h4>
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox" class="custom-control-input" id="opt-integer" v-model="data.request.integerMachines" />
+							<label class="custom-control-label" for="opt-integer">Whole machines (maximize mode) — round machine counts to whole numbers</label>
+						</div>
+					</template>
 				</div>
+			</section>
+
+			<!-- Always-visible summary -->
+			<ResultSummary v-if="resultNew" :result="resultNew" />
+			<aside v-else class="hud-panel hud-panel--cyan">
+				<span class="hud-label">At a glance</span>
+				<p class="hud-lead">Pick an item on the left and the factory summary appears here.</p>
+			</aside>
+		</div>
+
+		<!-- Full-width detail -->
+		<div class="hud-detail">
+			<div v-if="resultStatus === ResultStatus.NO_INPUT" class="visualization-result">Select an item to calculate.</div>
+			<div v-else-if="resultStatus === ResultStatus.NO_RESULT" class="visualization-result">
+				Unfortunately we couldn't calculate any result.<br />
+				<span>This can be due to many things: a missing resource, not enough resources for the requested amount, or a required recipe being disabled.</span>
 			</div>
-		</div>
+			<div v-else-if="resultNew" class="visualization-result-container hud-panel" :class="{calculating: resultStatus === ResultStatus.CALCULATING}">
+				<div class="calculating-alert"><span class="fas fa-spin fa-sync-alt"></span> Calculating ...</div>
 
-		<!-- Result -->
-		<div v-if="resultStatus === ResultStatus.NO_INPUT" class="visualization-result">Select an item to calculate.</div>
-		<div v-else-if="resultStatus === ResultStatus.NO_RESULT" class="visualization-result">
-			Unfortunately we couldn't calculate any result.<br />
-			<span>This can be due to many things: a missing resource, not enough resources for the requested amount, or a required recipe being disabled.</span>
-		</div>
-		<div v-else-if="resultNew" class="visualization-result-container" :class="{calculating: resultStatus === ResultStatus.CALCULATING}">
-			<div class="calculating-alert"><span class="fas fa-spin fa-sync-alt"></span> Calculating ...</div>
+				<div class="hud-result-tabs">
+					<span class="hud-result-tab" :class="{'is-active': resultTab === 'overview'}" @click="resultTab = 'overview'"><span class="fas fa-info-circle mr-1"></span> Overview</span>
+					<span class="hud-result-tab" :class="{'is-active': resultTab === 'visualization'}" @click="resultTab = 'visualization'"><span class="fas fa-project-diagram mr-1"></span> Visualization</span>
+					<span class="hud-result-tab" :class="{'is-active': resultTab === 'power'}" @click="resultTab = 'power'"><span class="fas fa-bolt mr-1"></span> Power</span>
+					<span class="hud-result-tab" :class="{'is-active': resultTab === 'items'}" @click="resultTab = 'items'"><span class="fas fa-pallet mr-1"></span> Items</span>
+					<span class="hud-result-tab" :class="{'is-active': resultTab === 'buildings'}" @click="resultTab = 'buildings'"><span class="fas fa-industry mr-1"></span> Buildings</span>
+				</div>
 
-			<ul class="nav nav-pills nav-justified result-nav">
-				<li class="nav-item"><a class="nav-link" :class="{active: resultTab === 'overview'}" @click="resultTab = 'overview'"><span class="fas fa-info-circle mr-1"></span> Overview</a></li>
-				<li class="nav-item"><a class="nav-link" :class="{active: resultTab === 'visualization'}" @click="resultTab = 'visualization'"><span class="fas fa-project-diagram mr-1"></span> Visualization</a></li>
-				<li class="nav-item"><a class="nav-link" :class="{active: resultTab === 'power'}" @click="resultTab = 'power'"><span class="fas fa-bolt mr-1"></span> Power</a></li>
-				<li class="nav-item"><a class="nav-link" :class="{active: resultTab === 'items'}" @click="resultTab = 'items'"><span class="fas fa-pallet mr-1"></span> Items</a></li>
-				<li class="nav-item"><a class="nav-link" :class="{active: resultTab === 'buildings'}" @click="resultTab = 'buildings'"><span class="fas fa-industry mr-1"></span> Buildings</a></li>
-			</ul>
-
-			<ResultOverview v-if="resultTab === 'overview'" :result="resultNew" />
-			<ResultGraph v-else-if="resultTab === 'visualization'" :result="resultNew" />
-			<ResultPowerTable v-else-if="resultTab === 'power'" :result="resultNew" />
-			<ResultItemsTable v-else-if="resultTab === 'items'" :result="resultNew" />
-			<ResultBuildingsTable v-else-if="resultTab === 'buildings'" :result="resultNew" />
+				<ResultOverview v-if="resultTab === 'overview'" :result="resultNew" />
+				<ResultGraph v-else-if="resultTab === 'visualization'" :result="resultNew" />
+				<ResultPowerTable v-else-if="resultTab === 'power'" :result="resultNew" />
+				<ResultItemsTable v-else-if="resultTab === 'items'" :result="resultNew" />
+				<ResultBuildingsTable v-else-if="resultTab === 'buildings'" :result="resultNew" />
+			</div>
 		</div>
 	</template>
+	</div>
 </template>
+
+<style scoped>
+.hud-intro-text {
+	color: var(--hud-text-dim);
+	max-width: 80ch;
+}
+
+.hud-topbar {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.hud-topbar__image {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	border-radius: 6px;
+	background: var(--hud-surface-2);
+	border: 1px solid var(--hud-border);
+	flex: none;
+}
+
+.hud-topbar__name {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex: 1 1 auto;
+	min-width: 160px;
+}
+
+.hud-topbar__title {
+	font-size: 22px;
+	font-weight: 600;
+	color: var(--hud-text);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.hud-topbar__actions {
+	flex: none;
+}
+
+.hud-topbar__actions .btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 42px;
+	height: 42px;
+}
+
+.hud-subtabs {
+	gap: 4px;
+	margin-bottom: 12px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid var(--hud-border);
+}
+
+.hud-subtabs .nav-link.active {
+	background-color: var(--hud-orange);
+	color: var(--hud-base);
+}
+
+.hud-inputs__body {
+	min-width: 0;
+}
+
+.hud-inputs__body :deep(p) {
+	color: var(--hud-text-dim);
+}
+
+.visualization-result {
+	color: var(--hud-text-dim);
+}
+</style>
