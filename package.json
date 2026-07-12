@@ -9,9 +9,9 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "bun bin/checkProductionResult.ts && bun bin/checkFilters.ts && bun bin/checkNetworkGraph.ts && bun bin/checkSolver.ts && bun bin/checkToggleInArray.ts && bun bin/checkTabsCodec.ts",
-		"parseDocs": "ts-node -r tsconfig-paths/register bin/parseDocs.ts",
-		"parsePak": "ts-node -r tsconfig-paths/register bin/parsePak.ts",
-		"generateImages": "ts-node -r tsconfig-paths/register bin/generateImages.ts"
+		"parseDocs": "bun bin/parseDocs.ts",
+		"parsePak": "bun bin/parsePak.ts",
+		"generateImages": "bun bin/generateImages.ts"
 	},
 	"devDependencies": {
 		"@types/base-64": "^1.0.0",

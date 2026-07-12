@@ -16,8 +16,10 @@ import {DiffFormatter} from '@src/Utils/DiffGenerator/DiffFormatter';
 import parseImageMapping from '@bin/parseDocs/imageMapping';
 import {Strings} from '@src/Utils/Strings';
 
-const docs = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'Docs.json')).toString());
-const oldData: IJsonSchema = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'data.json')).toString()) as IJsonSchema;
+// Satisfactory ships Docs.json as UTF-16 LE with a BOM; decode it and strip the leading BOM.
+const docs = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'Docs.json'), 'utf16le').replace(/^﻿/, ''));
+const version = process.argv[2] ?? '1.2';
+const oldData: IJsonSchema = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'data1.0.json')).toString()) as IJsonSchema;
 //const sizes: {Name: string, Dimensions: number[]}[] = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'debug.json')).toString()) as {Name: string, Dimensions: number[]}[];
 
 const json: IJsonSchema = {
@@ -35,11 +37,16 @@ let extraInfo: any[] = [];
 let imageMapping: { [key: string]: string } = {};
 
 for (const definitions of docs) {
-	switch (definitions.NativeClass) {
+	// 1.2 Docs.json prefixes every NativeClass with "/Script/CoreUObject."; strip it so the
+	// cases below match (a no-op on the older bare "Class'...'" form).
+	const nativeClass = definitions.NativeClass.replace('/Script/CoreUObject.', '');
+	switch (nativeClass) {
 		case 'Class\'/Script/FactoryGame.FGItemDescriptor\'':
 		case 'Class\'/Script/FactoryGame.FGEquipmentDescriptor\'':
 		case 'Class\'/Script/FactoryGame.FGConsumableDescriptor\'':
 		case 'Class\'/Script/FactoryGame.FGItemDescriptorNuclearFuel\'':
+		case 'Class\'/Script/FactoryGame.FGPowerShardDescriptor\'':
+		case 'Class\'/Script/FactoryGame.FGItemDescriptorPowerBoosterFuel\'':
 		case 'Class\'/Script/FactoryGame.FGItemDescAmmoTypeProjectile\'':
 		case 'Class\'/Script/FactoryGame.FGItemDescAmmoTypeColorCartridge\'':
 		case 'Class\'/Script/FactoryGame.FGItemDescAmmoTypeInstantHit\'':
@@ -134,6 +141,33 @@ for (const definitions of docs) {
 		case 'Class\'/Script/FactoryGame.FGBuildableWidgetSign\'':
 		case 'Class\'/Script/FactoryGame.FGBuildableLadder\'':
 		case 'Class\'/Script/FactoryGame.FGBuildablePassthrough\'':
+		case 'Class\'/Script/FactoryGame.FGBuildableWallLightweight\'':
+		case 'Class\'/Script/FactoryGame.FGBuildablePoleConveyor\'':
+		case 'Class\'/Script/FactoryGame.FGBuildablePoleBase\'':
+		case 'Class\'/Script/FactoryGame.FGBuildableWalkwayLightweight\'':
+		case 'Class\'/Script/FactoryGame.FGBuildablePillarLightweight\'':
+		case 'Class\'/Script/FactoryGame.FGBuildableFoundationLightweight\'':
+		case 'Class\'/Script/FactoryGame.FGBuildableRampLightweight\'':
+		case 'Class\'/Script/FactoryGame.FGBuildablePoleStackable\'':
+		case 'Class\'/Script/FactoryGame.FGBuildablePolePipe\'':
+		case 'Class\'/Script/FactoryGame.FGBuildablePipeHyperJunction\'':
+		case 'Class\'/Script/FactoryGame.FGBuildableStackableShelf\'':
+		case 'Class\'/Script/FactoryGame.FGBuildableCornerWallLightweight\'':
+		case 'Class\'/Script/FactoryGame.FGBuildableElevatorFloorStop\'':
+		case 'Class\'/Script/FactoryGame.FGBuildableElevator\'':
+		case 'Class\'/Script/FactoryGame.FGBuildablePassthroughPipeHyper\'':
+		case 'Class\'/Script/FactoryGame.FGBuildableBarrierCorner\'':
+		case 'Class\'/Script/FactoryGame.FGBuildableConveyorMonitor\'':
+		case 'Class\'/Script/FactoryGame.FGBuildableSnowDispenser\'':
+		case 'Class\'/Script/FactoryGame.FGBuildableSnowCannon\'':
+		case 'Class\'/Script/FactoryGame.FGBuildableFactorySimpleProducer\'':
+		case 'Class\'/Script/FactoryGame.FGBuildableMergerPriority\'':
+		case 'Class\'/Script/FactoryGame.FGBuildablePriorityPowerSwitch\'':
+		case 'Class\'/Script/FactoryGame.FGBuildablePowerBooster\'':
+		case 'Class\'/Script/FactoryGame.FGBuildablePortal\'':
+		case 'Class\'/Script/FactoryGame.FGBuildablePortalSatellite\'':
+		case 'Class\'/Script/FactoryGame.FGBuildableBlueprintDesigner\'':
+		case 'Class\'/Script/FactoryGame.FGBuildableRailroadAttachment\'':
 			for (const building of parseBuildings(definitions.Classes, true)) {
 				json.buildings[building.className] = building;
 			}
@@ -372,7 +406,7 @@ for (const key in json.schematics) {
 	slugs.push(slug);
 }
 
-fs.writeFileSync(path.join(__dirname, '..', 'data', 'data.json'), JSON.stringify(json, null, '\t') + '\n');
+fs.writeFileSync(path.join(__dirname, '..', 'data', `data${version}.json`), JSON.stringify(json, null, '\t') + '\n');
 
 const diffGenerator = new DiffGenerator();
 fs.writeFileSync(path.join(__dirname, '..', 'data', 'diff.txt'), DiffFormatter.diffToMarkdown(diffGenerator.generateDiff(oldData, json)));

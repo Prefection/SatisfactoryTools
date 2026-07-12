@@ -64,6 +64,12 @@ export default function parseRecipes(recipes: {
 			continue;
 		}
 
+		// Non-production recipes (customizer/decoration entries) have an empty product or
+		// ingredient list; skip them so the empty string doesn't parse to a null item.
+		if (!recipe.mProduct || !recipe.mIngredients) {
+			continue;
+		}
+
 		const producedIn = Arrays.ensureArray(Strings.unserializeDocs(recipe.mProducedIn)).map(parseBlueprintClass).map((className: string) => {
 			return className.replace('Build_', 'Desc_');
 		});
