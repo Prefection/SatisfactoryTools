@@ -1,72 +1,214 @@
 <script setup lang="ts">
-import {nextTick, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import {Network, type Edge, type Node} from 'vis-network';
+import {markRaw, onMounted, ref, watch} from 'vue';
+import {MarkerType, useVueFlow, VueFlow} from '@vue-flow/core';
+import {Background} from '@vue-flow/background';
+import {Controls} from '@vue-flow/controls';
+import '@vue-flow/core/dist/style.css';
+import '@vue-flow/controls/dist/style.css';
 import {layoutGraph} from '@src/utils/networkLayout';
 import {ProductionResult} from '@src/Tools/Production/Result/ProductionResult';
+import {GraphNode} from '@src/Tools/Production/Result/Nodes/GraphNode';
+import {RecipeNode} from '@src/Tools/Production/Result/Nodes/RecipeNode';
+import {MinerNode} from '@src/Tools/Production/Result/Nodes/MinerNode';
+import {InputNode} from '@src/Tools/Production/Result/Nodes/InputNode';
+import {ProductNode} from '@src/Tools/Production/Result/Nodes/ProductNode';
+import {ByproductNode} from '@src/Tools/Production/Result/Nodes/ByproductNode';
+import {SinkNode} from '@src/Tools/Production/Result/Nodes/SinkNode';
 import data from '@src/Data/Data';
 import {Strings} from '@src/Utils/Strings';
+import FactoryNode from '@src/components/FactoryNode.vue';
+
+interface FactoryNodeData {
+	kind: string;
+	icon: string;
+	title: string;
+	machine?: string;
+	machineIcon?: string;
+	machineCount?: number;
+	rate?: string;
+	accent: string;
+}
 
 const props = defineProps<{result: ProductionResult}>();
-const container = ref<HTMLElement>();
-const height = ref(460);
-let network: Network | undefined;
 
-// elk lays nodes out on a 100px-tall grid; size the frame to the chain instead of
-// a fixed 800px so small graphs don't leave a black void and big ones still scroll.
+// Vue Flow's Node/Edge generics instantiate too deeply for the object literals below
+// (TS2589), so the flow arrays and node-types map stay loose — the same tradeoff the
+// brief took. The view-model above is fully typed, which is where correctness matters.
+const nodes = ref<any[]>([]);
+const edges = ref<any[]>([]);
+const height = ref(460);
+const nodeTypes: Record<string, any> = {factory: markRaw(FactoryNode)};
+// A unique id keeps this flow's store isolated so a tab switch that remounts the
+// component can't inherit stale nodes or duplicate init handlers.
+const flowId = `result-graph-${Math.random().toString(36).slice(2)}`;
+const {fitView, onNodesInitialized} = useVueFlow(flowId);
+
+// elk lays nodes out on a 100px-tall grid; size the frame to the chain instead of a
+// fixed height so small graphs don't leave a black void and big ones still get room.
 const NODE_H = 100, H_MIN = 440, H_MAX = 820;
+
+function rate(amount: number): string {
+	return `${Strings.formatNumber(amount)} / min`;
+}
+
+// Build the FactoryNode view-model from a result graph node. Titles and icons read
+// straight off the domain objects (recipe/resource) — not getTitle(), which folds in
+// HTML and machine/amount lines meant for the old vis-network label.
+function viewModel(node: GraphNode): FactoryNodeData {
+	const accent = node.getVisNode().color?.background ?? '#5f7183';
+
+	if (node instanceof RecipeNode) {
+		const product = node.products[0];
+		return {
+			kind: 'recipe',
+			accent,
+			title: node.recipeData.recipe.name,
+			icon: product?.resource.className ?? '',
+			machine: node.recipeData.machine.name,
+			machineIcon: node.recipeData.machine.className,
+			machineCount: node.machineData.countMachines(),
+			rate: product ? rate(product.maxAmount) : undefined,
+		};
+	}
+
+	const amount = node.getOutputs()[0] ?? node.getInputs()[0];
+	const name = amount?.resource.name ?? '';
+	let kind = 'node';
+	let title = name;
+	if (node instanceof MinerNode) {
+		kind = 'miner';
+	} else if (node instanceof InputNode) {
+		kind = 'input';
+		title = `Input: ${name}`;
+	} else if (node instanceof ProductNode) {
+		kind = 'product';
+	} else if (node instanceof ByproductNode) {
+		kind = 'byproduct';
+		title = `Byproduct: ${name}`;
+	} else if (node instanceof SinkNode) {
+		kind = 'sink';
+		title = `Sink: ${name}`;
+	}
+
+	return {
+		kind,
+		accent,
+		title,
+		icon: amount?.resource.className ?? '',
+		rate: amount ? rate(amount.maxAmount) : undefined,
+	};
+}
 
 async function draw(): Promise<void> {
 	const graph = props.result.graph;
-	// elk layout on a flat {id,label} view; getVisNode() supplies the real styling.
+	// elk layout on a flat {id,label} view; the view-model supplies the real card content.
 	const laid = await layoutGraph(
 		graph.nodes.map((n) => ({id: n.id, label: n.getTitle()})),
 		graph.edges.map((e) => ({from: e.from.id, to: e.to.id})),
 	);
-	const pos = new Map(laid.map((n) => [n.id, {x: n.x, y: n.y}]));
+	const pos = new Map(laid.map((n) => [n.id, {x: n.x ?? 0, y: n.y ?? 0}]));
 	const ys = laid.map((n) => n.y ?? 0);
 	height.value = ys.length
 		? Math.min(Math.max(Math.max(...ys) - Math.min(...ys) + NODE_H + 48, H_MIN), H_MAX)
 		: H_MIN;
-	const nodes: Node[] = graph.nodes.map((n) => {
-		const v = n.getVisNode();
-		return {...v, x: pos.get(n.id)?.x, y: pos.get(n.id)?.y} as unknown as Node;
-	});
-	const edges: Edge[] = graph.edges.map((e) => ({
-		id: e.id, from: e.from.id, to: e.to.id,
-		label: `${data.getItemByClassName(e.itemAmount.item)?.name ?? e.itemAmount.item}\n${Strings.formatNumber(e.itemAmount.amount)} / min`,
-		// curve apart when a reverse edge also exists (bidirectional pair)
-		smooth: e.to.hasOutputTo(e.from) ? {enabled: true, type: 'curvedCW', roundness: 0.2} : false,
-	} as unknown as Edge));
 
-	network?.destroy();
-	// let the container adopt the new height before vis-network measures it
-	await nextTick();
-	if (!container.value) return;
-	network = new Network(container.value, {nodes, edges}, {
-		edges: {
-			arrows: 'to',
-			width: 1.5,
-			color: {color: '#5f7183', highlight: '#f99549', hover: '#f99549'},
-			font: {size: 13, multi: 'html', color: '#e8eaed', strokeWidth: 0, background: '#10131a'},
-		},
-		nodes: {
-			shape: 'box',
-			borderWidth: 1,
-			font: {size: 14, multi: 'html', color: '#eeeeee', face: 'system-ui, sans-serif'},
-			margin: {top: 10, left: 12, right: 12, bottom: 10},
-			shapeProperties: {borderRadius: 4},
-		},
-		interaction: {hover: true, tooltipDelay: 150},
-		physics: false,
-		layout: {hierarchical: false},
-	});
+	nodes.value = graph.nodes.map((n) => ({
+		id: String(n.id),
+		type: 'factory',
+		position: pos.get(n.id) ?? {x: 0, y: 0},
+		data: viewModel(n),
+	}));
+	edges.value = graph.edges.map((e) => ({
+		id: String(e.id),
+		source: String(e.from.id),
+		target: String(e.to.id),
+		type: 'smoothstep',
+		markerEnd: {type: MarkerType.ArrowClosed, color: '#5f7183', width: 18, height: 18},
+		label: `${data.getItemByClassName(e.itemAmount.item)?.name ?? e.itemAmount.item}  ${Strings.formatNumber(e.itemAmount.amount)}/min`,
+	}));
 }
 
+// fit once nodes are measured — covers the initial async layout and every re-solve.
+onNodesInitialized(() => fitView({padding: 0.2}));
 onMounted(draw);
 watch(() => props.result, draw); // re-draw when a new solve replaces the result
-onBeforeUnmount(() => network?.destroy());
 </script>
 
 <template>
-	<div ref="container" class="visualization" :style="{height: height + 'px'}"></div>
+	<div class="visualization" :style="{height: height + 'px'}">
+		<VueFlow
+			:id="flowId"
+			:nodes="nodes"
+			:edges="edges"
+			:node-types="nodeTypes"
+			:min-zoom="0.2"
+			:max-zoom="2"
+			:nodes-connectable="false"
+		>
+			<Background :gap="18" pattern-color="#2a313c" />
+			<Controls :show-interactive="false" />
+		</VueFlow>
+	</div>
 </template>
+
+<style scoped>
+.visualization {
+	overflow: hidden;
+}
+
+.visualization :deep(.vue-flow) {
+	height: 100%;
+	background: var(--hud-surface-2, #10131a);
+}
+
+/* Edges: HUD slate hairline, orange on hover/selection. */
+.visualization :deep(.vue-flow__edge-path) {
+	stroke: #5f7183;
+	stroke-width: 1.5;
+}
+
+.visualization :deep(.vue-flow__edge:hover .vue-flow__edge-path),
+.visualization :deep(.vue-flow__edge.selected .vue-flow__edge-path) {
+	stroke: var(--hud-orange, #f99549);
+}
+
+/* Edge labels: near-black chip + light mono, replacing Vue Flow's white pill. */
+.visualization :deep(.vue-flow__edge-text) {
+	fill: var(--hud-text, #e8eaed);
+	font-family: var(--hud-font-mono, ui-monospace, monospace);
+	font-size: 11px;
+}
+
+.visualization :deep(.vue-flow__edge-textbg) {
+	fill: var(--hud-surface-2, #10131a);
+	fill-opacity: 0.85;
+}
+
+/* Controls: dark HUD buttons instead of the default white stack. */
+.visualization :deep(.vue-flow__controls) {
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.visualization :deep(.vue-flow__controls-button) {
+	width: 26px;
+	height: 26px;
+	background: var(--hud-surface, #191d24);
+	border-bottom: 1px solid var(--hud-border, rgba(255, 255, 255, 0.1));
+}
+
+.visualization :deep(.vue-flow__controls-button:hover) {
+	background: var(--hud-surface-2, #10131a);
+}
+
+.visualization :deep(.vue-flow__controls-button svg) {
+	max-width: 12px;
+	max-height: 12px;
+	fill: var(--hud-text-dim, #8f99a6);
+}
+
+.visualization :deep(.vue-flow__controls-button:hover svg) {
+	fill: var(--hud-orange, #f99549);
+}
+</style>
