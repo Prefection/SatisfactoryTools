@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {markRaw, onMounted, ref, watch} from 'vue';
+import {markRaw, nextTick, onMounted, ref, watch} from 'vue';
 import {MarkerType, useVueFlow, VueFlow} from '@vue-flow/core';
 import {Background} from '@vue-flow/background';
 import {Controls} from '@vue-flow/controls';
@@ -48,7 +48,7 @@ const nodeTypes: Record<string, any> = {factory: markRaw(FactoryNode)};
 // A unique id keeps this flow's store isolated so a tab switch that remounts the
 // component can't inherit stale nodes or duplicate init handlers.
 const flowId = `result-graph-${Math.random().toString(36).slice(2)}`;
-const {fitView, onNodesInitialized, onNodeDragStop, getNodes, updateNodeData} = useVueFlow(flowId);
+const {fitView, onNodesInitialized, onNodeDragStop, getNodes, updateNodeData, updateNodeInternals} = useVueFlow(flowId);
 
 // edge id -> its endpoints, so a port can be ordered by the node it connects to.
 const edgeEnds = new Map<string, {source: number; target: number}>();
@@ -199,6 +199,7 @@ function reorderPorts(): void {
 		const yb = y.get(edgeEnds.get(b.id)?.[endpoint] ?? -1) ?? 0;
 		return ya - yb;
 	};
+	const changed: string[] = [];
 	for (const n of getNodes.value) {
 		const d = n.data as {inputs: FactoryPort[]; outputs: FactoryPort[]};
 		if (!d || (d.inputs.length < 2 && d.outputs.length < 2)) continue;
@@ -206,7 +207,12 @@ function reorderPorts(): void {
 			inputs: [...d.inputs].sort(byConnected('source')), // ordered by the source node's height
 			outputs: [...d.outputs].sort(byConnected('target')), // ordered by the target node's height
 		});
+		changed.push(n.id);
 	}
+	// Handles moved to new vertical slots; Vue Flow caches handle bounds, so tell it to
+	// re-measure (next tick, after the handles have re-rendered) or edges keep routing to the
+	// old positions.
+	if (changed.length) nextTick(() => updateNodeInternals(changed));
 }
 
 // fit + order ports once nodes are measured — covers the initial layout and every re-solve.
