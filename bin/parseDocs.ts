@@ -406,6 +406,13 @@ for (const key in json.schematics) {
 	slugs.push(slug);
 }
 
+// The UI references icons by a lowercased, hyphenated className (Desc_IronIngot_C -> desc-ironingot-c),
+// matching the committed icon filenames. Set it on every entity the UI can render an icon for.
+const iconSlug = (className: string) => className.toLowerCase().replace(/_/g, '-');
+for (const k in json.items) json.items[k].icon = iconSlug(k);
+for (const k in json.buildings) json.buildings[k].icon = iconSlug(k);
+for (const k in json.schematics) json.schematics[k].icon = iconSlug(k);
+
 fs.writeFileSync(path.join(__dirname, '..', 'data', `data${version}.json`), JSON.stringify(json, null, '\t') + '\n');
 
 const diffGenerator = new DiffGenerator();
