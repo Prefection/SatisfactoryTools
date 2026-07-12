@@ -1,5 +1,4 @@
 import {RecipeResult} from '@src/Tools/Production/RecipeResult';
-import {DataSet} from 'vis-network';
 import model from '@src/Data/Model';
 import {IElkGraph} from '@src/Solver/IElkGraph';
 import {IProductionDataRequest} from '@src/Tools/Production/IProductionData';
@@ -7,7 +6,7 @@ import {IProductionDataRequest} from '@src/Tools/Production/IProductionData';
 export class ProductionToolResult
 {
 
-	public readonly nodes = new DataSet<{
+	public readonly nodes: {
 		id: number,
 		label: string,
 		title?: string,
@@ -16,8 +15,8 @@ export class ProductionToolResult
 		x?: number,
 		y?: number,
 		type?: string,
-	}>();
-	public readonly edges = new DataSet<{
+	}[] = [];
+	public readonly edges: {
 		from: number,
 		to: number,
 		label?: string,
@@ -25,7 +24,7 @@ export class ProductionToolResult
 		id?: number,
 		color?: {color: string, highlight: string},
 		font?: {color: string},
-	}>();
+	}[] = [];
 	public readonly elkGraph: IElkGraph = {
 		id: 'root',
 		layoutOptions: {
@@ -81,7 +80,7 @@ export class ProductionToolResult
 				this.powerUsage.max += maxPowerUsage;
 			}
 
-			this.nodes.add({
+			this.nodes.push({
 				id: id,
 				label: '',
 				title: '',
@@ -107,7 +106,7 @@ export class ProductionToolResult
 		}[] = [];
 		for (const input of productionRequest.input) {
 			if (input.item) {
-				this.nodes.add({
+				this.nodes.push({
 					id: id,
 					label: ProductionToolResult.getRecipeDisplayedName(model.getItem(input.item).prototype.name) + '\n' + input.amount.toFixed(2) + ' / min',
 					title: '',
@@ -214,7 +213,7 @@ export class ProductionToolResult
 		}
 
 		for (const key in edges) {
-			this.edges.add(edges[key]);
+			this.edges.push(edges[key]);
 		}
 
 		for (const k in this.rawResources) {
@@ -223,7 +222,7 @@ export class ProductionToolResult
 				const item = model.getItem(k);
 
 				// TODO add miners
-				this.nodes.add({
+				this.nodes.push({
 					id: id,
 					label: ProductionToolResult.getRecipeDisplayedName(item.prototype.name) + '\n' + resource.amount.toFixed(2) + ' / min',
 					title: '',
@@ -238,7 +237,7 @@ export class ProductionToolResult
 				});
 
 				for (const data of resource.data) {
-					this.edges.add({
+					this.edges.push({
 						from: id,
 						to: data.id,
 						label: item.prototype.name + '\n' + data.amount.toFixed(2) + ' / min',
@@ -279,7 +278,7 @@ export class ProductionToolResult
 				amount += producedItem[producedNodeId];
 			}
 
-			this.nodes.add({
+			this.nodes.push({
 				id: id,
 				label: ProductionToolResult.getRecipeDisplayedName(itemName) + '\n' + amount.toFixed(2) + ' / min',
 				color: this.getNodeColor(ProductionToolResult.TYPE_PRODUCT, false),
@@ -293,7 +292,7 @@ export class ProductionToolResult
 			});
 
 			for (producedNodeId in producedItem) {
-				this.edges.add({
+				this.edges.push({
 					from: parseInt(producedNodeId, 10),
 					to: id,
 					label: itemName + '\n' + producedItem[producedNodeId].toFixed(2) + ' / min',
@@ -372,12 +371,11 @@ export class ProductionToolResult
 		} else {
 			this.hiddenNodes.push(id);
 		}
-		const node = this.nodes.get(id);
+		const node = this.nodes.find((n) => n.id === id);
 		if (node) {
 			const type = node.type ? node.type : ProductionToolResult.TYPE_NORMAL;
 			node.color = this.getNodeColor(type, hidden);
 			node.font = this.getFontColor(hidden);
-			this.nodes.updateOnly(node);
 
 			this.edges.forEach((edge) => {
 				if (edge.from === id || edge.to === id) {
@@ -388,7 +386,6 @@ export class ProductionToolResult
 					}
 					edge.color = this.getEdgeColor(hidden);
 					edge.font = this.getFontColor(hidden);
-					this.edges.updateOnly(edge as any);
 				}
 			});
 		}
@@ -406,11 +403,11 @@ export class ProductionToolResult
 		if (!recipe) {
 			return;
 		}
-		this.nodes.update({
-			id: id,
-			label: ProductionToolResult.getRecipeDisplayedName(recipe.recipe.prototype.name) + '\n' + recipe.getMachineCount().toFixed(2) + 'x ' + recipe.recipe.machine.name,
-			title: recipe.getMachineTooltip(),
-		});
+		const node = this.nodes.find((n) => n.id === id);
+		if (node) {
+			node.label = ProductionToolResult.getRecipeDisplayedName(recipe.recipe.prototype.name) + '\n' + recipe.getMachineCount().toFixed(2) + 'x ' + recipe.recipe.machine.name;
+			node.title = recipe.getMachineTooltip();
+		}
 	}
 
 	private static getRecipeDisplayedName(name: string): string

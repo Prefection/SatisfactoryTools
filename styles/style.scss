@@ -3,20 +3,9 @@
 @use 'hud.scss';
 @use "theme/theme_variables";
 
-@import 'vis-network/styles/vis-network.css';
-
 // hey bootswatch, we don't need microtext, thx!
 .navbar, .dropdown-menu, .dropdown-header, .table, label, .radio label, .checkbox label, .help-block {
 	font-size: 1rem;
-}
-
-div.vis-tooltip {
-	font-family: theme_variables.$font-family-sans-serif;
-	background-color: theme_variables.$gray-700;
-	color: #eeeeee;
-	* {
-		font-size: 0.8rem;
-	}
 }
 
 html {

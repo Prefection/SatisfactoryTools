@@ -53,7 +53,7 @@ function rate(amount: number): string {
 
 // Build the FactoryNode view-model from a result graph node. Titles and icons read
 // straight off the domain objects (recipe/resource) — not getTitle(), which folds in
-// HTML and machine/amount lines meant for the old vis-network label.
+// HTML and machine/amount lines meant for the old flat graph label.
 function viewModel(node: GraphNode): FactoryNodeData {
 	const accent = node.getVisNode().color?.background ?? '#5f7183';
 
