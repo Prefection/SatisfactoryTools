@@ -102,4 +102,42 @@ assertFeasible(routed, routedResp, 'plastic-sink-routing');
 assert.ok(Math.abs((routedResp['Desc_HeavyOilResidue_C#Sink'] ?? 0) - 10) < 1e-4, `expected 10 heavy oil residue sink, got ${JSON.stringify(routedResp)}`);
 assert.ok(!('Desc_HeavyOilResidue_C#Byproduct' in routedResp), 'residue must not be a byproduct when sinkable');
 
+// --- Maximize: iron ingot capped at 70 ore/min -> 2.333 smelters, 70 ingot (fractional) ---
+const maxFrac = await solveProduction(request({
+	resourceMax: {...resourceMax, Desc_OreIron_C: 70},
+	production: [{item: 'Desc_IronIngot_C', type: 'max', amount: 0, ratio: 100}],
+}), data);
+assert.ok(Math.abs((maxFrac['Desc_IronIngot_C#Product'] ?? 0) - 70) < 1e-4, `maximize ingot = 70, got ${maxFrac['Desc_IronIngot_C#Product']}`);
+assert.ok(Math.abs((maxFrac['Recipe_IngotIron_C@100#Desc_SmelterMk1_C'] ?? 0) - 70 / 30) < 1e-4, 'fractional 2.333 smelters');
+
+// --- Maximize + whole machines: 2 smelters, 60 ingot (10 ore idle) ---
+const maxInt = await solveProduction(request({
+	integerMachines: true,
+	resourceMax: {...resourceMax, Desc_OreIron_C: 70},
+	production: [{item: 'Desc_IronIngot_C', type: 'max', amount: 0, ratio: 100}],
+}), data);
+const intSmelters = maxInt['Recipe_IngotIron_C@100#Desc_SmelterMk1_C'] ?? 0;
+assert.strictEqual(intSmelters, Math.round(intSmelters), 'integer smelters are whole');
+assert.strictEqual(intSmelters, 2, `2 whole smelters, got ${intSmelters}`);
+assert.ok(Math.abs((maxInt['Desc_IronIngot_C#Product'] ?? 0) - 60) < 1e-4, 'whole-machine ingot = 60');
+
+// --- List-order priority: ingot vs iron rod (rod is made from ingot), capped ore ---
+// ingot-first starves rod (all ingot output is locked); rod-first leaves rod > 0.
+const ingotFirst = await solveProduction(request({
+	resourceMax: {...resourceMax, Desc_OreIron_C: 60},
+	production: [
+		{item: 'Desc_IronIngot_C', type: 'max', amount: 0, ratio: 100},
+		{item: 'Desc_IronRod_C', type: 'max', amount: 0, ratio: 100},
+	],
+}), data);
+const rodFirst = await solveProduction(request({
+	resourceMax: {...resourceMax, Desc_OreIron_C: 60},
+	production: [
+		{item: 'Desc_IronRod_C', type: 'max', amount: 0, ratio: 100},
+		{item: 'Desc_IronIngot_C', type: 'max', amount: 0, ratio: 100},
+	],
+}), data);
+assert.ok((rodFirst['Desc_IronRod_C#Product'] ?? 0) > 1e-4, 'rod-first yields rod');
+assert.ok((ingotFirst['Desc_IronRod_C#Product'] ?? 0) < 1e-4, 'ingot-first starves rod');
+
 console.log('OK: solveProduction worked example + feasibility set + co-product byproduct/sink routing pass.');

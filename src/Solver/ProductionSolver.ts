@@ -3,9 +3,12 @@ import {IJsonSchema} from '@src/Schema/IJsonSchema';
 import {IRecipeSchema} from '@src/Schema/IRecipeSchema';
 import {IProductionDataApiRequest, IProductionDataApiResponse} from '@src/Tools/Production/IProductionData';
 
-// 'perMinute' mirrors Constants.PRODUCTION_TYPE.PER_MINUTE (frozen game constant); inline to avoid the import.
 const PER_MINUTE = 'perMinute';
+const MAXIMIZE = 'max';
 const EPS = 1e-7;
+// Small penalty so a maximize solve, among equally-maximal plans, prefers less raw-resource use.
+// Far below any real output magnitude, so it never changes which plan is maximal.
+const COST_PENALTY = 1e-6;
 
 export function ratePerMachine(recipe: IRecipeSchema, perCycleAmount: number, data: IJsonSchema): number {
 	const building = data.buildings[recipe.producedIn[0]];
@@ -19,12 +22,15 @@ function isAllowedRecipe(recipe: IRecipeSchema, request: IProductionDataApiReque
 	return recipe.alternate ? request.allowedAlternateRecipes.includes(recipe.className) : true;
 }
 
-export function buildProductionModel(request: IProductionDataApiRequest, data: IJsonSchema): Model {
-	const variables: {[name: string]: {[coef: string]: number}} = {};
-	const constraints: {[name: string]: {min?: number; max?: number}} = {};
+type Vars = {[name: string]: {[coef: string]: number}};
+type Cons = {[name: string]: {min?: number; max?: number}};
+
+// Shared model pieces (everything except direction/objective). Per-minute demand becomes the balance floor.
+function buildBase(request: IProductionDataApiRequest, data: IJsonSchema): {variables: Vars; constraints: Cons} {
+	const variables: Vars = {};
+	const constraints: Cons = {};
 	const items = new Set<string>();
 
-	// Fixed per-minute demand per target item.
 	const demand: {[item: string]: number} = {};
 	for (const p of request.production) {
 		if (p.item && p.type === PER_MINUTE && p.amount > 0) {
@@ -33,7 +39,6 @@ export function buildProductionModel(request: IProductionDataApiRequest, data: I
 		}
 	}
 
-	// One variable per allowed recipe: net items/min per machine into each item balance.
 	for (const recipe of Object.values(data.recipes)) {
 		if (!isAllowedRecipe(recipe, request)) continue;
 		const coefs: {[coef: string]: number} = {};
@@ -48,7 +53,6 @@ export function buildProductionModel(request: IProductionDataApiRequest, data: I
 		variables['recipe:' + recipe.className] = coefs;
 	}
 
-	// One extraction variable per non-blocked raw resource, capped and cost-weighted.
 	for (const res of Object.keys(data.resources)) {
 		if (request.blockedResources.includes(res)) continue;
 		variables['mine:' + res] = {['item:' + res]: 1, ['cap:' + res]: 1, cost: request.resourceWeight[res] ?? 0};
@@ -56,7 +60,6 @@ export function buildProductionModel(request: IProductionDataApiRequest, data: I
 		items.add(res);
 	}
 
-	// One free (capped) supply variable per provided input.
 	for (const input of request.input) {
 		if (input.item && input.amount > 0) {
 			variables['input:' + input.item] = {['item:' + input.item]: 1, ['incap:' + input.item]: 1};
@@ -65,15 +68,17 @@ export function buildProductionModel(request: IProductionDataApiRequest, data: I
 		}
 	}
 
-	// Balance constraint per referenced item: production - consumption >= demand (free disposal above demand).
 	for (const item of items) {
 		constraints['item:' + item] = {min: demand[item] ?? 0};
 	}
 
-	return {direction: 'minimize', objective: 'cost', constraints, variables};
+	return {variables, constraints};
 }
 
-// production - consumption per item, recomputed from the solved variable values.
+function recipeKeys(variables: Vars): string[] {
+	return Object.keys(variables).filter((k) => k.startsWith('recipe:'));
+}
+
 function computeNet(solution: Solution, data: IJsonSchema): {[item: string]: number} {
 	const net: {[item: string]: number} = {};
 	const add = (item: string, amount: number) => { net[item] = (net[item] ?? 0) + amount; };
@@ -92,11 +97,11 @@ function computeNet(solution: Solution, data: IJsonSchema): {[item: string]: num
 	return net;
 }
 
-export async function solveProduction(request: IProductionDataApiRequest, data: IJsonSchema): Promise<IProductionDataApiResponse> {
-	const solution = solve(buildProductionModel(request, data));
+// Encode a solved LP/MILP solution into the API response shape. `productItems` are the items to
+// report as #Product (their amount comes from `productAmount`); other net surplus routes to Sink/Byproduct.
+function encode(solution: Solution, data: IJsonSchema, request: IProductionDataApiRequest,
+                productAmount: {[item: string]: number}): IProductionDataApiResponse {
 	const response: IProductionDataApiResponse = {};
-	if (solution.status !== 'optimal') return response; // infeasible/unbounded -> empty, like the old remote catch
-
 	for (const [name, value] of solution.variables) {
 		if (value <= EPS) continue;
 		if (name.startsWith('recipe:')) {
@@ -108,25 +113,79 @@ export async function solveProduction(request: IProductionDataApiRequest, data: 
 			response[`${name.slice(6)}#Input`] = value;
 		}
 	}
-
-	// Aggregate demand per item (mirrors buildProductionModel's demand map) so duplicate target
-	// rows for the same item report their summed amount instead of the last row overwriting the rest.
-	const targetDemand: {[item: string]: number} = {};
-	for (const p of request.production) {
-		if (p.item && p.type === PER_MINUTE && p.amount > 0) {
-			targetDemand[p.item] = (targetDemand[p.item] ?? 0) + p.amount;
-		}
-	}
-	const targets = new Set(Object.keys(targetDemand));
-	for (const [item, amount] of Object.entries(targetDemand)) {
+	const targets = new Set(Object.keys(productAmount));
+	for (const [item, amount] of Object.entries(productAmount)) {
 		response[`${item}#Product`] = amount;
 	}
-
-	// free-disposal excess -> Sink if sinkable else Byproduct. Refine only if a live spot-check diverges.
 	const net = computeNet(solution, data);
 	for (const [item, amount] of Object.entries(net)) {
 		if (targets.has(item) || amount <= EPS) continue;
 		response[`${item}#${request.sinkableResources.includes(item) ? 'Sink' : 'Byproduct'}`] = amount;
 	}
 	return response;
+}
+
+export function buildProductionModel(request: IProductionDataApiRequest, data: IJsonSchema): Model {
+	const {variables, constraints} = buildBase(request, data);
+	return {direction: 'minimize', objective: 'cost', constraints, variables};
+}
+
+export async function solveProduction(request: IProductionDataApiRequest, data: IJsonSchema): Promise<IProductionDataApiResponse> {
+	const maxRows = request.production.filter((p) => p.item && p.type === MAXIMIZE);
+
+	// No maximize rows -> today's single min-cost LP (per-minute demand only).
+	if (maxRows.length === 0) {
+		const solution = solve(buildProductionModel(request, data));
+		if (solution.status !== 'optimal') return {};
+		const productAmount: {[item: string]: number} = {};
+		for (const p of request.production) {
+			if (p.item && p.type === PER_MINUTE && p.amount > 0) {
+				productAmount[p.item] = (productAmount[p.item] ?? 0) + p.amount;
+			}
+		}
+		return encode(solution, data, request, productAmount);
+	}
+
+	// Maximize: one solve per max row in list order; lock each achieved output as a floor for the next.
+	const base = buildBase(request, data);
+	const integers = request.integerMachines ? recipeKeys(base.variables) : undefined;
+	const locked: {[item: string]: number} = {}; // max item -> achieved output, becomes a >= floor
+	let lastSolution: Solution | null = null;
+
+	for (const row of maxRows) {
+		const X = row.item as string;
+		const variables: Vars = {};
+		for (const [k, v] of Object.entries(base.variables)) variables[k] = {...v};
+		const constraints: Cons = {};
+		for (const [k, v] of Object.entries(base.constraints)) constraints[k] = {...v};
+
+		// One "out" variable per max item pulls that item out as product; its coefficient on 'goal'
+		// is the objective. The current target scores 1; previously-locked targets score 0 but keep
+		// a floor constraint so their priority holds.
+		const maxedSoFar = [...Object.keys(locked), X];
+		for (const item of maxedSoFar) {
+			const v: {[coef: string]: number} = {['item:' + item]: -1, ['out:' + item]: 1, goal: item === X ? 1 : 0};
+			variables['out:' + item] = v;
+			if (item in locked) constraints['out:' + item] = {min: locked[item]};
+		}
+		// Tiny penalty: subtract COST_PENALTY * resource-weight from the goal on mine vars so, among
+		// maximal plans, the solver uses less raw resource. Never large enough to reduce the maximum.
+		for (const k of Object.keys(variables)) {
+			if (variables[k].cost) variables[k] = {...variables[k], goal: (variables[k].goal ?? 0) - COST_PENALTY * variables[k].cost};
+		}
+
+		const model: Model = {direction: 'maximize', objective: 'goal', constraints, variables, ...(integers ? {integers} : {})};
+		lastSolution = solve(model);
+		if (lastSolution.status !== 'optimal') return {};
+		locked[X] = lastSolution.variables.find(([n]) => n === 'out:' + X)?.[1] ?? 0;
+	}
+
+	// Report per-minute demands + each max item's achieved output as products.
+	const productAmount: {[item: string]: number} = {...locked};
+	for (const p of request.production) {
+		if (p.item && p.type === PER_MINUTE && p.amount > 0) {
+			productAmount[p.item] = (productAmount[p.item] ?? 0) + p.amount;
+		}
+	}
+	return encode(lastSolution as Solution, data, request, productAmount);
 }

@@ -29,6 +29,8 @@ export interface IProductionDataRequest
 
 	sinkableResources: string[]; // whether or not you can sink a given resource
 
+	integerMachines?: boolean; // whole-machine (MILP) counts; only applied in maximize mode
+
 	production: IProductionDataRequestItem[];
 	input: IProductionDataRequestInput[];
 
