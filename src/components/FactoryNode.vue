@@ -2,6 +2,11 @@
 import {Handle, Position} from '@vue-flow/core';
 import ItemIcon from '@src/components/ItemIcon.vue';
 
+interface FactoryPort {
+	id: string;
+	name: string;
+}
+
 defineProps<{
 	data: {
 		kind: string;
@@ -12,13 +17,25 @@ defineProps<{
 		machineCount?: number;
 		rate?: string;
 		accent: string;
+		inputs: FactoryPort[];
+		outputs: FactoryPort[];
 	};
 }>();
+
+// Spread N ports evenly along a node edge: 1 -> 50%, 2 -> 33%/66%, etc.
+function portTop(index: number, count: number): string {
+	return `${((index + 1) / (count + 1)) * 100}%`;
+}
 </script>
 
 <template>
 	<div class="factory-node" :data-kind="data.kind" :style="{'--node-accent': data.accent}">
-		<Handle type="target" :position="Position.Left" class="factory-node__port" />
+		<Handle
+			v-for="(port, i) in data.inputs" :key="'in-' + port.id"
+			type="target" :id="port.id" :position="Position.Left"
+			:style="{top: portTop(i, data.inputs.length)}" :title="port.name"
+			class="factory-node__port"
+		/>
 
 		<div class="factory-node__head">
 			<ItemIcon class="factory-node__icon" :item="data.icon" :size="26" hide-tooltip />
@@ -33,7 +50,12 @@ defineProps<{
 
 		<div v-if="data.rate" class="factory-node__rate">{{ data.rate }}</div>
 
-		<Handle type="source" :position="Position.Right" class="factory-node__port" />
+		<Handle
+			v-for="(port, i) in data.outputs" :key="'out-' + port.id"
+			type="source" :id="port.id" :position="Position.Right"
+			:style="{top: portTop(i, data.outputs.length)}" :title="port.name"
+			class="factory-node__port"
+		/>
 	</div>
 </template>
 

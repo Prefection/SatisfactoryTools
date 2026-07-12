@@ -18,6 +18,11 @@ import data from '@src/Data/Data';
 import {Strings} from '@src/Utils/Strings';
 import FactoryNode from '@src/components/FactoryNode.vue';
 
+interface FactoryPort {
+	id: string;   // item className — the handle id edges connect to
+	name: string; // item display name (title/tooltip)
+}
+
 interface FactoryNodeData {
 	kind: string;
 	icon: string;
@@ -27,6 +32,8 @@ interface FactoryNodeData {
 	machineCount?: number;
 	rate?: string;
 	accent: string;
+	inputs: FactoryPort[];  // one target handle per distinct incoming item
+	outputs: FactoryPort[]; // one source handle per distinct outgoing item
 }
 
 const props = defineProps<{result: ProductionResult}>();
@@ -68,6 +75,8 @@ function viewModel(node: GraphNode): FactoryNodeData {
 			machineIcon: node.recipeData.machine.className,
 			machineCount: node.machineData.countMachines(),
 			rate: product ? rate(product.maxAmount) : undefined,
+			inputs: [],
+			outputs: [],
 		};
 	}
 
@@ -96,6 +105,8 @@ function viewModel(node: GraphNode): FactoryNodeData {
 		title,
 		icon: amount?.resource.className ?? '',
 		rate: amount ? rate(amount.maxAmount) : undefined,
+		inputs: [],
+		outputs: [],
 	};
 }
 
@@ -112,16 +123,37 @@ async function draw(): Promise<void> {
 		? Math.min(Math.max(Math.max(...ys) - Math.min(...ys) + NODE_H + 48, H_MIN), H_MAX)
 		: H_MIN;
 
+	// Derive one port per distinct item per side from the edges: a node's outgoing-edge
+	// items become source handles, its incoming-edge items become target handles. Edges
+	// then attach to the handle matching their item, so each item gets its own point.
+	const outPorts = new Map<number, Map<string, string>>();
+	const inPorts = new Map<number, Map<string, string>>();
+	const portList = (m: Map<number, Map<string, string>>, id: number) => {
+		let items = m.get(id);
+		if (!items) m.set(id, (items = new Map()));
+		return items;
+	};
+	for (const e of graph.edges) {
+		const item = e.itemAmount.item;
+		const name = data.getItemByClassName(item)?.name ?? item;
+		portList(outPorts, e.from.id).set(item, name);
+		portList(inPorts, e.to.id).set(item, name);
+	}
+	const toPorts = (items?: Map<string, string>): FactoryPort[] =>
+		items ? [...items].map(([id, name]) => ({id, name})) : [];
+
 	nodes.value = graph.nodes.map((n) => ({
 		id: String(n.id),
 		type: 'factory',
 		position: pos.get(n.id) ?? {x: 0, y: 0},
-		data: viewModel(n),
+		data: {...viewModel(n), inputs: toPorts(inPorts.get(n.id)), outputs: toPorts(outPorts.get(n.id))},
 	}));
 	edges.value = graph.edges.map((e) => ({
 		id: String(e.id),
 		source: String(e.from.id),
 		target: String(e.to.id),
+		sourceHandle: e.itemAmount.item, // attach to this node's port for that item
+		targetHandle: e.itemAmount.item,
 		type: 'smoothstep',
 		markerEnd: {type: MarkerType.ArrowClosed, color: '#5f7183', width: 18, height: 18},
 		label: `${data.getItemByClassName(e.itemAmount.item)?.name ?? e.itemAmount.item}  ${Strings.formatNumber(e.itemAmount.amount)}/min`,
