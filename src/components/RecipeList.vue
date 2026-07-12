@@ -46,22 +46,23 @@ function setAll(enabled: boolean): void {
 </script>
 
 <template>
-	<div class="recipe-list-card card">
-		<div class="card-header d-flex">
-			<span class="recipe-list-card-title text-nowrap">{{ title }}</span>
-
-			<input type="text" v-model="query" class="form-control" placeholder="Search for a recipe">
-
-			<span class="btn-group">
-				<span class="btn btn-secondary px-3" @click="setAll(true)">All</span>
-				<span class="btn btn-secondary px-3" @click="setAll(false)">None</span>
-				<span class="btn btn-secondary" @click="collapsed = !collapsed">
-					<span class="fas fa-fw" :class="collapsed ? 'fa-chevron-down' : 'fa-chevron-up'"></span>
+	<div class="hud-panel">
+		<div class="hud-section-header">
+			<span class="hud-section-header__title">{{ title }}</span>
+			<span class="hud-section-header__help">Choose which recipes the planner may use.</span>
+			<span class="hud-section-header__actions">
+				<input type="text" v-model="query" class="form-control" placeholder="Search for a recipe">
+				<span class="btn-group">
+					<span class="btn btn-secondary px-3" @click="setAll(true)">All</span>
+					<span class="btn btn-secondary px-3" @click="setAll(false)">None</span>
+					<span class="btn btn-secondary" @click="collapsed = !collapsed">
+						<span class="fas fa-fw" :class="collapsed ? 'fa-chevron-down' : 'fa-chevron-up'"></span>
+					</span>
 				</span>
 			</span>
 		</div>
 
-		<div class="card-body" v-show="!collapsed">
+		<div v-show="!collapsed">
 			<table class="alternate-recipe-list">
 				<tr v-for="recipe in filtered" :key="recipe.className" @click="toggle(recipe.className)" :class="{disabled: !isEnabled(recipe.className)}">
 					<td>
