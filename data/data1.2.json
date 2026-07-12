@@ -23952,12 +23952,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "bp-eqdesczipline-c"
 		},
 		"BP_EquipmentDescriptorGasmask_C": {
@@ -23970,12 +23964,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "bp-equipmentdescriptorgasmask-c"
 		},
 		"BP_EquipmentDescriptorHazmatSuit_C": {
@@ -23988,12 +23976,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "bp-equipmentdescriptorhazmatsuit-c"
 		},
 		"BP_EquipmentDescriptorHoverPack_C": {
@@ -24006,12 +23988,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "bp-equipmentdescriptorhoverpack-c"
 		},
 		"BP_EquipmentDescriptorJetPack_C": {
@@ -24024,12 +24000,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "bp-equipmentdescriptorjetpack-c"
 		},
 		"BP_EquipmentDescriptorJumpingStilts_C": {
@@ -24042,12 +24012,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "bp-equipmentdescriptorjumpingstilts-c"
 		},
 		"BP_EquipmentDescriptorNobeliskDetonator_C": {
@@ -24060,12 +24024,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "bp-equipmentdescriptornobeliskdetonator-c"
 		},
 		"BP_EquipmentDescriptorObjectScanner_C": {
@@ -24078,12 +24036,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "bp-equipmentdescriptorobjectscanner-c"
 		},
 		"BP_EquipmentDescriptorRifle_C": {
@@ -24096,12 +24048,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "bp-equipmentdescriptorrifle-c"
 		},
 		"BP_EquipmentDescriptorShockShank_C": {
@@ -24114,12 +24060,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "bp-equipmentdescriptorshockshank-c"
 		},
 		"BP_EquipmentDescriptorStunSpear_C": {
@@ -24132,12 +24072,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "bp-equipmentdescriptorstunspear-c"
 		},
 		"BP_ItemDescriptorPortableMiner_C": {
@@ -24150,12 +24084,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "bp-itemdescriptorportableminer-c"
 		},
 		"Desc_AlienDNACapsule_C": {
@@ -24168,12 +24096,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-aliendnacapsule-c"
 		},
 		"Desc_AlienPowerFuel_C": {
@@ -24186,12 +24108,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-alienpowerfuel-c"
 		},
 		"Desc_AlienProtein_C": {
@@ -24204,12 +24120,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-alienprotein-c"
 		},
 		"Desc_AluminaSolution_C": {
@@ -24222,12 +24132,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": true,
-			"fluidColor": {
-				"r": 193,
-				"g": 193,
-				"b": 193,
-				"a": 0
-			},
 			"icon": "desc-aluminasolution-c"
 		},
 		"Desc_AluminumCasing_C": {
@@ -24240,12 +24144,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-aluminumcasing-c"
 		},
 		"Desc_AluminumIngot_C": {
@@ -24258,12 +24156,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-aluminumingot-c"
 		},
 		"Desc_AluminumPlateReinforced_C": {
@@ -24276,12 +24168,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-aluminumplatereinforced-c"
 		},
 		"Desc_AluminumPlate_C": {
@@ -24294,12 +24180,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-aluminumplate-c"
 		},
 		"Desc_AluminumScrap_C": {
@@ -24312,12 +24192,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-aluminumscrap-c"
 		},
 		"Desc_Battery_C": {
@@ -24330,12 +24204,6 @@
 			"energyValue": 6000,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-battery-c"
 		},
 		"Desc_Berry_C": {
@@ -24348,12 +24216,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-berry-c"
 		},
 		"Desc_Biofuel_C": {
@@ -24366,12 +24228,6 @@
 			"energyValue": 450,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-biofuel-c"
 		},
 		"Desc_Cable_C": {
@@ -24384,12 +24240,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-cable-c"
 		},
 		"Desc_CartridgeChaos_C": {
@@ -24402,12 +24252,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-cartridgechaos-c"
 		},
 		"Desc_CartridgeSmartProjectile_C": {
@@ -24420,12 +24264,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-cartridgesmartprojectile-c"
 		},
 		"Desc_CartridgeStandard_C": {
@@ -24438,12 +24276,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-cartridgestandard-c"
 		},
 		"Desc_Cement_C": {
@@ -24456,12 +24288,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-cement-c"
 		},
 		"Desc_Chainsaw_C": {
@@ -24474,12 +24300,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-chainsaw-c"
 		},
 		"Desc_CircuitBoardHighSpeed_C": {
@@ -24492,12 +24312,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-circuitboardhighspeed-c"
 		},
 		"Desc_CircuitBoard_C": {
@@ -24510,12 +24324,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-circuitboard-c"
 		},
 		"Desc_Coal_C": {
@@ -24528,12 +24336,6 @@
 			"energyValue": 300,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-coal-c"
 		},
 		"Desc_CompactedCoal_C": {
@@ -24546,12 +24348,6 @@
 			"energyValue": 630,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-compactedcoal-c"
 		},
 		"Desc_ComputerSuper_C": {
@@ -24564,12 +24360,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-computersuper-c"
 		},
 		"Desc_Computer_C": {
@@ -24582,12 +24372,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-computer-c"
 		},
 		"Desc_CoolingSystem_C": {
@@ -24600,12 +24384,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-coolingsystem-c"
 		},
 		"Desc_CopperDust_C": {
@@ -24618,12 +24396,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-copperdust-c"
 		},
 		"Desc_CopperIngot_C": {
@@ -24636,12 +24408,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-copperingot-c"
 		},
 		"Desc_CopperSheet_C": {
@@ -24654,12 +24420,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-coppersheet-c"
 		},
 		"Desc_CrystalOscillator_C": {
@@ -24672,12 +24432,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-crystaloscillator-c"
 		},
 		"Desc_CrystalShard_C": {
@@ -24690,12 +24444,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-crystalshard-c"
 		},
 		"Desc_Crystal_C": {
@@ -24708,12 +24456,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-crystal-c"
 		},
 		"Desc_Crystal_mk2_C": {
@@ -24726,12 +24468,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-crystal-mk2-c"
 		},
 		"Desc_Crystal_mk3_C": {
@@ -24744,12 +24480,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-crystal-mk3-c"
 		},
 		"Desc_DarkEnergy_C": {
@@ -24762,12 +24492,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": true,
-			"fluidColor": {
-				"r": 253,
-				"g": 175,
-				"b": 249,
-				"a": 150
-			},
 			"icon": "desc-darkenergy-c"
 		},
 		"Desc_DarkMatter_C": {
@@ -24780,12 +24504,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-darkmatter-c"
 		},
 		"Desc_Diamond_C": {
@@ -24798,12 +24516,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-diamond-c"
 		},
 		"Desc_DissolvedSilica_C": {
@@ -24816,12 +24528,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": true,
-			"fluidColor": {
-				"r": 226,
-				"g": 190,
-				"b": 238,
-				"a": 0
-			},
 			"icon": "desc-dissolvedsilica-c"
 		},
 		"Desc_ElectromagneticControlRod_C": {
@@ -24834,12 +24540,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-electromagneticcontrolrod-c"
 		},
 		"Desc_Fabric_C": {
@@ -24852,12 +24552,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-fabric-c"
 		},
 		"Desc_FicsiteIngot_C": {
@@ -24870,12 +24564,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-ficsiteingot-c"
 		},
 		"Desc_FicsiteMesh_C": {
@@ -24888,12 +24576,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-ficsitemesh-c"
 		},
 		"Desc_FicsoniumFuelRod_C": {
@@ -24906,12 +24588,6 @@
 			"energyValue": 150000,
 			"radioactiveDecay": 1000,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-ficsoniumfuelrod-c"
 		},
 		"Desc_Ficsonium_C": {
@@ -24924,12 +24600,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 250,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-ficsonium-c"
 		},
 		"Desc_Filter_C": {
@@ -24942,12 +24612,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-filter-c"
 		},
 		"Desc_FluidCanister_C": {
@@ -24960,12 +24624,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-fluidcanister-c"
 		},
 		"Desc_Fuel_C": {
@@ -24978,12 +24636,6 @@
 			"energyValue": 750,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 235,
-				"g": 125,
-				"b": 21,
-				"a": 255
-			},
 			"icon": "desc-fuel-c"
 		},
 		"Desc_GasTank_C": {
@@ -24996,12 +24648,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-gastank-c"
 		},
 		"Desc_GenericBiomass_C": {
@@ -25014,12 +24660,6 @@
 			"energyValue": 180,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-genericbiomass-c"
 		},
 		"Desc_GoldIngot_C": {
@@ -25032,12 +24672,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-goldingot-c"
 		},
 		"Desc_GolfCartGold_C": {
@@ -25050,12 +24684,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-golfcartgold-c"
 		},
 		"Desc_GolfCart_C": {
@@ -25068,12 +24696,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-golfcart-c"
 		},
 		"Desc_GunpowderMK2_C": {
@@ -25086,12 +24708,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-gunpowdermk2-c"
 		},
 		"Desc_Gunpowder_C": {
@@ -25104,12 +24720,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-gunpowder-c"
 		},
 		"Desc_HatcherParts_C": {
@@ -25122,12 +24732,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-hatcherparts-c"
 		},
 		"Desc_HazmatFilter_C": {
@@ -25140,12 +24744,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-hazmatfilter-c"
 		},
 		"Desc_HeavyOilResidue_C": {
@@ -25158,12 +24756,6 @@
 			"energyValue": 0.4,
 			"radioactiveDecay": 0,
 			"liquid": true,
-			"fluidColor": {
-				"r": 109,
-				"g": 45,
-				"b": 120,
-				"a": 0
-			},
 			"icon": "desc-heavyoilresidue-c"
 		},
 		"Desc_HighSpeedConnector_C": {
@@ -25176,12 +24768,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-highspeedconnector-c"
 		},
 		"Desc_HighSpeedWire_C": {
@@ -25194,12 +24780,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-highspeedwire-c"
 		},
 		"Desc_HogParts_C": {
@@ -25212,12 +24792,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-hogparts-c"
 		},
 		"Desc_IonizedFuel_C": {
@@ -25230,12 +24804,6 @@
 			"energyValue": 5,
 			"radioactiveDecay": 0,
 			"liquid": true,
-			"fluidColor": {
-				"r": 213,
-				"g": 95,
-				"b": 26,
-				"a": 60
-			},
 			"icon": "desc-ionizedfuel-c"
 		},
 		"Desc_IronIngot_C": {
@@ -25248,12 +24816,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-ironingot-c"
 		},
 		"Desc_IronPlateReinforced_C": {
@@ -25266,12 +24828,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-ironplatereinforced-c"
 		},
 		"Desc_IronPlate_C": {
@@ -25284,12 +24840,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-ironplate-c"
 		},
 		"Desc_IronRod_C": {
@@ -25302,12 +24852,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-ironrod-c"
 		},
 		"Desc_IronScrew_C": {
@@ -25320,12 +24864,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-ironscrew-c"
 		},
 		"Desc_Leaves_C": {
@@ -25338,12 +24876,6 @@
 			"energyValue": 15,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-leaves-c"
 		},
 		"Desc_LiquidBiofuel_C": {
@@ -25356,12 +24888,6 @@
 			"energyValue": 0.75,
 			"radioactiveDecay": 0,
 			"liquid": true,
-			"fluidColor": {
-				"r": 59,
-				"g": 83,
-				"b": 44,
-				"a": 0
-			},
 			"icon": "desc-liquidbiofuel-c"
 		},
 		"Desc_LiquidFuel_C": {
@@ -25374,12 +24900,6 @@
 			"energyValue": 0.75,
 			"radioactiveDecay": 0,
 			"liquid": true,
-			"fluidColor": {
-				"r": 235,
-				"g": 125,
-				"b": 21,
-				"a": 0
-			},
 			"icon": "desc-liquidfuel-c"
 		},
 		"Desc_LiquidOil_C": {
@@ -25392,12 +24912,6 @@
 			"energyValue": 0.32,
 			"radioactiveDecay": 0,
 			"liquid": true,
-			"fluidColor": {
-				"r": 25,
-				"g": 0,
-				"b": 25,
-				"a": 0
-			},
 			"icon": "desc-liquidoil-c"
 		},
 		"Desc_LiquidTurboFuel_C": {
@@ -25410,12 +24924,6 @@
 			"energyValue": 2,
 			"radioactiveDecay": 0,
 			"liquid": true,
-			"fluidColor": {
-				"r": 212,
-				"g": 41,
-				"b": 46,
-				"a": 0
-			},
 			"icon": "desc-liquidturbofuel-c"
 		},
 		"Desc_Medkit_C": {
@@ -25428,12 +24936,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-medkit-c"
 		},
 		"Desc_ModularFrameFused_C": {
@@ -25446,12 +24948,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-modularframefused-c"
 		},
 		"Desc_ModularFrameHeavy_C": {
@@ -25464,12 +24960,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-modularframeheavy-c"
 		},
 		"Desc_ModularFrameLightweight_C": {
@@ -25482,12 +24972,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-modularframelightweight-c"
 		},
 		"Desc_ModularFrame_C": {
@@ -25500,12 +24984,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-modularframe-c"
 		},
 		"Desc_MotorLightweight_C": {
@@ -25518,12 +24996,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-motorlightweight-c"
 		},
 		"Desc_Motor_C": {
@@ -25536,12 +25008,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-motor-c"
 		},
 		"Desc_Mycelia_C": {
@@ -25554,12 +25020,6 @@
 			"energyValue": 20,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-mycelia-c"
 		},
 		"Desc_NitricAcid_C": {
@@ -25572,12 +25032,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": true,
-			"fluidColor": {
-				"r": 217,
-				"g": 217,
-				"b": 162,
-				"a": 0
-			},
 			"icon": "desc-nitricacid-c"
 		},
 		"Desc_NitrogenGas_C": {
@@ -25590,12 +25044,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": true,
-			"fluidColor": {
-				"r": 89,
-				"g": 89,
-				"b": 89,
-				"a": 0
-			},
 			"icon": "desc-nitrogengas-c"
 		},
 		"Desc_NobeliskCluster_C": {
@@ -25608,12 +25056,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-nobeliskcluster-c"
 		},
 		"Desc_NobeliskExplosive_C": {
@@ -25626,12 +25068,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-nobeliskexplosive-c"
 		},
 		"Desc_NobeliskGas_C": {
@@ -25644,12 +25080,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-nobeliskgas-c"
 		},
 		"Desc_NobeliskNuke_C": {
@@ -25662,12 +25092,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-nobelisknuke-c"
 		},
 		"Desc_NobeliskShockwave_C": {
@@ -25680,12 +25104,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-nobeliskshockwave-c"
 		},
 		"Desc_NonFissibleUranium_C": {
@@ -25698,12 +25116,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0.75,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-nonfissibleuranium-c"
 		},
 		"Desc_NuclearFuelRod_C": {
@@ -25716,12 +25128,6 @@
 			"energyValue": 750000,
 			"radioactiveDecay": 50,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-nuclearfuelrod-c"
 		},
 		"Desc_NuclearWaste_C": {
@@ -25734,12 +25140,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 10,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-nuclearwaste-c"
 		},
 		"Desc_Nut_C": {
@@ -25752,12 +25152,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-nut-c"
 		},
 		"Desc_OreBauxite_C": {
@@ -25770,12 +25164,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-orebauxite-c"
 		},
 		"Desc_OreCopper_C": {
@@ -25788,12 +25176,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-orecopper-c"
 		},
 		"Desc_OreGold_C": {
@@ -25806,12 +25188,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-oregold-c"
 		},
 		"Desc_OreIron_C": {
@@ -25824,12 +25200,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-oreiron-c"
 		},
 		"Desc_OreUranium_C": {
@@ -25842,12 +25212,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 15,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-oreuranium-c"
 		},
 		"Desc_PackagedAlumina_C": {
@@ -25860,12 +25224,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 58,
-				"g": 83,
-				"b": 42,
-				"a": 255
-			},
 			"icon": "desc-packagedalumina-c"
 		},
 		"Desc_PackagedBiofuel_C": {
@@ -25878,12 +25236,6 @@
 			"energyValue": 750,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 58,
-				"g": 83,
-				"b": 42,
-				"a": 255
-			},
 			"icon": "desc-packagedbiofuel-c"
 		},
 		"Desc_PackagedIonizedFuel_C": {
@@ -25896,12 +25248,6 @@
 			"energyValue": 10000,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-packagedionizedfuel-c"
 		},
 		"Desc_PackagedNitricAcid_C": {
@@ -25914,12 +25260,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 58,
-				"g": 83,
-				"b": 42,
-				"a": 255
-			},
 			"icon": "desc-packagednitricacid-c"
 		},
 		"Desc_PackagedNitrogenGas_C": {
@@ -25932,12 +25272,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 58,
-				"g": 83,
-				"b": 42,
-				"a": 255
-			},
 			"icon": "desc-packagednitrogengas-c"
 		},
 		"Desc_PackagedOilResidue_C": {
@@ -25950,12 +25284,6 @@
 			"energyValue": 400,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 109,
-				"g": 45,
-				"b": 120,
-				"a": 255
-			},
 			"icon": "desc-packagedoilresidue-c"
 		},
 		"Desc_PackagedOil_C": {
@@ -25968,12 +25296,6 @@
 			"energyValue": 320,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-packagedoil-c"
 		},
 		"Desc_PackagedRocketFuel_C": {
@@ -25986,12 +25308,6 @@
 			"energyValue": 7200,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-packagedrocketfuel-c"
 		},
 		"Desc_PackagedSulfuricAcid_C": {
@@ -26004,12 +25320,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 58,
-				"g": 83,
-				"b": 42,
-				"a": 255
-			},
 			"icon": "desc-packagedsulfuricacid-c"
 		},
 		"Desc_PackagedWater_C": {
@@ -26022,12 +25332,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 122,
-				"g": 176,
-				"b": 212,
-				"a": 255
-			},
 			"icon": "desc-packagedwater-c"
 		},
 		"Desc_Parachute_C": {
@@ -26040,12 +25344,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-parachute-c"
 		},
 		"Desc_PetroleumCoke_C": {
@@ -26058,12 +25356,6 @@
 			"energyValue": 180,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-petroleumcoke-c"
 		},
 		"Desc_Plastic_C": {
@@ -26076,12 +25368,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-plastic-c"
 		},
 		"Desc_PlutoniumCell_C": {
@@ -26094,12 +25380,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 120,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-plutoniumcell-c"
 		},
 		"Desc_PlutoniumFuelRod_C": {
@@ -26112,12 +25392,6 @@
 			"energyValue": 1500000,
 			"radioactiveDecay": 250,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-plutoniumfuelrod-c"
 		},
 		"Desc_PlutoniumPellet_C": {
@@ -26130,12 +25404,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 20,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-plutoniumpellet-c"
 		},
 		"Desc_PlutoniumWaste_C": {
@@ -26148,12 +25416,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 200,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-plutoniumwaste-c"
 		},
 		"Desc_PolymerResin_C": {
@@ -26166,12 +25428,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-polymerresin-c"
 		},
 		"Desc_PressureConversionCube_C": {
@@ -26184,12 +25440,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-pressureconversioncube-c"
 		},
 		"Desc_QuantumEnergy_C": {
@@ -26202,12 +25452,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": true,
-			"fluidColor": {
-				"r": 118,
-				"g": 245,
-				"b": 232,
-				"a": 90
-			},
 			"icon": "desc-quantumenergy-c"
 		},
 		"Desc_QuantumOscillator_C": {
@@ -26220,12 +25464,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-quantumoscillator-c"
 		},
 		"Desc_QuartzCrystal_C": {
@@ -26238,12 +25476,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-quartzcrystal-c"
 		},
 		"Desc_RawQuartz_C": {
@@ -26256,12 +25488,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-rawquartz-c"
 		},
 		"Desc_RebarGunProjectile_C": {
@@ -26274,12 +25500,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-rebargunprojectile-c"
 		},
 		"Desc_Rebar_Explosive_C": {
@@ -26292,12 +25512,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-rebar-explosive-c"
 		},
 		"Desc_Rebar_Spreadshot_C": {
@@ -26310,12 +25524,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-rebar-spreadshot-c"
 		},
 		"Desc_Rebar_Stunshot_C": {
@@ -26328,24 +25536,12 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-rebar-stunshot-c"
 		},
 		"Desc_ResourceSinkCoupon_C": {
 			"className": "Desc_ResourceSinkCoupon_C",
 			"description": "A special FICSIT bonus program Coupon, obtained through the AWESOME Sink. Can be redeemed in the AWESOME Shop for bonus milestones and rewards",
 			"energyValue": 0,
-			"fluidColor": {
-				"r": 0,
-				"g": 0,
-				"b": 0,
-				"a": 0
-			},
 			"liquid": false,
 			"name": "FICSIT Coupon",
 			"radioactiveDecay": 0,
@@ -26364,12 +25560,6 @@
 			"energyValue": 3.6,
 			"radioactiveDecay": 0,
 			"liquid": true,
-			"fluidColor": {
-				"r": 189,
-				"g": 37,
-				"b": 26,
-				"a": 0
-			},
 			"icon": "desc-rocketfuel-c"
 		},
 		"Desc_Rotor_C": {
@@ -26382,12 +25572,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-rotor-c"
 		},
 		"Desc_Rubber_C": {
@@ -26400,12 +25584,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-rubber-c"
 		},
 		"Desc_SAMFluctuator_C": {
@@ -26418,12 +25596,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-samfluctuator-c"
 		},
 		"Desc_SAMIngot_C": {
@@ -26436,12 +25608,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-samingot-c"
 		},
 		"Desc_SAM_C": {
@@ -26454,12 +25620,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-sam-c"
 		},
 		"Desc_Shroom_C": {
@@ -26472,12 +25632,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-shroom-c"
 		},
 		"Desc_Silica_C": {
@@ -26490,12 +25644,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-silica-c"
 		},
 		"Desc_SingularityCell_C": {
@@ -26508,12 +25656,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-singularitycell-c"
 		},
 		"Desc_SpaceElevatorPart_10_C": {
@@ -26526,12 +25668,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-spaceelevatorpart-10-c"
 		},
 		"Desc_SpaceElevatorPart_11_C": {
@@ -26544,12 +25680,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-spaceelevatorpart-11-c"
 		},
 		"Desc_SpaceElevatorPart_12_C": {
@@ -26562,12 +25692,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-spaceelevatorpart-12-c"
 		},
 		"Desc_SpaceElevatorPart_1_C": {
@@ -26580,12 +25704,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-spaceelevatorpart-1-c"
 		},
 		"Desc_SpaceElevatorPart_2_C": {
@@ -26598,12 +25716,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-spaceelevatorpart-2-c"
 		},
 		"Desc_SpaceElevatorPart_3_C": {
@@ -26616,12 +25728,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-spaceelevatorpart-3-c"
 		},
 		"Desc_SpaceElevatorPart_4_C": {
@@ -26634,12 +25740,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-spaceelevatorpart-4-c"
 		},
 		"Desc_SpaceElevatorPart_5_C": {
@@ -26652,12 +25752,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-spaceelevatorpart-5-c"
 		},
 		"Desc_SpaceElevatorPart_6_C": {
@@ -26670,12 +25764,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-spaceelevatorpart-6-c"
 		},
 		"Desc_SpaceElevatorPart_7_C": {
@@ -26688,12 +25776,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-spaceelevatorpart-7-c"
 		},
 		"Desc_SpaceElevatorPart_8_C": {
@@ -26706,12 +25788,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-spaceelevatorpart-8-c"
 		},
 		"Desc_SpaceElevatorPart_9_C": {
@@ -26724,12 +25800,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-spaceelevatorpart-9-c"
 		},
 		"Desc_SpikedRebar_C": {
@@ -26742,12 +25812,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-spikedrebar-c"
 		},
 		"Desc_SpitterParts_C": {
@@ -26760,12 +25824,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-spitterparts-c"
 		},
 		"Desc_Stator_C": {
@@ -26778,12 +25836,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-stator-c"
 		},
 		"Desc_SteelIngot_C": {
@@ -26796,12 +25848,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-steelingot-c"
 		},
 		"Desc_SteelPipe_C": {
@@ -26814,12 +25860,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-steelpipe-c"
 		},
 		"Desc_SteelPlateReinforced_C": {
@@ -26832,12 +25872,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-steelplatereinforced-c"
 		},
 		"Desc_SteelPlate_C": {
@@ -26850,12 +25884,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-steelplate-c"
 		},
 		"Desc_StingerParts_C": {
@@ -26868,12 +25896,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-stingerparts-c"
 		},
 		"Desc_Stone_C": {
@@ -26886,12 +25908,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-stone-c"
 		},
 		"Desc_Sulfur_C": {
@@ -26904,12 +25920,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-sulfur-c"
 		},
 		"Desc_SulfuricAcid_C": {
@@ -26922,12 +25932,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": true,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 0,
-				"a": 0
-			},
 			"icon": "desc-sulfuricacid-c"
 		},
 		"Desc_TemporalProcessor_C": {
@@ -26940,12 +25944,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-temporalprocessor-c"
 		},
 		"Desc_TimeCrystal_C": {
@@ -26958,12 +25956,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-timecrystal-c"
 		},
 		"Desc_TurboFuel_C": {
@@ -26976,12 +25968,6 @@
 			"energyValue": 2000,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 212,
-				"g": 41,
-				"b": 46,
-				"a": 255
-			},
 			"icon": "desc-turbofuel-c"
 		},
 		"Desc_UraniumCell_C": {
@@ -26994,12 +25980,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0.5,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-uraniumcell-c"
 		},
 		"Desc_WAT1_C": {
@@ -27012,12 +25992,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-wat1-c"
 		},
 		"Desc_WAT2_C": {
@@ -27030,12 +26004,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-wat2-c"
 		},
 		"Desc_Water_C": {
@@ -27048,12 +26016,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": true,
-			"fluidColor": {
-				"r": 122,
-				"g": 176,
-				"b": 212,
-				"a": 0
-			},
 			"icon": "desc-water-c"
 		},
 		"Desc_Wire_C": {
@@ -27066,12 +26028,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-wire-c"
 		},
 		"Desc_Wood_C": {
@@ -27084,12 +26040,6 @@
 			"energyValue": 100,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-wood-c"
 		},
 		"Desc_XmasDataCartridge1_C": {
@@ -27102,12 +26052,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-xmasdatacartridge1-c"
 		},
 		"Desc_XmasDataCartridge2_C": {
@@ -27120,12 +26064,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-xmasdatacartridge2-c"
 		},
 		"Desc_XmasDataCartridge3_C": {
@@ -27138,12 +26076,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-xmasdatacartridge3-c"
 		},
 		"Desc_XmasDataCartridge4_C": {
@@ -27156,12 +26088,6 @@
 			"energyValue": 0,
 			"radioactiveDecay": 0,
 			"liquid": false,
-			"fluidColor": {
-				"r": 255,
-				"g": 255,
-				"b": 255,
-				"a": 0
-			},
 			"icon": "desc-xmasdatacartridge4-c"
 		}
 	},

@@ -1,6 +1,5 @@
 import {IItemSchema} from '@src/Schema/IItemSchema';
 import {Strings} from '@src/Utils/Strings';
-import parseColor from '@bin/parseDocs/color';
 
 export default function parseItemDescriptors(items: {
 	ClassName: string,
@@ -62,7 +61,6 @@ export default function parseItemDescriptors(items: {
 				energyValue: parseFloat(item.mEnergyValue) || 0,
 				radioactiveDecay: parseFloat(item.mRadioactiveDecay) || 0,
 				liquid: item.mForm !== 'RF_SOLID',
-				fluidColor: parseColor(Strings.unserializeDocs(item.mFluidColor)),
 			});
 		}
 	}

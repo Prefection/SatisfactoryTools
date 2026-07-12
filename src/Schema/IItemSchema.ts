@@ -1,4 +1,3 @@
-import {IColorSchema} from '@src/Schema/IColorSchema';
 
 export interface IItemSchema
 {
@@ -13,6 +12,5 @@ export interface IItemSchema
 	energyValue: number;
 	radioactiveDecay: number;
 	liquid: boolean;
-	fluidColor: IColorSchema;
 
 }
