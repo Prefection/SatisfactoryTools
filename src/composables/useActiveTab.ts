@@ -8,7 +8,7 @@ export const PER_MINUTE = 'perMinute'; // Constants.PRODUCTION_TYPE.PER_MINUTE
 
 function storageKey(version: GameVersion): string {
 	if (version === '1.0') return 'production1';
-	if (version === '1.0-ficsmas') return 'production-ficsmas';
+	if (version === '1.2') return 'production1.2';
 	return 'tmpProduction';
 }
 

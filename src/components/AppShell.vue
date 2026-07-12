@@ -29,14 +29,13 @@ const menuOpen = ref(false);
 const openDropdown = ref<'codex' | 'version' | null>(null);
 
 const VERSION_LABELS: Record<GameVersion, string> = {
-	'0.8': '0.8',
+	'1.2': '1.2',
 	'1.0': '1.0',
-	'1.0-ficsmas': '1.0 (Ficsmas)',
 };
 
-// Reactive tab title, matching the original ([U8] for 0.8, [1.0] otherwise).
+// Reactive tab title showing the active game version.
 watchEffect(() => {
-	document.title = `[${version.value === '0.8' ? 'U8' : '1.0'}] Satisfactory Tools`;
+	document.title = `[${version.value}] Satisfactory Tools`;
 });
 
 function toggle(which: 'codex' | 'version'): void {
