@@ -30,7 +30,7 @@ const expanded = ref(true);
 const renaming = ref(false);
 const copied = ref(false);
 const leftTab = ref<'production' | 'items' | 'recipes' | 'machines'>('production');
-const resultTab = ref<'overview' | 'visualization' | 'power' | 'items' | 'buildings'>('overview');
+const resultTab = ref<'overview' | 'visualization' | 'power' | 'items' | 'buildings'>('visualization');
 
 const active = computed(() => tabs.find((t) => t.id === activeId.value));
 
