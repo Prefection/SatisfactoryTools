@@ -66,43 +66,20 @@ $border: 1px solid rgba(0, 0, 0, 0.125);
 		}
 	}
 
-	.production-input-table {
-		width: 100%;
-
-		tr {
-			td:nth-child(1) {
-				width: 25px;
-			}
-
-			td:nth-child(2) {
-				width: 40%;
-			}
-
-			td:nth-child(3) {
-				width: 20%;
-			}
-
-			td:nth-child(4) {
-				width: 25%;
-			}
-		}
-	}
-
+	.production-input-table,
 	.input-table {
 		width: 100%;
 
 		tr {
-			td:nth-child(1) {
-				width: 25px;
-			}
+			// drag handle, amount and buttons shrink to content; the item picker absorbs the slack.
+			td:nth-child(1) { width: 1%; white-space: nowrap; }
+			td:nth-child(2) { width: 100%; }
+			td:nth-child(3) { width: 1%; white-space: nowrap; }
+			td:nth-child(4) { width: 1%; white-space: nowrap; }
+		}
 
-			td:nth-child(2) {
-				width: 40%;
-			}
-
-			td:nth-child(3) {
-				width: 30%;
-			}
+		.input-group {
+			width: 150px;
 		}
 	}
 

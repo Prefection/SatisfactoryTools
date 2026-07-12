@@ -30,7 +30,10 @@ const inputableItems = computed(() => {
 						<td class="sortable-handler"><span class="fas fa-arrows-alt-v cursor-drag"></span></td>
 						<td><ItemCombobox v-model="input.item" :items="inputableItems" /></td>
 						<td>
-							<input class="form-control" v-show="input.item" type="number" min="0" step="any" v-model.number="input.amount" /> / min
+							<div v-show="input.item" class="input-group">
+							<input class="form-control" type="number" min="0" step="any" v-model.number="input.amount" />
+							<div class="input-group-append"><span class="input-group-text">/ min</span></div>
+						</div>
 						</td>
 						<td class="text-nowrap">
 							<span class="btn btn-success" title="Clone input" @click="cloneInput(index)"><span class="far fa-fw fa-clone"></span></span>

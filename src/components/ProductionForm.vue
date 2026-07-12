@@ -28,7 +28,10 @@ const craftableItems = computed(() => {
 				<td class="sortable-handler"><span class="fas fa-arrows-alt-v cursor-drag"></span></td>
 				<td><ItemCombobox v-model="product.item" :items="craftableItems" /></td>
 				<td>
-					<input class="form-control" v-show="product.item" type="number" min="0" step="any" v-model.number="product.amount" /> / min
+					<div v-show="product.item" class="input-group">
+						<input class="form-control" type="number" min="0" step="any" v-model.number="product.amount" />
+						<div class="input-group-append"><span class="input-group-text">/ min</span></div>
+					</div>
 				</td>
 				<td class="text-nowrap">
 					<span class="btn btn-success" title="Clone item" @click="cloneProduct(index)"><span class="far fa-fw fa-clone"></span></span>
