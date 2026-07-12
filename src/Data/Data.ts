@@ -342,7 +342,9 @@ export class Data
 			return true;
 		}
 
-		return entity.metadata.manufacturingSpeed !== 0;
+		// > 0 (not !== 0): decorative buildables have no manufacturingSpeed at all, and
+		// `undefined !== 0` would wrongly count them as manufacturers.
+		return (entity.metadata.manufacturingSpeed ?? 0) > 0;
 	}
 
 	public isExtractorBuilding(entity: BuildingTypes): boolean
