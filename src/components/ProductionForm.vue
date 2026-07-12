@@ -9,6 +9,21 @@ import ItemCombobox from '@src/components/ItemCombobox.vue';
 const {data, addProduct, removeProduct, cloneProduct, clearProducts} = useActiveTab();
 const {version} = useGameData();
 
+// Stable per-row keys: index keys desync with SortableJS's DOM moves, which then lands a
+// newly-added row mid-list. Keying by the row object's identity keeps reorder + add correct.
+let keySeq = 0;
+const rowKeys = new WeakMap<object, number>();
+function rowKey(row: object): number {
+	let k = rowKeys.get(row);
+	if (k === undefined) rowKeys.set(row, (k = keySeq++));
+	return k;
+}
+
+function confirmClearProducts(): void {
+	if (data.request.production.length && !window.confirm('Clear the entire production line?')) return;
+	clearProducts();
+}
+
 // Craftable items, name-sorted; re-resolve on version switch (same pattern as the codex views).
 const craftableItems = computed(() => {
 	void version.value;
@@ -24,7 +39,7 @@ const craftableItems = computed(() => {
 
 	<table class="production-input-table">
 		<VueDraggable v-model="data.request.production" :animation="150" tag="tbody" handle=".sortable-handler">
-			<tr v-for="(product, index) in data.request.production" :key="index">
+			<tr v-for="(product, index) in data.request.production" :key="rowKey(product)">
 				<td class="sortable-handler"><span class="fas fa-arrows-alt-v cursor-drag"></span></td>
 				<td><ItemCombobox v-model="product.item" :items="craftableItems" /></td>
 				<td>
@@ -43,6 +58,6 @@ const craftableItems = computed(() => {
 
 	<div class="d-flex mt-2">
 		<span class="btn btn-outline-success flex-grow-1" @click="addProduct"><span class="fas fa-plus"></span> Add product</span>
-		<span class="btn btn-outline-danger ml-2" title="Clear production line" @click="clearProducts"><span class="fas fa-fw fa-trash-alt"></span></span>
+		<span class="btn btn-outline-danger ml-2" title="Clear production line" @click="confirmClearProducts"><span class="fas fa-fw fa-trash-alt"></span></span>
 	</div>
 </template>

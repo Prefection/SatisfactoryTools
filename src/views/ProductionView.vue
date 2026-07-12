@@ -48,6 +48,16 @@ function onReorder(next: {id: string; data: unknown}[]): void {
 	persist();
 }
 
+function confirmRemoveTab(): void {
+	if (window.confirm('Delete this tab?')) removeTab(activeId.value);
+}
+function confirmRemoveSelected(): void {
+	if (selectedIds.size && window.confirm(`Delete ${selectedIds.size} selected tab(s)?`)) removeSelected();
+}
+function confirmResetTab(): void {
+	if (window.confirm('Reset this tab to default?')) resetTab(activeId.value);
+}
+
 function exportTabs(): void {
 	const chosen = selectedIds.size > 0 ? tabs.filter((t) => selectedIds.has(t.id)) : tabs;
 	Strings.downloadFile('satisfactory-tools-export', 'sft', encodeTabs(chosen.map((t) => t.data), true));
@@ -116,7 +126,7 @@ function copyShareLink(): void {
 			</span>
 			<span class="btn-group">
 				<a class="btn btn-info" title="Export selected tabs" @click="exportTabs"><span class="fas fa-fw fa-file-export"></span></a>
-				<a class="btn btn-danger" title="Remove selected tabs" @click="removeSelected"><span class="fas fa-fw fa-trash-alt"></span></a>
+				<a class="btn btn-danger" title="Remove selected tabs" @click="confirmRemoveSelected"><span class="fas fa-fw fa-trash-alt"></span></a>
 			</span>
 		</div>
 		<div class="card-body">
@@ -165,8 +175,8 @@ function copyShareLink(): void {
 				<span class="btn-group">
 					<a class="btn btn-info" title="Share tab" @click="copyShareLink"><span class="fas fa-fw" :class="copied ? 'fa-check' : 'fa-share-alt'"></span></a>
 					<a class="btn btn-success" title="Clone tab" @click="cloneTab(activeId)"><span class="far fa-fw fa-clone"></span></a>
-					<a class="btn btn-warning" title="Reset tab to default" @click="resetTab(activeId)"><span class="fas fa-fw fa-eraser"></span></a>
-					<a class="btn btn-danger" title="Remove tab" @click="removeTab(activeId)"><span class="fas fa-fw fa-trash-alt"></span></a>
+					<a class="btn btn-warning" title="Reset tab to default" @click="confirmResetTab"><span class="fas fa-fw fa-eraser"></span></a>
+					<a class="btn btn-danger" title="Remove tab" @click="confirmRemoveTab"><span class="fas fa-fw fa-trash-alt"></span></a>
 					<a class="btn btn-secondary" :title="expanded ? 'Collapse' : 'Expand'" @click="expanded = !expanded">
 						<span class="fas fa-fw" :class="expanded ? 'fa-chevron-up' : 'fa-chevron-down'"></span>
 					</a>

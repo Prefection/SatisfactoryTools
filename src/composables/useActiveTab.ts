@@ -1,4 +1,4 @@
-import {reactive, ref, watch, toRaw} from 'vue';
+import {reactive, ref, watch} from 'vue';
 import dataSingleton, {Data} from '@src/Data/Data';
 import {useGameData, type GameVersion} from '@src/composables/useGameData';
 import {IProductionData, IProductionDataRequestItem, IProductionDataRequestInput} from '@src/Tools/Production/IProductionData';
@@ -32,7 +32,9 @@ function emptyInput(): IProductionDataRequestInput {
 }
 
 function clone(d: IProductionData): IProductionData {
-	return structuredClone(toRaw(d));
+	// IProductionData is pure JSON, so a round-trip is an exact deep clone — and unlike structuredClone
+	// it can't throw DataCloneError when the drag library tags a row object with a non-cloneable value.
+	return JSON.parse(JSON.stringify(d));
 }
 
 let idSeq = 1;
