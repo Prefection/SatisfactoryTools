@@ -115,6 +115,7 @@ function encode(solution: Solution, data: IJsonSchema, request: IProductionDataA
 	}
 	const targets = new Set(Object.keys(productAmount));
 	for (const [item, amount] of Object.entries(productAmount)) {
+		if (amount <= EPS) continue; // a maximize row starved to 0 by a higher-priority target -> no node
 		response[`${item}#Product`] = amount;
 	}
 	const net = computeNet(solution, data);

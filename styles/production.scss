@@ -81,6 +81,11 @@ $border: 1px solid rgba(0, 0, 0, 0.125);
 		.input-group {
 			width: 150px;
 		}
+
+		// the per-row type picker sits in a shrink-to-content cell; give it room to show its labels.
+		select.form-control {
+			width: 140px;
+		}
 	}
 
 	& > .card-header {

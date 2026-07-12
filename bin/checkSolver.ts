@@ -139,5 +139,7 @@ const rodFirst = await solveProduction(request({
 }), data);
 assert.ok((rodFirst['Desc_IronRod_C#Product'] ?? 0) > 1e-4, 'rod-first yields rod');
 assert.ok((ingotFirst['Desc_IronRod_C#Product'] ?? 0) < 1e-4, 'ingot-first starves rod');
+// A starved maximize target emits no product node at all (not a 0/min node).
+assert.ok(!('Desc_IronRod_C#Product' in ingotFirst), 'starved max target has no zero product entry');
 
 console.log('OK: solveProduction worked example + feasibility set + co-product byproduct/sink routing pass.');
