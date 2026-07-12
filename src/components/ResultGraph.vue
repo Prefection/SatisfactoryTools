@@ -48,7 +48,10 @@ const nodeTypes: Record<string, any> = {factory: markRaw(FactoryNode)};
 // A unique id keeps this flow's store isolated so a tab switch that remounts the
 // component can't inherit stale nodes or duplicate init handlers.
 const flowId = `result-graph-${Math.random().toString(36).slice(2)}`;
-const {fitView, onNodesInitialized} = useVueFlow(flowId);
+const {fitView, onNodesInitialized, onNodeDragStop, getNodes, updateNodeData} = useVueFlow(flowId);
+
+// edge id -> its endpoints, so a port can be ordered by the node it connects to.
+const edgeEnds = new Map<string, {source: number; target: number}>();
 
 // elk lays nodes out on a 100px-tall grid; size the frame to the chain instead of a
 // fixed height so small graphs don't leave a black void and big ones still get room.
@@ -133,10 +136,12 @@ async function draw(): Promise<void> {
 		if (!list) m.set(id, (list = []));
 		return list;
 	};
+	edgeEnds.clear();
 	for (const e of graph.edges) {
 		const name = data.getItemByClassName(e.itemAmount.item)?.name ?? e.itemAmount.item;
 		portList(outPorts, e.from.id).push({id: String(e.id), name});
 		portList(inPorts, e.to.id).push({id: String(e.id), name});
+		edgeEnds.set(String(e.id), {source: e.from.id, target: e.to.id});
 	}
 
 	nodes.value = graph.nodes.map((n) => ({
@@ -157,8 +162,33 @@ async function draw(): Promise<void> {
 	}));
 }
 
-// fit once nodes are measured — covers the initial async layout and every re-solve.
-onNodesInitialized(() => fitView({padding: 0.2}));
+// Order each node's ports by the vertical position of the node they connect to, so an
+// edge to a higher node plugs into a higher port (fewer crossings). Reads live positions,
+// so it also re-settles after a node is dragged.
+function reorderPorts(): void {
+	const y = new Map<number, number>();
+	for (const n of getNodes.value) y.set(Number(n.id), n.position?.y ?? 0);
+	const byConnected = (endpoint: 'source' | 'target') => (a: FactoryPort, b: FactoryPort) => {
+		const ya = y.get(edgeEnds.get(a.id)?.[endpoint] ?? -1) ?? 0;
+		const yb = y.get(edgeEnds.get(b.id)?.[endpoint] ?? -1) ?? 0;
+		return ya - yb;
+	};
+	for (const n of getNodes.value) {
+		const d = n.data as {inputs: FactoryPort[]; outputs: FactoryPort[]};
+		if (!d || (d.inputs.length < 2 && d.outputs.length < 2)) continue;
+		updateNodeData(n.id, {
+			inputs: [...d.inputs].sort(byConnected('source')), // ordered by the source node's height
+			outputs: [...d.outputs].sort(byConnected('target')), // ordered by the target node's height
+		});
+	}
+}
+
+// fit + order ports once nodes are measured — covers the initial layout and every re-solve.
+onNodesInitialized(() => {
+	fitView({padding: 0.2});
+	reorderPorts();
+});
+onNodeDragStop(reorderPorts); // re-settle ports when the user repositions a node
 onMounted(draw);
 watch(() => props.result, draw); // re-draw when a new solve replaces the result
 </script>
