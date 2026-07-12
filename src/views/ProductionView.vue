@@ -182,8 +182,15 @@ function copyShareLink(): void {
 			</span>
 		</div>
 
-		<div class="hud-split">
-			<!-- Inputs -->
+		<div class="hud-stack">
+			<!-- Always-visible summary — full-width band -->
+			<ResultSummary v-if="resultNew" :result="resultNew" />
+			<aside v-else class="hud-panel hud-panel--cyan">
+				<span class="hud-label">At a glance</span>
+				<p class="hud-lead">Pick an item below and the factory summary appears here.</p>
+			</aside>
+
+			<!-- Inputs — full width -->
 			<section class="hud-panel hud-inputs">
 				<div class="hud-section-header">
 					<span class="hud-section-header__title">Configure</span>
@@ -244,13 +251,6 @@ function copyShareLink(): void {
 					</template>
 				</div>
 			</section>
-
-			<!-- Always-visible summary -->
-			<ResultSummary v-if="resultNew" :result="resultNew" />
-			<aside v-else class="hud-panel hud-panel--cyan">
-				<span class="hud-label">At a glance</span>
-				<p class="hud-lead">Pick an item on the left and the factory summary appears here.</p>
-			</aside>
 		</div>
 
 		<!-- Full-width detail -->

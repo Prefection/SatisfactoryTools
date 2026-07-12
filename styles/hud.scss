@@ -249,16 +249,13 @@
 }
 
 // Split layout: inputs (wider) beside the always-visible summary.
-.hud-split {
-	display: grid;
-	grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+// Full-width stack: the summary sits as a band above the full-width configure panel,
+// so the dense controls (recipes two-up, machines) get the whole width — no cramping.
+.hud-stack {
+	display: flex;
+	flex-direction: column;
 	gap: 14px;
-	align-items: start;
 	margin-top: 14px;
-
-	@media (max-width: 991px) {
-		grid-template-columns: minmax(0, 1fr);
-	}
 }
 
 .hud-detail {
