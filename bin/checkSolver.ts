@@ -5,7 +5,7 @@ import {ratePerMachine, solveProduction} from '@src/Solver/ProductionSolver';
 import {IJsonSchema} from '@src/Schema/IJsonSchema';
 import {IProductionDataApiRequest} from '@src/Tools/Production/IProductionData';
 
-const data: IJsonSchema = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'data.json')).toString());
+const data: IJsonSchema = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'data1.2.json')).toString());
 
 // Full default resource caps/weights so every raw resource is extractable (mirrors what the client sends).
 const resourceMax: {[k: string]: number} = {};

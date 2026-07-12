@@ -10,9 +10,7 @@ import {ResultStatus} from '@src/Tools/Production/ResultStatus';
 import {IProductionDataApiRequest} from '@src/Tools/Production/IProductionData';
 
 function apiGameVersion(version: string): string {
-	if (version === '0.8') return '0.8.0';
-	if (version === '1.0-ficsmas') return '1.0.0-ficsmas';
-	return '1.0.0';
+	return version === '1.0' ? '1.0.0' : '1.2.0';
 }
 
 export function useProductionSolve() {

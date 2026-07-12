@@ -4,9 +4,9 @@ import sharp from 'sharp';
 import {IJsonSchema} from '@src/Schema/IJsonSchema';
 
 const baseOriginalPath = path.join(__dirname, '..', 'data', 'icons', 'out256');
-const baseTargetPath = path.join(__dirname, '..', 'www', 'assets', 'images', 'items');
+const baseTargetPath = path.join(__dirname, '..', 'public', 'assets', 'images', 'items');
 const mappingPath = path.join(__dirname, '..', 'data', 'imageMapping.json');
-const dataPath = path.join(__dirname, '..', 'data', 'data.json');
+const dataPath = path.join(__dirname, '..', 'data', 'data1.2.json');
 
 function processImage(file: string, slug: string) {
 	file = path.join(baseOriginalPath, file);
@@ -25,9 +25,9 @@ function processImage(file: string, slug: string) {
 }
 
 if (!fs.existsSync(mappingPath)) {
-	console.error('Mapping file does not exist, please run "yarn parseDocs" first.');
+	console.error('Mapping file does not exist, please run "bun run parseDocs" first.');
 } else if (!fs.existsSync(dataPath)) {
-	console.error('Data file does not exist, please run "yarn parseDocs" first.');
+	console.error('Data file does not exist, please run "bun run parseDocs" first.');
 } else {
 	const mapping: {[key: string]: string} = JSON.parse(fs.readFileSync(mappingPath).toString());
 	const data: IJsonSchema = JSON.parse(fs.readFileSync(dataPath).toString());
