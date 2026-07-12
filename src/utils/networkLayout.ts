@@ -1,6 +1,6 @@
 import ELK from 'elkjs/lib/elk-api';
 
-export interface GraphNode {id: number; label: string; slug?: string; color?: string; x?: number; y?: number}
+export interface GraphNode {id: number; label: string; slug?: string; color?: string; x?: number; y?: number; width?: number; height?: number}
 export interface GraphEdge {from: number; to: number}
 
 const NODE_W = 300, NODE_H = 100;
@@ -26,10 +26,15 @@ export async function layoutGraph(nodes: GraphNode[], edges: GraphEdge[]): Promi
 		id: 'root',
 		layoutOptions: {
 			'elk.algorithm': 'org.eclipse.elk.layered',
-			'org.eclipse.elk.spacing.nodeNode': '40',
+			'org.eclipse.elk.spacing.nodeNode': '48',
+			// more room between stages and around edges so lines route without piling up
+			'org.eclipse.elk.layered.spacing.nodeNodeBetweenLayers': '90',
+			'org.eclipse.elk.spacing.edgeNode': '25',
+			'org.eclipse.elk.layered.spacing.edgeEdgeBetweenLayers': '15',
 			'org.eclipse.elk.layered.nodePlacement.favorStraightEdges': 'true',
 		},
-		children: nodes.map((n) => ({id: String(n.id), width: NODE_W, height: NODE_H})),
+		// use each node's real size when given (taller cards have more ports) so elk spaces rows correctly
+		children: nodes.map((n) => ({id: String(n.id), width: n.width ?? NODE_W, height: n.height ?? NODE_H})),
 		edges: edges.map((e, i) => ({id: `e${i}`, sources: [String(e.from)], targets: [String(e.to)]})),
 	};
 	const laid = await elk.layout(graph as any);

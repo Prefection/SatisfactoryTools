@@ -115,9 +115,23 @@ function viewModel(node: GraphNode): FactoryNodeData {
 
 async function draw(): Promise<void> {
 	const graph = props.result.graph;
+
+	// Per-node port counts drive the card's real height, so elk can space rows without overlap
+	// (a node with 4 inputs is much taller than a one-line miner card).
+	const inCount = new Map<number, number>();
+	const outCount = new Map<number, number>();
+	for (const e of graph.edges) {
+		outCount.set(e.from.id, (outCount.get(e.from.id) ?? 0) + 1);
+		inCount.set(e.to.id, (inCount.get(e.to.id) ?? 0) + 1);
+	}
+	const nodeHeight = (id: number) => {
+		const ports = Math.max(inCount.get(id) ?? 0, outCount.get(id) ?? 0);
+		return Math.max(78, ports * 26 + 16); // ~card base, grown by stacked ports
+	};
+
 	// elk layout on a flat {id,label} view; the view-model supplies the real card content.
 	const laid = await layoutGraph(
-		graph.nodes.map((n) => ({id: n.id, label: n.getTitle()})),
+		graph.nodes.map((n) => ({id: n.id, label: n.getTitle(), width: 224, height: nodeHeight(n.id)})),
 		graph.edges.map((e) => ({from: e.from.id, to: e.to.id})),
 	);
 	const pos = new Map(laid.map((n) => [n.id, {x: n.x ?? 0, y: n.y ?? 0}]));
@@ -166,8 +180,10 @@ async function draw(): Promise<void> {
 // edge to a higher node plugs into a higher port (fewer crossings). Reads live positions,
 // so it also re-settles after a node is dragged.
 function reorderPorts(): void {
+	// Order by each node's CENTRE y (top + half height), so mixed-height nodes sort by where
+	// their body actually sits, not their top edge.
 	const y = new Map<number, number>();
-	for (const n of getNodes.value) y.set(Number(n.id), n.position?.y ?? 0);
+	for (const n of getNodes.value) y.set(Number(n.id), (n.position?.y ?? 0) + (n.dimensions?.height ?? 0) / 2);
 	const byConnected = (endpoint: 'source' | 'target') => (a: FactoryPort, b: FactoryPort) => {
 		const ya = y.get(edgeEnds.get(a.id)?.[endpoint] ?? -1) ?? 0;
 		const yb = y.get(edgeEnds.get(b.id)?.[endpoint] ?? -1) ?? 0;
