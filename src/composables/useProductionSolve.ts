@@ -8,6 +8,7 @@ import {ProductionResultFactory} from '@src/Tools/Production/Result/ProductionRe
 import {ProductionResult} from '@src/Tools/Production/Result/ProductionResult';
 import {ResultStatus} from '@src/Tools/Production/ResultStatus';
 import {IProductionDataApiRequest} from '@src/Tools/Production/IProductionData';
+import {Constants} from '@src/Constants';
 
 function apiGameVersion(version: string): string {
 	return version === '1.0' ? '1.0.0' : '1.2.0';
@@ -23,7 +24,8 @@ export function useProductionSolve() {
 	const resultNew = shallowRef<ProductionResult | undefined>(undefined);
 
 	async function calculate(): Promise<void> {
-		const hasInput = tab.request.production.some((p) => p.item && p.amount > 0);
+		// A maximize row is solvable regardless of amount (its amount is ignored); a per-minute row needs amount > 0.
+		const hasInput = tab.request.production.some((p) => p.item && (p.type === Constants.PRODUCTION_TYPE.MAXIMIZE || p.amount > 0));
 		if (!hasInput) { resultStatus.value = ResultStatus.NO_INPUT; resultNew.value = undefined; return; }
 
 		resultStatus.value = ResultStatus.CALCULATING;

@@ -4,6 +4,7 @@ import model from '@src/Data/Model';
 import {VueDraggable} from 'vue-draggable-plus';
 import {useActiveTab} from '@src/composables/useActiveTab';
 import {useGameData} from '@src/composables/useGameData';
+import {Constants} from '@src/Constants';
 import ItemCombobox from '@src/components/ItemCombobox.vue';
 
 const {data, addProduct, removeProduct, cloneProduct, clearProducts} = useActiveTab();
@@ -42,8 +43,14 @@ const craftableItems = computed(() => {
 			<tr v-for="(product, index) in data.request.production" :key="rowKey(product)">
 				<td class="sortable-handler"><span class="fas fa-arrows-alt-v cursor-drag"></span></td>
 				<td><ItemCombobox v-model="product.item" :items="craftableItems" /></td>
+					<td class="text-nowrap">
+						<select class="form-control" v-show="product.item" v-model="product.type">
+							<option :value="Constants.PRODUCTION_TYPE.PER_MINUTE">Per minute</option>
+							<option :value="Constants.PRODUCTION_TYPE.MAXIMIZE">Maximize</option>
+						</select>
+					</td>
 				<td>
-					<div v-show="product.item" class="input-group">
+					<div v-show="product.item && product.type === Constants.PRODUCTION_TYPE.PER_MINUTE" class="input-group">
 						<input class="form-control" type="number" min="0" step="any" v-model.number="product.amount" />
 						<div class="input-group-append"><span class="input-group-text">/ min</span></div>
 					</div>

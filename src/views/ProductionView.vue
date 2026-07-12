@@ -29,7 +29,7 @@ const manage = ref(false);
 const expanded = ref(true);
 const renaming = ref(false);
 const copied = ref(false);
-const leftTab = ref<'production' | 'items' | 'recipes' | 'machines'>('production');
+const leftTab = ref<'production' | 'items' | 'recipes' | 'machines' | 'options'>('production');
 const resultTab = ref<'overview' | 'visualization' | 'power' | 'items' | 'buildings'>('visualization');
 
 const active = computed(() => tabs.find((t) => t.id === activeId.value));
@@ -207,6 +207,11 @@ function copyShareLink(): void {
 									<span class="fas fa-fw fa-industry mr-1"></span>Machines
 								</a>
 							</li>
+							<li class="nav-item">
+								<a href="javascript:void(0)" class="nav-link" :class="{active: leftTab === 'options'}" @click="leftTab = 'options'">
+									<span class="fas fa-fw fa-sliders-h mr-1"></span>Options
+								</a>
+							</li>
 						</ul>
 					</div>
 
@@ -223,9 +228,16 @@ function copyShareLink(): void {
 								<div class="col-md-6"><RecipeList mode="base" /></div>
 							</div>
 						</template>
-						<template v-else>
+						<template v-else-if="leftTab === 'machines'">
 							<p>Select machines you have available. Disabling a machine will automatically disable all recipes in that machine.</p>
 							<MachineToggles />
+						</template>
+						<template v-else>
+							<h4>Options</h4>
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox" class="custom-control-input" id="opt-integer" v-model="data.request.integerMachines" />
+								<label class="custom-control-label" for="opt-integer">Whole machines (maximize mode) — round machine counts to whole numbers</label>
+							</div>
 						</template>
 					</div>
 				</div>
