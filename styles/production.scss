@@ -66,28 +66,6 @@ $border: 1px solid rgba(0, 0, 0, 0.125);
 		}
 	}
 
-	.production-input-table,
-	.input-table {
-		width: 100%;
-
-		tr {
-			// drag handle, amount and buttons shrink to content; the item picker absorbs the slack.
-			td:nth-child(1) { width: 1%; white-space: nowrap; }
-			td:nth-child(2) { width: 100%; }
-			td:nth-child(3) { width: 1%; white-space: nowrap; }
-			td:nth-child(4) { width: 1%; white-space: nowrap; }
-		}
-
-		.input-group {
-			width: 150px;
-		}
-
-		// the per-row type picker sits in a shrink-to-content cell; give it room to show its labels.
-		select.form-control {
-			width: 140px;
-		}
-	}
-
 	& > .card-header {
 		padding: 0;
 		min-height: $header-height;
@@ -175,6 +153,30 @@ $border: 1px solid rgba(0, 0, 0, 0.125);
 			}
 		}
 	}
+}
+
+// Product / input row tables. Top-level (not scoped to a wrapper) so the column
+// sizing applies wherever the rows render — including the HUD Configure panel.
+.production-input-table,
+.input-table {
+	width: 100%;
+
+	tr {
+		// drag handle, type, amount and buttons shrink to content; the item picker absorbs the slack.
+		td:nth-child(1) { width: 1%; white-space: nowrap; }
+		td:nth-child(2) { width: 100%; }
+		td:nth-child(3) { width: 1%; white-space: nowrap; }
+		td:nth-child(4) { width: 1%; white-space: nowrap; }
+	}
+
+	.input-group { width: 150px; }
+	select.form-control { width: 140px; } // room to show "Per minute" / "Maximize"
+}
+
+// Keep each row a single line; on narrow screens the row scrolls inside its own
+// panel instead of forcing the page body to scroll horizontally.
+.table-scroll {
+	overflow-x: auto;
 }
 
 .card-header-with-buttons {

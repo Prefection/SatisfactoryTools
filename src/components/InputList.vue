@@ -39,6 +39,7 @@ const inputableItems = computed(() => {
 		</h3>
 		<div class="card-body">
 			<p>Select items that you already have at your disposal and therefore don't need to be produced by this factory.</p>
+			<div class="table-scroll">
 			<table class="input-table">
 				<VueDraggable v-model="data.request.input" :animation="150" tag="tbody" handle=".sortable-handler">
 					<tr v-for="(input, index) in data.request.input" :key="rowKey(input)">
@@ -57,6 +58,7 @@ const inputableItems = computed(() => {
 					</tr>
 				</VueDraggable>
 			</table>
+			</div>
 
 			<div class="d-flex mt-2">
 				<span class="btn btn-outline-success flex-grow-1" @click="addInput"><span class="fas fa-plus"></span> Add input</span>

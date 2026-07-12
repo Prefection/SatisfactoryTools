@@ -38,6 +38,7 @@ const craftableItems = computed(() => {
 		as few raw resources as possible.
 	</p>
 
+	<div class="table-scroll">
 	<table class="production-input-table">
 		<VueDraggable v-model="data.request.production" :animation="150" tag="tbody" handle=".sortable-handler">
 			<tr v-for="(product, index) in data.request.production" :key="rowKey(product)">
@@ -62,6 +63,7 @@ const craftableItems = computed(() => {
 			</tr>
 		</VueDraggable>
 	</table>
+	</div>
 
 	<div class="d-flex mt-2">
 		<span class="btn btn-outline-success flex-grow-1" @click="addProduct"><span class="fas fa-plus"></span> Add product</span>
