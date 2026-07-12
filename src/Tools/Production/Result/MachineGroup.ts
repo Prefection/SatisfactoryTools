@@ -8,7 +8,7 @@ export class MachineGroup
 {
 
 	public machines: IMachineGroupItem[] = [];
-	public power: IMachineGroupPower;
+	public power!: IMachineGroupPower;
 
 	public constructor(public recipeData: RecipeData, public mode: MachineGroupMode = 'underclockLast')
 	{

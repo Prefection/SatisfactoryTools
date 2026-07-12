@@ -9,8 +9,8 @@ export class DiffGenerator
 
 	private diff: IDiffSchema[] = [];
 
-	private originalSchema: IJsonSchema;
-	private newSchema: IJsonSchema;
+	private originalSchema!: IJsonSchema;
+	private newSchema!: IJsonSchema;
 
 	public generateDiff(originalSchema: IJsonSchema, newSchema: IJsonSchema): IDiffSchema[]
 	{

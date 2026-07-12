@@ -10,7 +10,7 @@ export class Model
 
 	public items: {[key: string]: Item} = {};
 	public recipes: {[key: string]: Recipe} = {};
-	public data: IJsonSchema;
+	public data!: IJsonSchema;
 
 	public constructor(data?: IJsonSchema)
 	{

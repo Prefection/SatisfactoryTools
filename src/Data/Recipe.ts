@@ -9,7 +9,7 @@ export class Recipe
 
 	public readonly ingredients: ItemAmount[] = [];
 	public readonly products: ItemAmount[] = [];
-	public readonly machine: IManufacturerSchema;
+	public readonly machine!: IManufacturerSchema;
 
 	public constructor(private readonly model: Model, public readonly prototype: IRecipeSchema)
 	{

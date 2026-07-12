@@ -5,7 +5,7 @@ export class RecipeResult
 {
 
 	public machines: IMachinesResult[] = [];
-	public nodeId: number;
+	public nodeId!: number;
 	public productAmountCache: {
 		product: string,
 		amount: number,

@@ -5,7 +5,7 @@ import {IVisNode} from '@src/Tools/Production/Result/IVisNode';
 export abstract class GraphNode
 {
 
-	public id: number;
+	public id!: number;
 
 	public connectedEdges: GraphEdge[] = [];
 
