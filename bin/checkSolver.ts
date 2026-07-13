@@ -142,6 +142,27 @@ assert.ok((ingotFirst['Desc_IronRod_C#Product'] ?? 0) < 1e-4, 'ingot-first starv
 // A starved maximize target emits no product node at all (not a 0/min node).
 assert.ok(!('Desc_IronRod_C#Product' in ingotFirst), 'starved max target has no zero product entry');
 
+// --- "At least X" floor: ingot-first normally starves rod (pure max); an atLeast row guarantees
+// the rod appears at >= the floor while ingot still takes the surplus. ---
+const rodFloored = await solveProduction(request({
+	resourceMax: {...resourceMax, Desc_OreIron_C: 60},
+	production: [
+		{item: 'Desc_IronIngot_C', type: 'max', amount: 0, ratio: 100},
+		{item: 'Desc_IronRod_C', type: 'atLeast', amount: 10, ratio: 100},
+	],
+}), data);
+assert.ok((rodFloored['Desc_IronRod_C#Product'] ?? 0) >= 10 - 1e-4, `rod floor honored, got ${rodFloored['Desc_IronRod_C#Product']}`);
+assert.ok((rodFloored['Desc_IronIngot_C#Product'] ?? 0) > 1e-4, 'ingot still maximized with the surplus');
+// Default unchanged: a pure 'max' row with a leftover amount still ignores it (no floor).
+const maxIgnoresAmount = await solveProduction(request({
+	resourceMax: {...resourceMax, Desc_OreIron_C: 60},
+	production: [
+		{item: 'Desc_IronIngot_C', type: 'max', amount: 0, ratio: 100},
+		{item: 'Desc_IronRod_C', type: 'max', amount: 10, ratio: 100},
+	],
+}), data);
+assert.ok(!('Desc_IronRod_C#Product' in maxIgnoresAmount), 'pure max ignores amount (default behavior unchanged)');
+
 // --- Degenerate MILP: whole machines + tight caps must not add a goal-neutral recipe (Iron Rod -> Iron
 // Rebar) just to sink surplus. Among equal-output integer plans the solver must prefer fewer machines. ---
 const tight: {[k: string]: number} = {};

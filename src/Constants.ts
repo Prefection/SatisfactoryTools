@@ -13,9 +13,10 @@ export class Constants
 		LIQUID: 'liquid',
 	};
 
-	public static PRODUCTION_TYPE: { PER_MINUTE: string, MAXIMIZE: string } = {
+	public static PRODUCTION_TYPE: { PER_MINUTE: string, MAXIMIZE: string, AT_LEAST: string } = {
 		PER_MINUTE: 'perMinute',
 		MAXIMIZE: 'max',
+		AT_LEAST: 'atLeast', // maximize (list-order priority) but never below the row's amount floor
 	};
 
 	public static WORKBENCH_CLASSNAME = 'Desc_WorkBench_C';

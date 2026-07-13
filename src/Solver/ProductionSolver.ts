@@ -5,6 +5,7 @@ import {IProductionDataApiRequest, IProductionDataApiResponse} from '@src/Tools/
 
 const PER_MINUTE = 'perMinute';
 const MAXIMIZE = 'max';
+const AT_LEAST = 'atLeast'; // maximize with list-order priority, but never below the row's amount floor
 const EPS = 1e-7;
 // Small penalty so a maximize solve, among equally-maximal plans, prefers less raw-resource use.
 // Far below any real output magnitude, so it never changes which plan is maximal.
@@ -136,7 +137,8 @@ export function buildProductionModel(request: IProductionDataApiRequest, data: I
 }
 
 export async function solveProduction(request: IProductionDataApiRequest, data: IJsonSchema): Promise<IProductionDataApiResponse> {
-	const maxRows = request.production.filter((p) => p.item && p.type === MAXIMIZE);
+	// Maximize and "at least" rows both maximize in list order; only "at least" rows carry a floor.
+	const maxRows = request.production.filter((p) => p.item && (p.type === MAXIMIZE || p.type === AT_LEAST));
 
 	// No maximize rows -> today's single min-cost LP (per-minute demand only).
 	if (maxRows.length === 0) {
@@ -157,6 +159,15 @@ export async function solveProduction(request: IProductionDataApiRequest, data: 
 	const locked: {[item: string]: number} = {}; // max item -> achieved output, becomes a >= floor
 	let lastSolution: Solution | null = null;
 
+	// Per-row "at least X/min" floor (0 = pure maximize). Reserved in EVERY pass so a higher-priority
+	// maximize can't starve a lower one below its floor.
+	const maxItems = maxRows.map((r) => r.item as string);
+	const rowFloor: {[item: string]: number} = {};
+	for (const r of maxRows) {
+		const floor = r.type === AT_LEAST && r.amount > 0 ? r.amount : 0;
+		rowFloor[r.item as string] = Math.max(rowFloor[r.item as string] ?? 0, floor);
+	}
+
 	for (const row of maxRows) {
 		const X = row.item as string;
 		const variables: Vars = {};
@@ -164,14 +175,14 @@ export async function solveProduction(request: IProductionDataApiRequest, data: 
 		const constraints: Cons = {};
 		for (const [k, v] of Object.entries(base.constraints)) constraints[k] = {...v};
 
-		// One "out" variable per max item pulls that item out as product; its coefficient on 'goal'
-		// is the objective. The current target scores 1; previously-locked targets score 0 but keep
-		// a floor constraint so their priority holds.
-		const maxedSoFar = [...Object.keys(locked), X];
-		for (const item of maxedSoFar) {
-			const v: {[coef: string]: number} = {['item:' + item]: -1, ['out:' + item]: 1, goal: item === X ? 1 : 0};
-			variables['out:' + item] = v;
-			if (item in locked) constraints['out:' + item] = {min: locked[item]};
+		// One "out" variable per max item pulls that item out as product; its 'goal' coefficient is the
+		// objective (current target scores 1, others 0). Every max item keeps a floor in every pass:
+		// its locked value once maximized, otherwise its "at least" row floor — so all floors are held
+		// while the current target is maximized.
+		for (const item of maxItems) {
+			variables['out:' + item] = {['item:' + item]: -1, ['out:' + item]: 1, goal: item === X ? 1 : 0};
+			const floor = item in locked ? locked[item] : (rowFloor[item] ?? 0);
+			if (floor > 0) constraints['out:' + item] = {min: floor};
 		}
 		// Tie-break penalties on the goal (both far below real output): mine vars pay COST_PENALTY *
 		// resource-weight so maximal plans use less raw; recipe vars pay a flat ACTIVITY_PENALTY per

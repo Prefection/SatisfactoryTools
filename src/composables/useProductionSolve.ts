@@ -25,7 +25,7 @@ export function useProductionSolve() {
 
 	async function calculate(): Promise<void> {
 		// A maximize row is solvable regardless of amount (its amount is ignored); a per-minute row needs amount > 0.
-		const hasInput = tab.request.production.some((p) => p.item && (p.type === Constants.PRODUCTION_TYPE.MAXIMIZE || p.amount > 0));
+		const hasInput = tab.request.production.some((p) => p.item && (p.type === Constants.PRODUCTION_TYPE.MAXIMIZE || p.type === Constants.PRODUCTION_TYPE.AT_LEAST || p.amount > 0));
 		if (!hasInput) { resultStatus.value = ResultStatus.NO_INPUT; resultNew.value = undefined; return; }
 
 		resultStatus.value = ResultStatus.CALCULATING;

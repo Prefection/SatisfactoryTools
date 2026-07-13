@@ -48,10 +48,11 @@ const craftableItems = computed(() => {
 						<select class="form-control" v-show="product.item" v-model="product.type">
 							<option :value="Constants.PRODUCTION_TYPE.PER_MINUTE">Per minute</option>
 							<option :value="Constants.PRODUCTION_TYPE.MAXIMIZE">Maximize</option>
+							<option :value="Constants.PRODUCTION_TYPE.AT_LEAST">At least</option>
 						</select>
 					</td>
 				<td>
-					<div v-show="product.item && product.type === Constants.PRODUCTION_TYPE.PER_MINUTE" class="input-group">
+					<div v-show="product.item && (product.type === Constants.PRODUCTION_TYPE.PER_MINUTE || product.type === Constants.PRODUCTION_TYPE.AT_LEAST)" class="input-group">
 						<input class="form-control" type="number" min="0" step="any" v-model.number="product.amount" />
 						<div class="input-group-append"><span class="input-group-text">/ min</span></div>
 					</div>
