@@ -9,6 +9,10 @@ const EPS = 1e-7;
 // Small penalty so a maximize solve, among equally-maximal plans, prefers less raw-resource use.
 // Far below any real output magnitude, so it never changes which plan is maximal.
 const COST_PENALTY = 1e-6;
+// Tiny per-machine penalty so, among equally-maximal plans, the solver prefers fewer machines and
+// drops goal-neutral filler recipes (e.g. sinking surplus Iron Rod into Iron Rebar). Far below any
+// real output magnitude, so it never reduces the maximum.
+const ACTIVITY_PENALTY = 1e-6;
 
 export function ratePerMachine(recipe: IRecipeSchema, perCycleAmount: number, data: IJsonSchema): number {
 	const building = data.buildings[recipe.producedIn[0]];
@@ -169,10 +173,15 @@ export async function solveProduction(request: IProductionDataApiRequest, data: 
 			variables['out:' + item] = v;
 			if (item in locked) constraints['out:' + item] = {min: locked[item]};
 		}
-		// Tiny penalty: subtract COST_PENALTY * resource-weight from the goal on mine vars so, among
-		// maximal plans, the solver uses less raw resource. Never large enough to reduce the maximum.
+		// Tie-break penalties on the goal (both far below real output): mine vars pay COST_PENALTY *
+		// resource-weight so maximal plans use less raw; recipe vars pay a flat ACTIVITY_PENALTY per
+		// machine so maximal plans use fewer machines and drop goal-neutral filler (e.g. converting
+		// surplus Iron Rod into Iron Rebar). Neither is ever large enough to reduce the maximum.
 		for (const k of Object.keys(variables)) {
-			if (variables[k].cost) variables[k] = {...variables[k], goal: (variables[k].goal ?? 0) - COST_PENALTY * variables[k].cost};
+			let adj = 0;
+			if (variables[k].cost) adj -= COST_PENALTY * variables[k].cost;
+			if (k.startsWith('recipe:')) adj -= ACTIVITY_PENALTY;
+			if (adj) variables[k] = {...variables[k], goal: (variables[k].goal ?? 0) + adj};
 		}
 
 		const model: Model = {direction: 'maximize', objective: 'goal', constraints, variables, ...(integers ? {integers} : {})};

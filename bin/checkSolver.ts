@@ -142,4 +142,23 @@ assert.ok((ingotFirst['Desc_IronRod_C#Product'] ?? 0) < 1e-4, 'ingot-first starv
 // A starved maximize target emits no product node at all (not a 0/min node).
 assert.ok(!('Desc_IronRod_C#Product' in ingotFirst), 'starved max target has no zero product entry');
 
+// --- Degenerate MILP: whole machines + tight caps must not add a goal-neutral recipe (Iron Rod -> Iron
+// Rebar) just to sink surplus. Among equal-output integer plans the solver must prefer fewer machines. ---
+const tight: {[k: string]: number} = {};
+for (const r of Object.keys(data.resources)) tight[r] = 0;
+tight.Desc_Coal_C = 120; tight.Desc_OreCopper_C = 60; tight.Desc_OreIron_C = 180; tight.Desc_Stone_C = 60;
+const noWaste = request({
+	integerMachines: true, resourceMax: tight,
+	production: [
+		{item: 'Desc_ModularFrame_C', type: 'max', amount: 0, ratio: 100},
+		{item: 'Desc_Rotor_C', type: 'max', amount: 0, ratio: 100},
+		{item: 'Desc_IronPlateReinforced_C', type: 'max', amount: 0, ratio: 100},
+		{item: 'Desc_SpaceElevatorPart_1_C', type: 'max', amount: 0, ratio: 100},
+	],
+});
+const noWasteResp = await solveProduction(noWaste, data);
+assert.ok(!('Recipe_SpikedRebar_C@100#Desc_ConstructorMk1_C' in noWasteResp), `no pointless Iron Rebar recipe, got ${JSON.stringify(noWasteResp)}`);
+assert.ok(!('Desc_SpikedRebar_C#Byproduct' in noWasteResp), 'no Iron Rebar byproduct from surplus');
+assert.ok((noWasteResp['Desc_ModularFrame_C#Product'] ?? 0) >= 6 - 1e-4, 'primary target output not eroded by the tie-break penalty');
+
 console.log('OK: solveProduction worked example + feasibility set + co-product byproduct/sink routing pass.');
