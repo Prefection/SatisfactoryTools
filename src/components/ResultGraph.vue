@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {markRaw, nextTick, onMounted, ref, watch} from 'vue';
+import {computed, markRaw, nextTick, onMounted, ref, watch} from 'vue';
 import {MarkerType, useVueFlow, VueFlow} from '@vue-flow/core';
 import {Background} from '@vue-flow/background';
 import {Controls} from '@vue-flow/controls';
@@ -18,9 +18,12 @@ import data from '@src/Data/Data';
 import {Strings} from '@src/Utils/Strings';
 import FactoryNode from '@src/components/FactoryNode.vue';
 
+type Side = 'left' | 'right' | 'top' | 'bottom';
+
 interface FactoryPort {
-	id: string;   // item className — the handle id edges connect to
+	id: string;   // edge id — the handle id edges connect to
 	name: string; // item display name (title/tooltip)
+	side?: Side;  // single-port leaf nodes face their neighbour to shorten the edge
 }
 
 interface FactoryNodeData {
@@ -36,7 +39,14 @@ interface FactoryNodeData {
 	outputs: FactoryPort[]; // one source handle per distinct outgoing item
 }
 
-const props = defineProps<{result: ProductionResult}>();
+const props = defineProps<{result: ProductionResult; straight?: boolean}>();
+
+// The side (of 4) a leaf node's single port should sit on to point at its neighbour.
+function sideToNeighbour(cx: number, cy: number, nx: number, ny: number): Side {
+	const dx = nx - cx, dy = ny - cy;
+	if (Math.abs(dx) >= Math.abs(dy)) return dx >= 0 ? 'right' : 'left';
+	return dy >= 0 ? 'bottom' : 'top';
+}
 
 // Vue Flow's Node/Edge generics instantiate too deeply for the object literals below
 // (TS2589), so the flow arrays and node-types map stay loose — the same tradeoff the
@@ -161,11 +171,23 @@ async function draw(): Promise<void> {
 	// Order ports up-front by the connected node's centre y from the elk layout — deterministic
 	// (no dependency on when Vue Flow applies positions). A higher target -> higher output port.
 	const centreY = (id: number) => (pos.get(id)?.y ?? 0) + nodeHeight(id) / 2;
+	const centreX = (id: number) => (pos.get(id)?.x ?? 0) + 224 / 2;
 	for (const list of outPorts.values()) {
 		list.sort((a, b) => centreY(edgeEnds.get(a.id)!.target) - centreY(edgeEnds.get(b.id)!.target));
 	}
 	for (const list of inPorts.values()) {
 		list.sort((a, b) => centreY(edgeEnds.get(a.id)!.source) - centreY(edgeEnds.get(b.id)!.source));
+	}
+
+	// Leaf nodes with a single port: face that port toward its one neighbour to shorten the edge.
+	for (const n of graph.nodes) {
+		const ins = inPorts.get(n.id) ?? [];
+		const outs = outPorts.get(n.id) ?? [];
+		if (ins.length + outs.length !== 1) continue;
+		const port = ins[0] ?? outs[0];
+		const ends = edgeEnds.get(port.id)!;
+		const nb = ins.length ? ends.source : ends.target;
+		port.side = sideToNeighbour(centreX(n.id), centreY(n.id), centreX(nb), centreY(nb));
 	}
 
 	nodes.value = graph.nodes.map((n) => ({
@@ -180,38 +202,55 @@ async function draw(): Promise<void> {
 		target: String(e.to.id),
 		sourceHandle: String(e.id), // each edge attaches to its own dedicated port
 		targetHandle: String(e.id),
-		type: 'smoothstep',
 		markerEnd: {type: MarkerType.ArrowClosed, color: '#5f7183', width: 18, height: 18},
 		label: `${data.getItemByClassName(e.itemAmount.item)?.name ?? e.itemAmount.item}  ${Strings.formatNumber(e.itemAmount.amount)}/min`,
 	}));
 }
 
+// Edge shape is a per-tab view pref, applied without rebuilding the graph.
+const displayEdges = computed(() => edges.value.map((e) => ({...e, type: props.straight ? 'straight' : 'smoothstep'})));
+
 // Order each node's ports by the vertical position of the node they connect to, so an
 // edge to a higher node plugs into a higher port (fewer crossings). Reads live positions,
 // so it also re-settles after a node is dragged.
 function reorderPorts(): void {
-	// Order by each node's CENTRE y (top + half height), so mixed-height nodes sort by where
-	// their body actually sits, not their top edge.
-	const y = new Map<number, number>();
-	for (const n of getNodes.value) y.set(Number(n.id), (n.position?.y ?? 0) + (n.dimensions?.height ?? 0) / 2);
+	// Live node centres (x and y) from the current positions.
+	const cx = new Map<number, number>();
+	const cy = new Map<number, number>();
+	for (const n of getNodes.value) {
+		cx.set(Number(n.id), (n.position?.x ?? 0) + (n.dimensions?.width ?? 224) / 2);
+		cy.set(Number(n.id), (n.position?.y ?? 0) + (n.dimensions?.height ?? 0) / 2);
+	}
+	// Multi-port nodes: order ports by the connected node's centre y (higher target -> higher port).
 	const byConnected = (endpoint: 'source' | 'target') => (a: FactoryPort, b: FactoryPort) => {
-		const ya = y.get(edgeEnds.get(a.id)?.[endpoint] ?? -1) ?? 0;
-		const yb = y.get(edgeEnds.get(b.id)?.[endpoint] ?? -1) ?? 0;
+		const ya = cy.get(edgeEnds.get(a.id)?.[endpoint] ?? -1) ?? 0;
+		const yb = cy.get(edgeEnds.get(b.id)?.[endpoint] ?? -1) ?? 0;
 		return ya - yb;
 	};
 	const changed: string[] = [];
 	for (const n of getNodes.value) {
+		const id = Number(n.id);
 		const d = n.data as {inputs: FactoryPort[]; outputs: FactoryPort[]};
-		if (!d || (d.inputs.length < 2 && d.outputs.length < 2)) continue;
-		updateNodeData(n.id, {
-			inputs: [...d.inputs].sort(byConnected('source')), // ordered by the source node's height
-			outputs: [...d.outputs].sort(byConnected('target')), // ordered by the target node's height
-		});
-		changed.push(n.id);
+		if (!d) continue;
+		if (d.inputs.length + d.outputs.length === 1) {
+			// Single-port leaf: reface the one port toward its neighbour.
+			const isInput = d.inputs.length === 1;
+			const port = isInput ? d.inputs[0] : d.outputs[0];
+			const ends = edgeEnds.get(port.id);
+			if (!ends) continue;
+			const nb = isInput ? ends.source : ends.target;
+			const side = sideToNeighbour(cx.get(id) ?? 0, cy.get(id) ?? 0, cx.get(nb) ?? 0, cy.get(nb) ?? 0);
+			if (port.side === side) continue;
+			const refaced = [{...port, side}];
+			updateNodeData(n.id, (isInput ? {inputs: refaced} : {outputs: refaced}) as any);
+			changed.push(n.id);
+		} else if (d.inputs.length >= 2 || d.outputs.length >= 2) {
+			updateNodeData(n.id, {inputs: [...d.inputs].sort(byConnected('source')), outputs: [...d.outputs].sort(byConnected('target'))});
+			changed.push(n.id);
+		}
 	}
-	// Handles moved to new vertical slots; Vue Flow caches handle bounds, so tell it to
-	// re-measure (next tick, after the handles have re-rendered) or edges keep routing to the
-	// old positions.
+	// Handles moved (new slot or side); Vue Flow caches handle bounds, so re-measure next tick
+	// (after the handles re-render) or edges keep routing to the old positions.
 	if (changed.length) nextTick(() => updateNodeInternals(changed));
 }
 
@@ -230,7 +269,7 @@ watch(() => props.result, draw); // re-draw when a new solve replaces the result
 		<VueFlow
 			:id="flowId"
 			:nodes="nodes"
-			:edges="edges"
+			:edges="displayEdges"
 			:node-types="nodeTypes"
 			:min-zoom="0.2"
 			:max-zoom="2"

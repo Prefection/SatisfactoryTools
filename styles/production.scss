@@ -415,3 +415,20 @@ $border: 1px solid rgba(0, 0, 0, 0.125);
 		display: block;
 	}
 }
+
+// Graph view options, shown above the visualization (per-tab; extend with more toggles).
+.graph-controls {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 6px 2px 10px;
+	font-size: 12px;
+}
+.graph-controls__opt {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin: 0;
+	cursor: pointer;
+	color: $gray-400;
+}

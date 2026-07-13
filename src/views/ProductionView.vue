@@ -264,7 +264,14 @@ function copyShareLink(): void {
 				</div>
 
 				<ResultOverview v-if="resultTab === 'overview'" :result="resultNew" />
-				<ResultGraph v-else-if="resultTab === 'visualization'" :result="resultNew" />
+				<template v-else-if="resultTab === 'visualization'">
+					<div class="graph-controls">
+						<label class="graph-controls__opt">
+							<input type="checkbox" v-model="data.metadata.straightLinks" /> Straight links
+						</label>
+					</div>
+					<ResultGraph :result="resultNew" :straight="!!data.metadata.straightLinks" />
+				</template>
 				<ResultPowerTable v-else-if="resultTab === 'power'" :result="resultNew" />
 				<ResultItemsTable v-else-if="resultTab === 'items'" :result="resultNew" />
 				<ResultBuildingsTable v-else-if="resultTab === 'buildings'" :result="resultNew" />

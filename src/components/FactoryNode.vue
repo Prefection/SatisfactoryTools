@@ -2,9 +2,12 @@
 import {Handle, Position} from '@vue-flow/core';
 import ItemIcon from '@src/components/ItemIcon.vue';
 
+type Side = 'left' | 'right' | 'top' | 'bottom';
+
 interface FactoryPort {
 	id: string;
 	name: string;
+	side?: Side; // single-port leaf nodes override the default L/R to face their neighbour
 }
 
 defineProps<{
@@ -22,9 +25,15 @@ defineProps<{
 	};
 }>();
 
-// Spread N ports evenly along a node edge: 1 -> 50%, 2 -> 33%/66%, etc.
-function portTop(index: number, count: number): string {
-	return `${((index + 1) / (count + 1)) * 100}%`;
+const POS: Record<Side, Position> = {
+	left: Position.Left, right: Position.Right, top: Position.Top, bottom: Position.Bottom,
+};
+
+// Spread N ports evenly along a node edge: 1 -> 50%, 2 -> 33%/66%, etc. Ports on a vertical
+// side (left/right) are offset by `top`; ports on a horizontal side (top/bottom) by `left`.
+function portStyle(side: Side, index: number, count: number): Record<string, string> {
+	const pct = `${((index + 1) / (count + 1)) * 100}%`;
+	return side === 'top' || side === 'bottom' ? {left: pct} : {top: pct};
 }
 </script>
 
@@ -32,8 +41,8 @@ function portTop(index: number, count: number): string {
 	<div class="factory-node" :data-kind="data.kind" :style="{'--node-accent': data.accent}">
 		<Handle
 			v-for="(port, i) in data.inputs" :key="'in-' + port.id"
-			type="target" :id="port.id" :position="Position.Left"
-			:style="{top: portTop(i, data.inputs.length)}" :title="port.name"
+			type="target" :id="port.id" :position="POS[port.side || 'left']"
+			:style="portStyle(port.side || 'left', i, data.inputs.length)" :title="port.name"
 			class="factory-node__port"
 		/>
 
@@ -52,51 +61,35 @@ function portTop(index: number, count: number): string {
 
 		<Handle
 			v-for="(port, i) in data.outputs" :key="'out-' + port.id"
-			type="source" :id="port.id" :position="Position.Right"
-			:style="{top: portTop(i, data.outputs.length)}" :title="port.name"
+			type="source" :id="port.id" :position="POS[port.side || 'right']"
+			:style="portStyle(port.side || 'right', i, data.outputs.length)" :title="port.name"
 			class="factory-node__port"
 		/>
 	</div>
 </template>
 
 <style scoped>
-/* A HUD readout tile: near-black surface, the node's type colour carried by the
-   left accent bar + a single bracketed corner (echoing the .hud-panel signature),
-   sans title, cyan mono data. Boldness spent only on the accent — the rest stays quiet. */
+/* A HUD readout tile: near-black surface, the node's type colour carried as a border all
+   the way around (so it reads the same whichever side a port lands on), cyan mono data. */
 .factory-node {
 	--node-accent: var(--hud-orange, #f99549);
 	position: relative;
 	box-sizing: border-box;
 	min-width: 172px;
 	max-width: 224px;
-	padding: 9px 12px 10px 14px;
+	padding: 9px 12px 10px 12px;
 	background-color: var(--hud-surface, #191d24);
 	background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.16)), var(--hud-surface, #191d24);
-	border: 1px solid var(--hud-border, rgba(255, 255, 255, 0.1));
-	border-left: 3px solid var(--node-accent);
+	border: 1.5px solid var(--node-accent);
 	border-radius: 5px;
 	color: var(--hud-text, #e8eaed);
 	font-family: var(--hud-font-sans, system-ui, sans-serif);
 	cursor: grab;
-	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+	transition: box-shadow 0.15s ease;
 }
 
 .factory-node:hover {
-	border-color: var(--node-accent);
 	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
-}
-
-/* Bracketed-corner signature, scaled to a single tick so a dense chain stays calm. */
-.factory-node::before {
-	content: '';
-	position: absolute;
-	top: -1px;
-	left: 2px;
-	width: 8px;
-	height: 8px;
-	border-top: 2px solid var(--node-accent);
-	border-left: 2px solid var(--node-accent);
-	pointer-events: none;
 }
 
 .factory-node__head {

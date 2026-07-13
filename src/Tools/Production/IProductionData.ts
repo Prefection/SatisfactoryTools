@@ -13,6 +13,7 @@ export interface IProductionDataMetadata
 	icon: string|null;
 	schemaVersion: number;
 	gameVersion: string;
+	straightLinks?: boolean; // per-tab graph view pref: straight edges instead of smoothstep
 
 }
 
