@@ -153,6 +153,23 @@ const rodFloored = await solveProduction(request({
 }), data);
 assert.ok((rodFloored['Desc_IronRod_C#Product'] ?? 0) >= 10 - 1e-4, `rod floor honored, got ${rodFloored['Desc_IronRod_C#Product']}`);
 assert.ok((rodFloored['Desc_IronIngot_C#Product'] ?? 0) > 1e-4, 'ingot still maximized with the surplus');
+
+// Several "at least" rows must not spuriously go infeasible: locking each maximized target at its
+// EXACT optimum is a floating-point knife edge the next pass can't satisfy, so the lock is relaxed.
+const manyFloors = request({
+	resourceMax: {...resourceMax, Desc_OreIron_C: 180, Desc_OreCopper_C: 60, Desc_Coal_C: 120, Desc_Stone_C: 60},
+	production: [
+		{item: 'Desc_SpaceElevatorPart_1_C', type: 'atLeast', amount: 1, ratio: 100},
+		{item: 'Desc_Rotor_C', type: 'atLeast', amount: 1, ratio: 100},
+		{item: 'Desc_IronPlateReinforced_C', type: 'atLeast', amount: 1, ratio: 100},
+		{item: 'Desc_ModularFrame_C', type: 'atLeast', amount: 1, ratio: 100},
+	],
+});
+const manyResp = await solveProduction(manyFloors, data);
+assert.ok(Object.keys(manyResp).length > 0, 'multi "at least" chain stays feasible (no FP-boundary infeasibility)');
+for (const it of ['Desc_SpaceElevatorPart_1_C', 'Desc_Rotor_C', 'Desc_IronPlateReinforced_C', 'Desc_ModularFrame_C']) {
+	assert.ok((manyResp[`${it}#Product`] ?? 0) >= 1 - 1e-3, `${it} meets its floor`);
+}
 // Default unchanged: a pure 'max' row with a leftover amount still ignores it (no floor).
 const maxIgnoresAmount = await solveProduction(request({
 	resourceMax: {...resourceMax, Desc_OreIron_C: 60},

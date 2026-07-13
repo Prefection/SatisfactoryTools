@@ -197,6 +197,17 @@ export async function solveProduction(request: IProductionDataApiRequest, data: 
 
 		const model: Model = {direction: 'maximize', objective: 'goal', constraints, variables, ...(integers ? {integers} : {})};
 		lastSolution = solve(model);
+		// A locked floor pinned at the EXACT prior maximum can be a floating-point knife edge the next
+		// solve can't satisfy, so yalps calls the whole plan infeasible. Only then, retry once with the
+		// locked floors relaxed by a hair (relative, min 1e-6) — reported amounts still use the exact
+		// locked values. Not relaxed unless needed, so a genuinely starved target stays at zero.
+		if (lastSolution.status !== 'optimal' && Object.keys(locked).length) {
+			const relaxed: Cons = {...constraints};
+			for (const item of Object.keys(locked)) {
+				relaxed['out:' + item] = {min: Math.max(0, locked[item] - Math.max(1e-6, locked[item] * 1e-6))};
+			}
+			lastSolution = solve({direction: 'maximize', objective: 'goal', constraints: relaxed, variables, ...(integers ? {integers} : {})});
+		}
 		if (lastSolution.status !== 'optimal') return {};
 		locked[X] = lastSolution.variables.find(([n]) => n === 'out:' + X)?.[1] ?? 0;
 	}
