@@ -173,10 +173,14 @@ $border: 1px solid rgba(0, 0, 0, 0.125);
 	select.form-control { width: 140px; } // room to show "Per minute" / "Maximize"
 }
 
-// Keep each row a single line; on narrow screens the row scrolls inside its own
-// panel instead of forcing the page body to scroll horizontally.
+// Keep each row a single line. Only clip/scroll on narrow screens (where the fixed-width
+// controls would otherwise overflow the page body). On wider screens overflow stays visible
+// so the item-picker dropdown can spill past the table bottom — overflow-x:auto would force
+// overflow-y:auto and clip it.
 .table-scroll {
-	overflow-x: auto;
+	@media (max-width: 575.98px) {
+		overflow-x: auto;
+	}
 }
 
 .card-header-with-buttons {
