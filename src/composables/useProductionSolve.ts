@@ -1,4 +1,4 @@
-import {ref, shallowRef, toRaw, watch} from 'vue';
+import {ref, shallowRef, watch} from 'vue';
 import data from '@src/Data/Data';
 import {DataProvider} from '@src/Data/DataProvider';
 import {useActiveTab} from '@src/composables/useActiveTab';
@@ -30,7 +30,10 @@ export function useProductionSolve() {
 
 		resultStatus.value = ResultStatus.CALCULATING;
 
-		const apiRequest: IProductionDataApiRequest = {...structuredClone(toRaw(tab.request)), gameVersion: apiGameVersion(version.value)};
+		// JSON round-trip, not structuredClone(toRaw()): toRaw unwraps only the root, so nested
+		// reactive rows (and the tags vue-draggable-plus adds after a drag) stay proxies and make
+		// structuredClone throw DataCloneError. request is pure JSON, so the round-trip is exact.
+		const apiRequest: IProductionDataApiRequest = {...JSON.parse(JSON.stringify(tab.request)), gameVersion: apiGameVersion(version.value)};
 
 		// Expand blockedMachines -> filter allowed alternates (ProductionTab.ts:109-125)
 		const blockedMachines = apiRequest.blockedMachines ?? [];
