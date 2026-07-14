@@ -66,26 +66,28 @@ const edgeEnds = new Map<string, {source: number; target: number}>();
 // vue-flow node id -> the domain graph node, so a click can show its recipe/data.
 const nodeById = new Map<string, GraphNode>();
 const selected = ref<GraphNode | null>(null);
+const perMachine = ref(false); // detail overlay: show per-machine rates instead of totals
 
 // Detail shown in the click overlay, built from the node's existing data (no new computation).
+// Each row carries both the total and the per-machine rate; the overlay toggles between them.
 const selectedDetail = computed(() => {
 	const n = selected.value;
 	if (!n) return null;
-	const amounts = (as: {resource: {name: string; className: string}; maxAmount: number}[]) =>
-		as.map((a) => ({icon: a.resource.className, name: a.resource.name, rate: rate(a.maxAmount)}));
-	const inputs = amounts(n.getInputs());
-	const outputs = amounts(n.getOutputs());
+	type Amt = {resource: {name: string; className: string}; maxAmount: number};
+	const rows = (as: Amt[], mc: number) =>
+		as.map((a) => ({icon: a.resource.className, name: a.resource.name, total: rate(a.maxAmount), per: rate(a.maxAmount / mc)}));
 	if (n instanceof RecipeNode) {
+		const mc = n.machineData.countMachines();
 		return {
 			title: n.recipeData.recipe.name,
 			machine: n.recipeData.machine.name,
-			machineCount: n.machineData.countMachines(),
+			machineCount: mc,
 			power: `${Strings.formatNumber(n.machineData.power.average)} MW`,
-			inputs, outputs,
+			inputs: rows(n.getInputs(), mc), outputs: rows(n.getOutputs(), mc),
 		};
 	}
 	const one = n.getOutputs()[0] ?? n.getInputs()[0];
-	return {title: one?.resource.name ?? '', machine: undefined, machineCount: undefined, power: undefined, inputs, outputs};
+	return {title: one?.resource.name ?? '', machine: undefined, machineCount: 1, power: undefined, inputs: rows(n.getInputs(), 1), outputs: rows(n.getOutputs(), 1)};
 });
 
 // elk lays nodes out on a 100px-tall grid; size the frame to the chain instead of a
@@ -321,16 +323,20 @@ watch(() => props.result, draw); // re-draw when a new solve replaces the result
 				<span class="hud-value">{{ selectedDetail.machineCount }}×</span> {{ selectedDetail.machine }}
 				<span v-if="selectedDetail.power" class="node-detail__power">· {{ selectedDetail.power }}</span>
 			</div>
+			<div v-if="selectedDetail.machineCount > 1" class="node-detail__toggle">
+				<span :class="{'is-active': !perMachine}" @click="perMachine = false">Total</span>
+				<span :class="{'is-active': perMachine}" @click="perMachine = true">Per machine</span>
+			</div>
 			<template v-if="selectedDetail.inputs.length">
 				<div class="node-detail__label">In</div>
 				<div v-for="p in selectedDetail.inputs" :key="'i' + p.icon" class="node-detail__row">
-					<ItemIcon :item="p.icon" :size="18" hide-tooltip /> <span class="node-detail__name">{{ p.name }}</span> <span class="node-detail__rate">{{ p.rate }}</span>
+					<ItemIcon :item="p.icon" :size="18" hide-tooltip /> <span class="node-detail__name">{{ p.name }}</span> <span class="node-detail__rate">{{ perMachine ? p.per : p.total }}</span>
 				</div>
 			</template>
 			<template v-if="selectedDetail.outputs.length">
 				<div class="node-detail__label">Out</div>
 				<div v-for="p in selectedDetail.outputs" :key="'o' + p.icon" class="node-detail__row">
-					<ItemIcon :item="p.icon" :size="18" hide-tooltip /> <span class="node-detail__name">{{ p.name }}</span> <span class="node-detail__rate">{{ p.rate }}</span>
+					<ItemIcon :item="p.icon" :size="18" hide-tooltip /> <span class="node-detail__name">{{ p.name }}</span> <span class="node-detail__rate">{{ perMachine ? p.per : p.total }}</span>
 				</div>
 			</template>
 		</aside>
@@ -385,6 +391,29 @@ watch(() => props.result, draw); // re-draw when a new solve replaces the result
 	color: var(--hud-text-dim, #8f99a6);
 }
 .node-detail__power { color: var(--hud-cyan, #37c6d0); }
+.node-detail__toggle {
+	display: flex;
+	gap: 2px;
+	margin-top: 8px;
+	font-size: 10px;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+}
+.node-detail__toggle span {
+	flex: 1;
+	text-align: center;
+	padding: 3px 6px;
+	border: 1px solid var(--hud-border, rgba(255, 255, 255, 0.12));
+	border-radius: 4px;
+	cursor: pointer;
+	color: var(--hud-text-dim, #8f99a6);
+}
+.node-detail__toggle span.is-active {
+	background: var(--hud-orange, #f99549);
+	border-color: var(--hud-orange, #f99549);
+	color: #14171c;
+	font-weight: 600;
+}
 .node-detail__label {
 	margin-top: 10px;
 	margin-bottom: 3px;
