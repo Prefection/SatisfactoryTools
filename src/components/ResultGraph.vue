@@ -80,14 +80,22 @@ const selectedDetail = computed(() => {
 		const mc = n.machineData.countMachines();
 		return {
 			title: n.recipeData.recipe.name,
+			icon: n.getOutputs()[0]?.resource.className ?? '',
 			machine: n.recipeData.machine.name,
 			machineCount: mc,
 			power: `${Strings.formatNumber(n.machineData.power.average)} MW`,
+			rate: undefined as string | undefined,
 			inputs: rows(n.getInputs(), mc), outputs: rows(n.getOutputs(), mc),
 		};
 	}
+	// Miner/Input/Product/Byproduct/Sink are single-item terminals — showing their item under an
+	// IN/OUT recipe heading misleads (a product node's item is the factory's OUTPUT, not an input).
+	// Show just the item + rate.
 	const one = n.getOutputs()[0] ?? n.getInputs()[0];
-	return {title: one?.resource.name ?? '', machine: undefined, machineCount: 1, power: undefined, inputs: rows(n.getInputs(), 1), outputs: rows(n.getOutputs(), 1)};
+	return {
+		title: one?.resource.name ?? '', icon: one?.resource.className ?? '', machine: undefined, machineCount: 1,
+		power: undefined, rate: one ? rate(one.maxAmount) : undefined, inputs: [], outputs: [],
+	};
 });
 
 // elk lays nodes out on a 100px-tall grid; size the frame to the chain instead of a
@@ -228,15 +236,22 @@ async function draw(): Promise<void> {
 			data: {...viewModel(n), inputs: inPorts.get(n.id) ?? [], outputs: outPorts.get(n.id) ?? []},
 		};
 	});
-	edges.value = graph.edges.map((e) => ({
-		id: String(e.id),
-		source: String(e.from.id),
-		target: String(e.to.id),
-		sourceHandle: String(e.id), // each edge attaches to its own dedicated port
-		targetHandle: String(e.id),
-		markerEnd: {type: MarkerType.ArrowClosed, color: '#5f7183', width: 18, height: 18},
-		label: `${data.getItemByClassName(e.itemAmount.item)?.name ?? e.itemAmount.item}  ${Strings.formatNumber(e.itemAmount.amount)}/min`,
-	}));
+	// Colour each edge by the node it flows INTO, so an edge feeding a byproduct/product/sink node
+	// carries that node's colour instead of a generic slate.
+	const accentOf = new Map(graph.nodes.map((n) => [n.id, n.getVisNode().color?.background ?? '#5f7183']));
+	edges.value = graph.edges.map((e) => {
+		const colour = accentOf.get(e.to.id) ?? '#5f7183';
+		return {
+			id: String(e.id),
+			source: String(e.from.id),
+			target: String(e.to.id),
+			sourceHandle: String(e.id), // each edge attaches to its own dedicated port
+			targetHandle: String(e.id),
+			style: {stroke: colour, strokeWidth: 1.5},
+			markerEnd: {type: MarkerType.ArrowClosed, color: colour, width: 18, height: 18},
+			label: `${data.getItemByClassName(e.itemAmount.item)?.name ?? e.itemAmount.item}  ${Strings.formatNumber(e.itemAmount.amount)}/min`,
+		};
+	});
 }
 
 // Edge shape is a per-tab view pref, applied without rebuilding the graph.
@@ -316,12 +331,15 @@ watch(() => props.result, draw); // re-draw when a new solve replaces the result
 		<aside v-if="selectedDetail" class="node-detail">
 			<button class="node-detail__close" title="Close" @click="selected = null">×</button>
 			<div class="node-detail__title">
-				<ItemIcon v-if="selectedDetail.inputs.length || selectedDetail.outputs.length" :item="selectedDetail.outputs[0]?.icon ?? selectedDetail.inputs[0]?.icon ?? ''" :size="22" hide-tooltip />
+				<ItemIcon v-if="selectedDetail.icon" :item="selectedDetail.icon" :size="22" hide-tooltip />
 				<span>{{ selectedDetail.title }}</span>
 			</div>
 			<div v-if="selectedDetail.machine" class="node-detail__machine">
 				<span class="hud-value">{{ selectedDetail.machineCount }}×</span> {{ selectedDetail.machine }}
 				<span v-if="selectedDetail.power" class="node-detail__power">· {{ selectedDetail.power }}</span>
+			</div>
+			<div v-else-if="selectedDetail.rate" class="node-detail__machine">
+				<span class="node-detail__power">{{ selectedDetail.rate }}</span>
 			</div>
 			<div v-if="selectedDetail.machineCount > 1" class="node-detail__toggle">
 				<span :class="{'is-active': !perMachine}" @click="perMachine = false">Total</span>
@@ -446,15 +464,12 @@ watch(() => props.result, draw); // re-draw when a new solve replaces the result
 	background: var(--hud-surface-2, #10131a);
 }
 
-/* Edges: HUD slate hairline, orange on hover/selection. */
-.visualization :deep(.vue-flow__edge-path) {
-	stroke: #5f7183;
-	stroke-width: 1.5;
-}
-
+/* Edge colour is set per-edge inline (by the target node); brighten on hover/selection.
+   !important is needed to beat the inline stroke. */
 .visualization :deep(.vue-flow__edge:hover .vue-flow__edge-path),
 .visualization :deep(.vue-flow__edge.selected .vue-flow__edge-path) {
-	stroke: var(--hud-orange, #f99549);
+	stroke: var(--hud-orange, #f99549) !important;
+	stroke-width: 2.5;
 }
 
 /* Edge labels: near-black chip + light mono, replacing Vue Flow's white pill. */

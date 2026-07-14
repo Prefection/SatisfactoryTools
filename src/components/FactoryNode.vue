@@ -84,12 +84,16 @@ function portStyle(side: Side, index: number, count: number): Record<string, str
 	border-radius: 5px;
 	color: var(--hud-text, #e8eaed);
 	font-family: var(--hud-font-sans, system-ui, sans-serif);
-	cursor: grab;
+	cursor: zoom-in; /* click opens the recipe/data detail */
 	transition: box-shadow 0.15s ease;
 }
 
 .factory-node:hover {
 	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.factory-node:active {
+	cursor: grabbing; /* still draggable */
 }
 
 .factory-node__head {
