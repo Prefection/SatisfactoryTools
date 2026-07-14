@@ -17,6 +17,7 @@ import {SinkNode} from '@src/Tools/Production/Result/Nodes/SinkNode';
 import data from '@src/Data/Data';
 import {Strings} from '@src/Utils/Strings';
 import FactoryNode from '@src/components/FactoryNode.vue';
+import ItemIcon from '@src/components/ItemIcon.vue';
 
 type Side = 'left' | 'right' | 'top' | 'bottom';
 
@@ -62,6 +63,30 @@ const {fitView, onNodesInitialized, onNodeDragStop, getNodes, updateNodeData, up
 
 // edge id -> its endpoints, so a port can be ordered by the node it connects to.
 const edgeEnds = new Map<string, {source: number; target: number}>();
+// vue-flow node id -> the domain graph node, so a click can show its recipe/data.
+const nodeById = new Map<string, GraphNode>();
+const selected = ref<GraphNode | null>(null);
+
+// Detail shown in the click overlay, built from the node's existing data (no new computation).
+const selectedDetail = computed(() => {
+	const n = selected.value;
+	if (!n) return null;
+	const amounts = (as: {resource: {name: string; className: string}; maxAmount: number}[]) =>
+		as.map((a) => ({icon: a.resource.className, name: a.resource.name, rate: rate(a.maxAmount)}));
+	const inputs = amounts(n.getInputs());
+	const outputs = amounts(n.getOutputs());
+	if (n instanceof RecipeNode) {
+		return {
+			title: n.recipeData.recipe.name,
+			machine: n.recipeData.machine.name,
+			machineCount: n.machineData.countMachines(),
+			power: `${Strings.formatNumber(n.machineData.power.average)} MW`,
+			inputs, outputs,
+		};
+	}
+	const one = n.getOutputs()[0] ?? n.getInputs()[0];
+	return {title: one?.resource.name ?? '', machine: undefined, machineCount: undefined, power: undefined, inputs, outputs};
+});
 
 // elk lays nodes out on a 100px-tall grid; size the frame to the chain instead of a
 // fixed height so small graphs don't leave a black void and big ones still get room.
@@ -125,6 +150,8 @@ function viewModel(node: GraphNode): FactoryNodeData {
 
 async function draw(): Promise<void> {
 	const graph = props.result.graph;
+	nodeById.clear();
+	selected.value = null; // a new solve replaces the graph; drop any open detail
 
 	// Per-node port counts drive the card's real height, so elk can space rows without overlap
 	// (a node with 4 inputs is much taller than a one-line miner card).
@@ -190,12 +217,15 @@ async function draw(): Promise<void> {
 		port.side = sideToNeighbour(centreX(n.id), centreY(n.id), centreX(nb), centreY(nb));
 	}
 
-	nodes.value = graph.nodes.map((n) => ({
-		id: String(n.id),
-		type: 'factory',
-		position: pos.get(n.id) ?? {x: 0, y: 0},
-		data: {...viewModel(n), inputs: inPorts.get(n.id) ?? [], outputs: outPorts.get(n.id) ?? []},
-	}));
+	nodes.value = graph.nodes.map((n) => {
+		nodeById.set(String(n.id), n);
+		return {
+			id: String(n.id),
+			type: 'factory',
+			position: pos.get(n.id) ?? {x: 0, y: 0},
+			data: {...viewModel(n), inputs: inPorts.get(n.id) ?? [], outputs: outPorts.get(n.id) ?? []},
+		};
+	});
 	edges.value = graph.edges.map((e) => ({
 		id: String(e.id),
 		source: String(e.from.id),
@@ -274,16 +304,112 @@ watch(() => props.result, draw); // re-draw when a new solve replaces the result
 			:min-zoom="0.2"
 			:max-zoom="2"
 			:nodes-connectable="false"
+			@node-click="selected = nodeById.get($event.node.id) ?? null"
+			@pane-click="selected = null"
 		>
 			<Background :gap="18" pattern-color="#2a313c" />
 			<Controls :show-interactive="false" />
 		</VueFlow>
+
+		<aside v-if="selectedDetail" class="node-detail">
+			<button class="node-detail__close" title="Close" @click="selected = null">×</button>
+			<div class="node-detail__title">
+				<ItemIcon v-if="selectedDetail.inputs.length || selectedDetail.outputs.length" :item="selectedDetail.outputs[0]?.icon ?? selectedDetail.inputs[0]?.icon ?? ''" :size="22" hide-tooltip />
+				<span>{{ selectedDetail.title }}</span>
+			</div>
+			<div v-if="selectedDetail.machine" class="node-detail__machine">
+				<span class="hud-value">{{ selectedDetail.machineCount }}×</span> {{ selectedDetail.machine }}
+				<span v-if="selectedDetail.power" class="node-detail__power">· {{ selectedDetail.power }}</span>
+			</div>
+			<template v-if="selectedDetail.inputs.length">
+				<div class="node-detail__label">In</div>
+				<div v-for="p in selectedDetail.inputs" :key="'i' + p.icon" class="node-detail__row">
+					<ItemIcon :item="p.icon" :size="18" hide-tooltip /> <span class="node-detail__name">{{ p.name }}</span> <span class="node-detail__rate">{{ p.rate }}</span>
+				</div>
+			</template>
+			<template v-if="selectedDetail.outputs.length">
+				<div class="node-detail__label">Out</div>
+				<div v-for="p in selectedDetail.outputs" :key="'o' + p.icon" class="node-detail__row">
+					<ItemIcon :item="p.icon" :size="18" hide-tooltip /> <span class="node-detail__name">{{ p.name }}</span> <span class="node-detail__rate">{{ p.rate }}</span>
+				</div>
+			</template>
+		</aside>
 	</div>
 </template>
 
 <style scoped>
 .visualization {
 	overflow: hidden;
+	position: relative;
+}
+
+/* Click-a-node detail overlay: a HUD panel floating in the top-right of the graph. */
+.node-detail {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	z-index: 5;
+	width: 250px;
+	max-height: calc(100% - 20px);
+	overflow-y: auto;
+	padding: 12px 14px;
+	background: var(--hud-surface, #191d24);
+	border: 1px solid var(--hud-orange, #f99549);
+	border-radius: 6px;
+	color: var(--hud-text, #e8eaed);
+	font-size: 12px;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+.node-detail__close {
+	position: absolute;
+	top: 6px;
+	right: 8px;
+	background: none;
+	border: 0;
+	color: var(--hud-text-dim, #8f99a6);
+	font-size: 18px;
+	line-height: 1;
+	cursor: pointer;
+}
+.node-detail__close:hover { color: var(--hud-orange, #f99549); }
+.node-detail__title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding-right: 16px;
+	font-size: 14px;
+	font-weight: 600;
+}
+.node-detail__machine {
+	margin-top: 6px;
+	color: var(--hud-text-dim, #8f99a6);
+}
+.node-detail__power { color: var(--hud-cyan, #37c6d0); }
+.node-detail__label {
+	margin-top: 10px;
+	margin-bottom: 3px;
+	font-size: 10px;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--hud-orange, #f99549);
+}
+.node-detail__row {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 2px 0;
+}
+.node-detail__name {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.node-detail__rate {
+	font-family: var(--hud-font-mono, ui-monospace, monospace);
+	color: var(--hud-cyan, #37c6d0);
+	white-space: nowrap;
 }
 
 .visualization :deep(.vue-flow) {
