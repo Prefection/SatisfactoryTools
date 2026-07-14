@@ -73,6 +73,7 @@ const perMachine = ref(false); // detail overlay: show per-machine rates instead
 const selectedDetail = computed(() => {
 	const n = selected.value;
 	if (!n) return null;
+	const accent = n.getVisNode().color?.background ?? '#f99549'; // panel matches the node's own colour
 	type Amt = {resource: {name: string; className: string}; maxAmount: number};
 	const rows = (as: Amt[], mc: number) =>
 		as.map((a) => ({icon: a.resource.className, name: a.resource.name, total: rate(a.maxAmount), per: rate(a.maxAmount / mc)}));
@@ -81,6 +82,7 @@ const selectedDetail = computed(() => {
 		return {
 			title: n.recipeData.recipe.name,
 			icon: n.getOutputs()[0]?.resource.className ?? '',
+			accent,
 			machine: n.recipeData.machine.name,
 			machineCount: mc,
 			power: `${Strings.formatNumber(n.machineData.power.average)} MW`,
@@ -93,7 +95,7 @@ const selectedDetail = computed(() => {
 	// Show just the item + rate.
 	const one = n.getOutputs()[0] ?? n.getInputs()[0];
 	return {
-		title: one?.resource.name ?? '', icon: one?.resource.className ?? '', machine: undefined, machineCount: 1,
+		title: one?.resource.name ?? '', icon: one?.resource.className ?? '', accent, machine: undefined, machineCount: 1,
 		power: undefined, rate: one ? rate(one.maxAmount) : undefined, inputs: [], outputs: [],
 	};
 });
@@ -236,11 +238,13 @@ async function draw(): Promise<void> {
 			data: {...viewModel(n), inputs: inPorts.get(n.id) ?? [], outputs: outPorts.get(n.id) ?? []},
 		};
 	});
-	// Colour each edge by the node it flows INTO, so an edge feeding a byproduct/product/sink node
-	// carries that node's colour instead of a generic slate.
+	// Colour each edge by the node it flows INTO, so a byproduct/product/sink edge carries that node's
+	// colour. Exception: raw-resource edges (from a miner/input) take the source colour, so they stay
+	// visually distinct from orange intermediate edges instead of inheriting the recipe's orange.
 	const accentOf = new Map(graph.nodes.map((n) => [n.id, n.getVisNode().color?.background ?? '#5f7183']));
+	const rawSources = new Set(graph.nodes.filter((n) => n instanceof MinerNode || n instanceof InputNode).map((n) => n.id));
 	edges.value = graph.edges.map((e) => {
-		const colour = accentOf.get(e.to.id) ?? '#5f7183';
+		const colour = (rawSources.has(e.from.id) ? accentOf.get(e.from.id) : accentOf.get(e.to.id)) ?? '#5f7183';
 		return {
 			id: String(e.id),
 			source: String(e.from.id),
@@ -328,7 +332,7 @@ watch(() => props.result, draw); // re-draw when a new solve replaces the result
 			<Controls :show-interactive="false" />
 		</VueFlow>
 
-		<aside v-if="selectedDetail" class="node-detail">
+		<aside v-if="selectedDetail" class="node-detail" :style="{'--detail-accent': selectedDetail.accent}">
 			<button class="node-detail__close" title="Close" @click="selected = null">×</button>
 			<div class="node-detail__title">
 				<ItemIcon v-if="selectedDetail.icon" :item="selectedDetail.icon" :size="22" hide-tooltip />
@@ -378,7 +382,7 @@ watch(() => props.result, draw); // re-draw when a new solve replaces the result
 	overflow-y: auto;
 	padding: 12px 14px;
 	background: var(--hud-surface, #191d24);
-	border: 1px solid var(--hud-orange, #f99549);
+	border: 1px solid var(--detail-accent, var(--hud-orange, #f99549));
 	border-radius: 6px;
 	color: var(--hud-text, #e8eaed);
 	font-size: 12px;
@@ -395,7 +399,7 @@ watch(() => props.result, draw); // re-draw when a new solve replaces the result
 	line-height: 1;
 	cursor: pointer;
 }
-.node-detail__close:hover { color: var(--hud-orange, #f99549); }
+.node-detail__close:hover { color: var(--detail-accent, var(--hud-orange, #f99549)); }
 .node-detail__title {
 	display: flex;
 	align-items: center;
@@ -427,8 +431,8 @@ watch(() => props.result, draw); // re-draw when a new solve replaces the result
 	color: var(--hud-text-dim, #8f99a6);
 }
 .node-detail__toggle span.is-active {
-	background: var(--hud-orange, #f99549);
-	border-color: var(--hud-orange, #f99549);
+	background: var(--detail-accent, var(--hud-orange, #f99549));
+	border-color: var(--detail-accent, var(--hud-orange, #f99549));
 	color: #14171c;
 	font-weight: 600;
 }
@@ -438,7 +442,7 @@ watch(() => props.result, draw); // re-draw when a new solve replaces the result
 	font-size: 10px;
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
-	color: var(--hud-orange, #f99549);
+	color: var(--detail-accent, var(--hud-orange, #f99549));
 }
 .node-detail__row {
 	display: flex;
